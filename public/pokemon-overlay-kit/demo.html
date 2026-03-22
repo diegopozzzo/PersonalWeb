@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon Overlay Kit Demo</title>
+    <link rel="stylesheet" href="./pokemon-overlay.css" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #eef4ff;
+        background:
+          radial-gradient(circle at top, rgba(79, 123, 255, 0.2), transparent 30%),
+          linear-gradient(180deg, #101728 0%, #0b111f 45%, #09111b 100%);
+      }
+
+      main {
+        width: min(980px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 84px 0 160px;
+      }
+
+      .hero {
+        padding: 32px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(34px, 5vw, 62px);
+        line-height: 1.02;
+      }
+
+      p {
+        max-width: 68ch;
+        line-height: 1.65;
+        color: rgba(238, 244, 255, 0.82);
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 22px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <h1>Pokemon overlay portable</h1>
+        <p>
+          Esta demo monta el kit listo para integrarlo en otra web: Honedge como
+          mouse intercambiable, Gengar/Machop/Axew caminando abajo y
+          Pikachu/Eevee arriba como companeros interactivos.
+        </p>
+        <p>
+          Pasa el mouse por los personajes, arrastra los de abajo y haz click en
+          cualquiera para usarlo como mouse. El selector de la esquina derecha
+          tambien te deja cambiar rapido.
+        </p>
+        <div class="cards">
+          <article class="card">
+            <h2>Arrastrables</h2>
+            <p>Los Pokemon de la franja inferior se pueden cargar con el mouse y soltar.</p>
+          </article>
+          <article class="card">
+            <h2>Mouse intercambiable</h2>
+            <p>Honedge arranca por defecto, pero puedes cambiar entre los seis Pokemon.</p>
+          </article>
+          <article class="card">
+            <h2>Portable</h2>
+            <p>No depende de Phaser ni del repo completo. Solo necesita servirse por HTTP.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { createPokemonOverlay } from "./pokemon-overlay.js"
+
+      createPokemonOverlay({
+        cursorPokemon: "HONEDGE"
+      })
+    </script>
+  </body>
+</html>
