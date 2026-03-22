@@ -1,6 +1,5 @@
 const FPS_UNIT_MS = 1000 / 36
 const STORAGE_KEY = "pokemon-overlay-kit.cursor-pokemon"
-
 const ORIENTATION = {
   DOWN: "0",
   DOWNRIGHT: "1",
@@ -127,6 +126,8 @@ const DEFAULT_OPTIONS = {
   root: document.body,
   cursorPokemon: "HONEDGE",
   topCompanions: ["PIKACHU", "EEVEE", "MEW"],
+  centerCompanions: [],
+  headerWalkers: [],
   bottomWalkers: ["GENGAR", "MACHOP", "AXEW", "CHARMANDER"],
   toolbarPokemon: [
     "HONEDGE",
@@ -149,12 +150,15 @@ const DEFAULT_OPTIONS = {
   toolbarToggleHide: "Hide",
   toolbarToggleShow: "Show",
   toolbarHint: "Click or drag the Pokemon",
+  toolbarDisableLabel: "Disable",
   toolbarCreditsLabel: "View credits",
   toolbarCreditsHref: "./CREDITS.md",
   toolbarRoleLabels: {
     mouse: "cursor",
     top: "companion",
-    bottom: "walker"
+    bottom: "walker",
+    header: "header",
+    center: "core"
   },
   activeLabel: "cursor",
   badgePrefix: "Cursor",
@@ -162,6 +166,7 @@ const DEFAULT_OPTIONS = {
   cursorOffsetX: -18,
   cursorOffsetY: -18,
   cursorSmoothing: 14,
+  onDisable: null,
   themeClass: "",
   theme: {}
 }
@@ -179,6 +184,34 @@ function clamp(value, min, max) {
 
 function uniq(values) {
   return [...new Set(values)]
+}
+
+function applyThemeToElement(element, options) {
+  if (!element || !options) return
+
+  if (options.themeClass) {
+    element.classList.add(options.themeClass)
+  }
+
+  const theme = options.theme || {}
+  const variableMap = {
+    "--pk-accent": theme.accent,
+    "--pk-accent-2": theme.accent2,
+    "--pk-border": theme.border,
+    "--pk-surface": theme.surface,
+    "--pk-panel": theme.panel,
+    "--pk-text": theme.text,
+    "--pk-muted": theme.muted,
+    "--pk-badge-bg": theme.badgeBg,
+    "--pk-glow": theme.glow,
+    "--pk-glow-2": theme.glow2
+  }
+
+  Object.entries(variableMap).forEach(([property, value]) => {
+    if (value) {
+      element.style.setProperty(property, value)
+    }
+  })
 }
 
 function normalizeActorEntry(entry) {
@@ -548,6 +581,7 @@ class OverlayActor {
     this.asset = null
     this.hovered = false
     this.dragging = false
+    this.placed = false
     this.pointerStart = null
     this.pointerOffset = null
     this.seed = Math.random() * Math.PI * 2
@@ -564,8 +598,9 @@ class OverlayActor {
     this.x = 0
     this.y = 0
     this.baseY = 0
-    this.floatX = options.floatX ?? (options.role === "top" ? 8 : 0)
+    this.floatX = options.floatX ?? (options.role === "top" ? 8 : options.role === "bottom" ? 6 : 0)
     this.floatY = options.floatY ?? (options.role === "top" ? 4 : 2)
+    this.interactive = options.interactive !== false
 
     this.element = document.createElement("div")
     this.element.className = `pk-overlay-actor ${options.role}`
@@ -575,6 +610,9 @@ class OverlayActor {
     )
     this.element.style.width = `${this.scale}px`
     this.element.style.height = `${this.scale}px`
+    if (!this.interactive) {
+      this.element.classList.add("is-passive")
+    }
     if (options.role === "top") {
       this.element.classList.add(options.side)
     }
@@ -588,9 +626,11 @@ class OverlayActor {
     this.onPointerMove = this.onPointerMove.bind(this)
     this.onPointerUp = this.onPointerUp.bind(this)
 
-    this.element.addEventListener("pointerenter", this.onPointerEnter)
-    this.element.addEventListener("pointerleave", this.onPointerLeave)
-    this.element.addEventListener("pointerdown", this.onPointerDown)
+    if (this.interactive) {
+      this.element.addEventListener("pointerenter", this.onPointerEnter)
+      this.element.addEventListener("pointerleave", this.onPointerLeave)
+      this.element.addEventListener("pointerdown", this.onPointerDown)
+    }
 
     if (options.role === "bottom") {
       const total = Math.max(options.total || 1, 1)
@@ -613,7 +653,12 @@ class OverlayActor {
       this.y = this.baseY
     }
 
-    overlay.root.appendChild(this.element)
+    if (options.mountToBody) {
+      applyThemeToElement(this.element, overlay.options)
+      document.body.appendChild(this.element)
+    } else {
+      overlay.root.appendChild(this.element)
+    }
 
     this.ready = loadPokemonAsset(key).then((asset) => {
       this.asset = asset
@@ -627,11 +672,11 @@ class OverlayActor {
   }
 
   currentBaseAction() {
-    if (this.options.role === "top") {
+    if (this.options.role === "top" || this.options.role === "center") {
       return this.meta.topAction || this.meta.idleAction
     }
 
-    if (this.options.role === "bottom" && !this.dragging) {
+    if ((this.options.role === "bottom" || this.options.role === "header") && !this.dragging) {
       return this.meta.moveAction
     }
 
@@ -639,7 +684,7 @@ class OverlayActor {
   }
 
   currentOrientation() {
-    if (this.options.role === "top") {
+    if (this.options.role === "top" || this.options.role === "center") {
       if (this.options.facing === "left") return ORIENTATION.LEFT
       if (this.options.facing === "right") return ORIENTATION.RIGHT
       return this.options.side === "left" ? ORIENTATION.RIGHT : ORIENTATION.LEFT
@@ -653,24 +698,26 @@ class OverlayActor {
   }
 
   onPointerEnter() {
+    if (!this.interactive) return
     this.hovered = true
     this.element.classList.add("is-hovered")
     this.react()
   }
 
   onPointerLeave() {
+    if (!this.interactive) return
     this.hovered = false
     this.element.classList.remove("is-hovered")
   }
 
   onPointerDown(event) {
+    if (!this.interactive) return
     event.preventDefault()
     event.stopPropagation()
-
-    if (this.options.role === "top") {
-      this.overlay.setCursorPokemon(this.key, true)
-      this.react()
-      return
+    try {
+      window.getSelection()?.removeAllRanges()
+    } catch (_error) {
+      // ignore selection clearing failures
     }
 
     this.pointerStart = {
@@ -694,6 +741,7 @@ class OverlayActor {
 
     if (!this.dragging && Math.hypot(dx, dy) > 6) {
       this.dragging = true
+      this.overlay.setDraggingState(true)
       this.react()
     }
 
@@ -707,23 +755,32 @@ class OverlayActor {
   onPointerUp(event) {
     window.removeEventListener("pointermove", this.onPointerMove)
     window.removeEventListener("pointerup", this.onPointerUp)
+    this.overlay.setDraggingState(false)
 
     if (!this.dragging) {
-      this.overlay.setCursorPokemon(this.key, true)
-      this.react()
+      if (this.options.role === "top" || this.options.role === "bottom") {
+        this.overlay.setCursorPokemon(this.key, true)
+        this.react()
+      }
     } else {
       const deltaX = event.clientX - this.pointerStart.x
       this.direction = deltaX >= 0 ? 1 : -1
-      this.baseY = clamp(
-        toPixels(
-          this.options.startY,
-          window.innerHeight - this.scale,
-          window.innerHeight - this.scale + (this.options.laneOffsetY ?? 12)
-        ),
-        0,
-        window.innerHeight - this.scale
-      )
-      this.y = this.baseY
+      if (this.options.role === "top" || this.options.role === "bottom") {
+        this.placed = true
+        this.options.anchorX = this.x
+        this.options.anchorY = this.y
+      } else {
+        this.baseY = clamp(
+          toPixels(
+            this.options.startY,
+            window.innerHeight - this.scale,
+            window.innerHeight - this.scale + (this.options.laneOffsetY ?? 12)
+          ),
+          0,
+          window.innerHeight - this.scale
+        )
+        this.y = this.baseY
+      }
     }
 
     this.pointerStart = null
@@ -750,21 +807,108 @@ class OverlayActor {
     if (!this.asset) return
 
     if (this.options.role === "top") {
-      const fallbackLeft =
-        this.options.side === "left" ? 16 : window.innerWidth - this.scale - 16
-      const fallbackTop = 12
+      if (!this.dragging) {
+        const fallbackLeft =
+          this.options.side === "left" ? 16 : window.innerWidth - this.scale - 16
+        const fallbackTop = 12
+        const anchorX = toPixels(
+          this.options.anchorX,
+          window.innerWidth - this.scale,
+          fallbackLeft
+        )
+        const anchorY = toPixels(
+          this.options.anchorY,
+          window.innerHeight - this.scale,
+          fallbackTop
+        )
+        this.x = clamp(
+          anchorX + Math.cos(time / 860 + this.seed) * this.floatX,
+          0,
+          window.innerWidth - this.scale
+        )
+        this.y = clamp(
+          anchorY + Math.sin(time / 520 + this.seed) * this.floatY,
+          0,
+          window.innerHeight - this.scale
+        )
+      }
+
+      if (!this.sprite.temporary) {
+        this.sprite.play(
+          this.dragging ? this.meta.idleAction : (this.meta.topAction || this.meta.idleAction),
+          this.currentOrientation()
+        )
+      }
+    } else if (this.options.role === "center") {
+      const anchorX =
+        toPixels(this.options.anchorX, window.innerWidth, window.innerWidth / 2) - this.scale / 2
+      const anchorY =
+        toPixels(this.options.anchorY, window.innerHeight, window.innerHeight / 2) - this.scale / 2
+      this.x = clamp(
+        anchorX + Math.cos(time / 900 + this.seed) * this.floatX,
+        0,
+        window.innerWidth - this.scale
+      )
+      this.y = clamp(
+        anchorY + Math.sin(time / 620 + this.seed) * this.floatY,
+        0,
+        window.innerHeight - this.scale
+      )
+
+      if (!this.sprite.temporary) {
+        this.sprite.play(this.meta.topAction || this.meta.idleAction, this.currentOrientation())
+      }
+    } else if (this.options.role === "header") {
+      const minX = clamp(
+        toPixels(this.options.minX, window.innerWidth - this.scale, 0),
+        0,
+        window.innerWidth - this.scale
+      )
+      const maxX = clamp(
+        toPixels(this.options.maxX, window.innerWidth - this.scale, window.innerWidth - this.scale),
+        minX,
+        window.innerWidth - this.scale
+      )
+      const headerTop = toPixels(this.options.headerTop, window.innerHeight, 0)
+      const headerHeight = Math.max(
+        toPixels(this.options.headerHeight, window.innerHeight, 92),
+        this.scale + headerTop
+      )
+      const fallbackY = headerTop + Math.max((headerHeight - this.scale) / 2, 0)
+
+      this.x += this.direction * this.speed * deltaSeconds
+      if (this.x <= minX) {
+        this.x = minX
+        this.direction = 1
+      } else if (this.x >= maxX) {
+        this.x = maxX
+        this.direction = -1
+      }
+
+      this.baseY = clamp(
+        toPixels(this.options.startY, headerTop + headerHeight - this.scale, fallbackY),
+        headerTop,
+        headerTop + headerHeight - this.scale
+      )
+      this.y = this.baseY + Math.sin(time / 460 + this.seed) * this.floatY
+
+      if (!this.sprite.temporary) {
+        this.sprite.play(this.meta.moveAction, this.currentOrientation())
+      }
+    } else if (this.options.role === "bottom" && this.placed && !this.dragging) {
       const anchorX = toPixels(
         this.options.anchorX,
         window.innerWidth - this.scale,
-        fallbackLeft
+        this.x
       )
       const anchorY = toPixels(
         this.options.anchorY,
         window.innerHeight - this.scale,
-        fallbackTop
+        this.y
       )
+
       this.x = clamp(
-        anchorX + Math.cos(time / 860 + this.seed) * this.floatX,
+        anchorX + Math.cos(time / 760 + this.seed) * this.floatX,
         0,
         window.innerWidth - this.scale
       )
@@ -775,7 +919,7 @@ class OverlayActor {
       )
 
       if (!this.sprite.temporary) {
-        this.sprite.play(this.meta.topAction || this.meta.idleAction, this.currentOrientation())
+        this.sprite.play(this.meta.idleAction, this.currentOrientation())
       }
     } else if (!this.dragging) {
       const minX = clamp(
@@ -846,31 +990,11 @@ class OverlayCursor {
 
     this.element = document.createElement("div")
     this.element.className = "pk-overlay-cursor"
-    if (overlay.options.themeClass) {
-      this.element.classList.add(overlay.options.themeClass)
-    }
     this.size = Math.round(72 * (overlay.options.cursorScale || 1))
     this.offsetX = overlay.options.cursorOffsetX ?? -18
     this.offsetY = overlay.options.cursorOffsetY ?? -18
     this.smoothing = overlay.options.cursorSmoothing || 14
-    const theme = overlay.options.theme || {}
-    const variableMap = {
-      "--pk-accent": theme.accent,
-      "--pk-accent-2": theme.accent2,
-      "--pk-border": theme.border,
-      "--pk-surface": theme.surface,
-      "--pk-panel": theme.panel,
-      "--pk-text": theme.text,
-      "--pk-muted": theme.muted,
-      "--pk-badge-bg": theme.badgeBg,
-      "--pk-glow": theme.glow,
-      "--pk-glow-2": theme.glow2
-    }
-    Object.entries(variableMap).forEach(([property, value]) => {
-      if (value) {
-        this.element.style.setProperty(property, value)
-      }
-    })
+    applyThemeToElement(this.element, overlay.options)
     this.sprite = new PixelCanvasSprite(this.size)
     this.element.appendChild(this.sprite.canvas)
     document.body.appendChild(this.element)
@@ -961,6 +1085,8 @@ class PokemonOverlay {
     document.body.classList.add("pk-overlay-cursor-enabled")
 
     this.createTopActors()
+    this.createCenterActors()
+    this.createHeaderWalkers()
     this.createBottomActors()
 
     if (this.options.showToolbar) {
@@ -1036,6 +1162,34 @@ class PokemonOverlay {
     })
   }
 
+  createCenterActors() {
+    this.options.centerCompanions
+      .map(normalizeActorEntry)
+      .filter(Boolean)
+      .forEach((entry) => {
+        this.actors.push(
+          new OverlayActor(this, entry.key, {
+            ...entry,
+            role: "center"
+          })
+        )
+      })
+  }
+
+  createHeaderWalkers() {
+    this.options.headerWalkers
+      .map(normalizeActorEntry)
+      .filter(Boolean)
+      .forEach((entry) => {
+        this.actors.push(
+          new OverlayActor(this, entry.key, {
+            ...entry,
+            role: "header"
+          })
+        )
+      })
+  }
+
   createBottomActors() {
     const walkers = this.options.bottomWalkers
       .map(normalizeActorEntry)
@@ -1059,6 +1213,9 @@ class PokemonOverlay {
 
     const header = document.createElement("div")
     header.className = "pk-overlay-toolbar-header"
+    header.setAttribute("role", "button")
+    header.setAttribute("tabindex", "0")
+    header.setAttribute("aria-expanded", this.options.toolbarCollapsed ? "false" : "true")
 
     const titleWrap = document.createElement("div")
     const title = document.createElement("h2")
@@ -1069,22 +1226,19 @@ class PokemonOverlay {
     subtitle.textContent = this.options.toolbarSubtitle
     titleWrap.appendChild(title)
     titleWrap.appendChild(subtitle)
-
-    const toggle = document.createElement("button")
-    toggle.className = "pk-overlay-toolbar-toggle"
-    toggle.type = "button"
-    toggle.textContent = this.options.toolbarCollapsed
-      ? this.options.toolbarToggleShow
-      : this.options.toolbarToggleHide
-    toggle.addEventListener("click", () => {
-      this.toolbar.classList.toggle("is-collapsed")
-      toggle.textContent = this.toolbar.classList.contains("is-collapsed")
-        ? this.options.toolbarToggleShow
-        : this.options.toolbarToggleHide
+    const toggleToolbar = () => {
+      const collapsed = this.toolbar.classList.toggle("is-collapsed")
+      header.setAttribute("aria-expanded", collapsed ? "false" : "true")
+    }
+    header.addEventListener("click", toggleToolbar)
+    header.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault()
+        toggleToolbar()
+      }
     })
 
     header.appendChild(titleWrap)
-    header.appendChild(toggle)
     this.toolbar.appendChild(header)
 
     if (this.options.toolbarCollapsed) {
@@ -1135,6 +1289,17 @@ class PokemonOverlay {
     const hint = document.createElement("span")
     hint.textContent = this.options.toolbarHint
 
+    const actions = document.createElement("div")
+    actions.className = "pk-overlay-toolbar-actions"
+
+    const disable = document.createElement("button")
+    disable.type = "button"
+    disable.className = "pk-overlay-toolbar-link"
+    disable.textContent = this.options.toolbarDisableLabel || "Disable"
+    disable.addEventListener("click", () => {
+      this.disableOverlay()
+    })
+
     const credits = document.createElement("a")
     credits.href = /^https?:/i.test(this.options.toolbarCreditsHref)
       ? this.options.toolbarCreditsHref
@@ -1143,11 +1308,23 @@ class PokemonOverlay {
     credits.rel = "noreferrer"
     credits.textContent = this.options.toolbarCreditsLabel
 
+    actions.appendChild(disable)
+    actions.appendChild(credits)
+
     footer.appendChild(hint)
-    footer.appendChild(credits)
+    footer.appendChild(actions)
 
     this.toolbar.appendChild(footer)
     this.root.appendChild(this.toolbar)
+  }
+
+  disableOverlay() {
+    if (typeof this.options.onDisable === "function") {
+      this.options.onDisable()
+      return
+    }
+
+    this.destroy()
   }
 
   pointerMove(event) {
@@ -1156,8 +1333,25 @@ class PokemonOverlay {
     this.cursor.updateTarget(this.pointerX, this.pointerY)
   }
 
-  pointerDown() {
+  pointerDown(event) {
     this.cursor.react()
+
+    if (!this.toolbar || this.toolbar.classList.contains("is-collapsed")) {
+      return
+    }
+
+    const target = event?.target
+    if (target instanceof Node && !this.toolbar.contains(target)) {
+      this.toolbar.classList.add("is-collapsed")
+      const header = this.toolbar.querySelector(".pk-overlay-toolbar-header")
+      if (header) {
+        header.setAttribute("aria-expanded", "false")
+      }
+    }
+  }
+
+  setDraggingState(isDragging) {
+    document.body.classList.toggle("pk-overlay-dragging", Boolean(isDragging))
   }
 
   onResize() {
@@ -1224,6 +1418,7 @@ class PokemonOverlay {
     this.cursor.destroy()
     this.root.remove()
     document.body.classList.remove("pk-overlay-cursor-enabled")
+    document.body.classList.remove("pk-overlay-dragging")
   }
 }
 
