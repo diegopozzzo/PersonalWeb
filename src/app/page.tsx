@@ -7,13 +7,13 @@ import PokemonOverlayBridge from "@/components/PokemonOverlayBridge";
 const LANDING_HTML = `
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-:root { --bg:#0A0C10; --bg2:#0d1018; --surface:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); --white:#F2F0ED; --dim:rgba(242,240,237,0.45); --dimmer:rgba(242,240,237,0.22); --lavender:#9b8cff; --teal:#38d9b4; --lav2:#c4b5fd; --glow-lav:rgba(155,140,255,0.18); --glow-teal:rgba(56,217,180,0.14); }
+:root { --bg:#0A0C10; --bg2:#0d1018; --surface:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); --white:#F2F0ED; --dim:rgba(242,240,237,0.45); --dimmer:rgba(242,240,237,0.22); --lavender:#FF6B2B; --teal:#38d9b4; --lav2:#FF9A70; --glow-lav:rgba(255,107,43,0.18); --glow-teal:rgba(56,217,180,0.14); }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
-body::before { content:''; position:fixed; inset:0; background-image: linear-gradient(rgba(155,140,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(155,140,255,0.03) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+body::before { content:''; position:fixed; inset:0; background-image: linear-gradient(rgba(255,107,43,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.03) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
 #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; display:block; }
 #cursor { position:fixed; width:10px; height:10px; background:var(--lavender); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition: width .2s, height .2s; mix-blend-mode:screen; }
-#cursor-ring { position:fixed; width:36px; height:36px; border:1px solid rgba(155,140,255,0.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:left .1s ease, top .1s ease, width .3s, height .3s; }
+#cursor-ring { position:fixed; width:36px; height:36px; border:1px solid rgba(255,107,43,0.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:left .1s ease, top .1s ease, width .3s, height .3s; }
 nav { position:fixed; top:0; left:0; right:0; z-index:500; display:flex; justify-content:space-between; align-items:center; padding:1.4rem 3.5rem; background:linear-gradient(to bottom, rgba(10,12,16,0.95), transparent); transition:background .3s, backdrop-filter .3s; }
 nav.scrolled { background:rgba(10,12,16,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
 .nav-logo { font-family:'Syne', sans-serif; font-size:1rem; font-weight:700; letter-spacing:.04em; text-decoration:none; color:var(--white); }
@@ -24,7 +24,7 @@ nav.scrolled { background:rgba(10,12,16,0.92); backdrop-filter:blur(20px); borde
 .nav-right { display:flex; align-items:center; gap:.75rem; }
 .lang-switch { display:flex; align-items:center; gap:.3rem; border:1px solid var(--border); background:rgba(255,255,255,0.02); padding:.2rem; }
 .lang-btn { border:0; background:transparent; color:var(--dim); font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; padding:.28rem .5rem; cursor:pointer; }
-.lang-btn.active { color:var(--white); background:rgba(155,140,255,0.18); }
+.lang-btn.active { color:var(--white); background:rgba(255,107,43,0.18); }
 .nav-cta { font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.55rem 1.4rem; transition:opacity .2s; }
 .nav-cta:hover { opacity:.85; }
 section { position:relative; z-index:10; }
@@ -39,7 +39,7 @@ section { position:relative; z-index:10; }
 .hero-desc { font-size:.95rem; line-height:1.8; color:var(--dim); max-width:500px; margin-bottom:2.2rem; opacity:0; animation: fadeUp .8s .7s forwards; }
 .hero-badges { display:flex; gap:.8rem; margin-bottom:2.5rem; opacity:0; animation: fadeUp .8s .82s forwards; }
 .badge { font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; padding:.35rem .9rem; border:1px solid var(--border); background:var(--surface); backdrop-filter:blur(10px); color:var(--dim); }
-.badge.lav { border-color:rgba(155,140,255,.3); color:var(--lavender); }
+.badge.lav { border-color:rgba(255,107,43,.3); color:var(--lavender); }
 .badge.teal { border-color:rgba(56,217,180,.3); color:var(--teal); }
 .hero-btns { display:flex; gap:1.2rem; align-items:center; opacity:0; animation: fadeUp .8s .94s forwards; }
 .btn-grad { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.85rem 2rem; transition: opacity .2s, transform .2s; display:inline-block; }
@@ -47,7 +47,7 @@ section { position:relative; z-index:10; }
 .btn-ghost { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--dim); border-bottom:1px solid var(--border); padding-bottom:2px; }
 .hero-roles { display:flex; flex-direction:column; gap:1rem; opacity:0; animation: fadeUp .9s .86s forwards; }
 .hero-role-link { display:block; text-decoration:none; padding:1rem 1.1rem 1.05rem; border:1px solid rgba(255,255,255,0.08); background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); backdrop-filter:blur(18px); transition:transform .2s, border-color .2s, background .2s; }
-.hero-role-link:hover { transform:translateY(-2px); border-color:rgba(155,140,255,0.25); background:linear-gradient(180deg, rgba(155,140,255,0.08), rgba(56,217,180,0.04)); }
+.hero-role-link:hover { transform:translateY(-2px); border-color:rgba(255,107,43,0.25); background:linear-gradient(180deg, rgba(255,107,43,0.08), rgba(56,217,180,0.04)); }
 .hero-role-code { display:block; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--teal); margin-bottom:.45rem; }
 .hero-role-company { display:block; font-family:'Syne', sans-serif; font-size:1rem; font-weight:700; letter-spacing:.01em; color:var(--white); margin-bottom:.35rem; }
 .hero-role-title { display:block; font-size:.8rem; line-height:1.6; color:var(--dim); }
@@ -63,10 +63,10 @@ section { position:relative; z-index:10; }
 .sec-body { font-size:.95rem; line-height:1.85; color:var(--dim); max-width:600px; }
 #architecture,#nonhuman,#gia,#magnus,#news,#preseed,#projects,#contact { border-top:1px solid var(--border); }
 #arch-graph-wrap { position:relative; width:100%; height:560px; margin:3.5rem 0 1.25rem; background:transparent; overflow:visible; cursor:grab; isolation:isolate; }
-#arch-graph-wrap::before { content:''; position:absolute; inset:-7% -5%; background:radial-gradient(circle at 50% 56%, rgba(155,140,255,0.15), transparent 24%), radial-gradient(circle at 26% 42%, rgba(56,217,180,0.12), transparent 20%), radial-gradient(circle at 72% 34%, rgba(196,181,253,0.11), transparent 18%); filter:blur(28px); opacity:.95; pointer-events:none; z-index:0; }
-#arch-graph-wrap::after { content:''; position:absolute; inset:12% 15%; border-radius:50%; border:1px solid rgba(255,255,255,0.03); box-shadow:0 0 80px rgba(155,140,255,0.08); pointer-events:none; z-index:0; }
+#arch-graph-wrap::before { content:''; position:absolute; inset:-7% -5%; background:radial-gradient(circle at 50% 56%, rgba(255,107,43,0.15), transparent 24%), radial-gradient(circle at 26% 42%, rgba(56,217,180,0.12), transparent 20%), radial-gradient(circle at 72% 34%, rgba(255,154,112,0.11), transparent 18%); filter:blur(28px); opacity:.95; pointer-events:none; z-index:0; }
+#arch-graph-wrap::after { content:''; position:absolute; inset:12% 15%; border-radius:50%; border:1px solid rgba(255,255,255,0.03); box-shadow:0 0 80px rgba(255,107,43,0.08); pointer-events:none; z-index:0; }
 #arch-canvas { display:block; width:100%; height:100%; position:relative; z-index:1; }
-.graph-badge { position:absolute; bottom:1.2rem; left:1.5rem; font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--dimmer); pointer-events:none; z-index:3; text-shadow:0 0 22px rgba(155,140,255,0.22); }
+.graph-badge { position:absolute; bottom:1.2rem; left:1.5rem; font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--dimmer); pointer-events:none; z-index:3; text-shadow:0 0 22px rgba(255,107,43,0.22); }
 .arch-grid,.magnus-cards,.projects-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:1px; }
 .magnus-cards,.projects-grid { gap:1.5rem; background:none; margin-top:4rem; }
 .arch-card,.magnus-card,.project-card,.nh-visual { background:var(--surface); border:1px solid var(--border); padding:2.5rem; }
@@ -82,7 +82,7 @@ section { position:relative; z-index:10; }
 .nh-stat-label { font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dimmer); margin-bottom:.3rem; }
 .nh-stat-val { font-family:'Syne', sans-serif; font-size:1.5rem; font-weight:700; color:var(--teal); }
 .magnus-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:4rem; flex-wrap:wrap; gap:2rem; }
-.fellow-badge { font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; padding:.4rem 1rem; border:1px solid rgba(155,140,255,.3); color:var(--lavender); background:rgba(155,140,255,.06); }
+.fellow-badge { font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; padding:.4rem 1rem; border:1px solid rgba(255,107,43,.3); color:var(--lavender); background:rgba(255,107,43,.06); }
 .news-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:1.5rem; margin-top:4rem; }
 .news-card { background:var(--surface); border:1px solid var(--border); padding:2.5rem; }
 .news-meta { font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--teal); margin-bottom:1rem; }
@@ -105,8 +105,8 @@ section { position:relative; z-index:10; }
 .project-tech { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.2rem; }
 .project-arrow { position:absolute; bottom:1.5rem; right:1.5rem; font-sizfe:.8rem; color:var(--lavender); }
 .contact-inner { text-align:center; max-width:680px; margin:0 auto; padding:7rem 3.5rem; }
-.contact-email { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700; color:var(--lavender); text-decoration:none; border-bottom:1px solid rgba(155,140,255,.3); padding-bottom:3px; }
-.contact-glow { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% 100%, rgba(155,140,255,.08), transparent 70%); }
+.contact-email { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700; color:var(--lavender); text-decoration:none; border-bottom:1px solid rgba(255,107,43,.3); padding-bottom:3px; }
+.contact-glow { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255,107,43,.08), transparent 70%); }
 footer { position:relative; z-index:10; padding:2.5rem 3.5rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
 .footer-right { display:flex; gap:2rem; }
 .glow-divider { width:100%; height:1px; background:linear-gradient(90deg, transparent, var(--lavender), var(--teal), transparent); opacity:.25; }
@@ -421,22 +421,22 @@ window.addEventListener('scroll', function() {
     return new THREE.Points(geo, mat);
   }
 
-  var cloud1 = makeCloud(7000, 24, 2,   0x9b8cff, 0.050, 0.70);
+  var cloud1 = makeCloud(7000, 24, 2,   0xFF6B2B, 0.050, 0.70);
   var cloud2 = makeCloud(4000, 18, 1.5, 0x38d9b4, 0.040, 0.60);
-  var cloud3 = makeCloud(2500, 12, 1.0, 0xc4b5fd, 0.035, 0.50);
+  var cloud3 = makeCloud(2500, 12, 1.0, 0xFF9A70, 0.035, 0.50);
   var cloud4 = makeCloud(1500,  8, 0.5, 0xffffff, 0.025, 0.40);
   scene.add(cloud1, cloud2, cloud3, cloud4);
 
   var octGeo = new THREE.OctahedronGeometry(3.2, 2);
   var octMat = new THREE.MeshStandardMaterial({
-    color: 0x0d1020, emissive: 0x9b8cff, emissiveIntensity: 0.06,
+    color: 0x0d1020, emissive: 0xFF6B2B, emissiveIntensity: 0.06,
     roughness: 0.2, metalness: 0.95, transparent: true, opacity: 0.55
   });
   var oct = new THREE.Mesh(octGeo, octMat);
   scene.add(oct);
 
   var octWire = new THREE.Mesh(octGeo,
-    new THREE.MeshBasicMaterial({ color: 0x9b8cff, wireframe: true, transparent: true, opacity: 0.12 })
+    new THREE.MeshBasicMaterial({ color: 0xFF6B2B, wireframe: true, transparent: true, opacity: 0.12 })
   );
   octWire.scale.setScalar(1.012);
   scene.add(octWire);
@@ -448,9 +448,9 @@ window.addEventListener('scroll', function() {
     );
     m.rotation.x = rx; m.rotation.y = ry; return m;
   }
-  var rA = makeRing(5,   5.12, 0x9b8cff, Math.PI/2.2, 0.3);
+  var rA = makeRing(5,   5.12, 0xFF6B2B, Math.PI/2.2, 0.3);
   var rB = makeRing(6.8, 6.90, 0x38d9b4, Math.PI/1.7, -0.2);
-  var rC = makeRing(8.5, 8.60, 0xc4b5fd, Math.PI/3.0, 0.5);
+  var rC = makeRing(8.5, 8.60, 0xFF9A70, Math.PI/3.0, 0.5);
   scene.add(rA, rB, rC);
 
   function makeNode(r, hex) {
@@ -460,14 +460,14 @@ window.addEventListener('scroll', function() {
     );
   }
   var orbiters = [
-    { m: makeNode(0.10, 0x9b8cff), angle: 0,           speed: 0.007, orb: 5.06, tilt: Math.PI/2.2 },
+    { m: makeNode(0.10, 0xFF6B2B), angle: 0,           speed: 0.007, orb: 5.06, tilt: Math.PI/2.2 },
     { m: makeNode(0.09, 0x38d9b4), angle: Math.PI*0.7, speed: 0.005, orb: 6.85, tilt: Math.PI/1.7 },
-    { m: makeNode(0.08, 0xc4b5fd), angle: Math.PI*1.4, speed: 0.003, orb: 8.55, tilt: Math.PI/3.0 }
+    { m: makeNode(0.08, 0xFF9A70), angle: Math.PI*1.4, speed: 0.003, orb: 8.55, tilt: Math.PI/3.0 }
   ];
   orbiters.forEach(function(o) { scene.add(o.m); });
 
   scene.add(new THREE.AmbientLight(0x0a0c10, 4));
-  var lavLight = new THREE.PointLight(0x9b8cff, 2, 50);
+  var lavLight = new THREE.PointLight(0xFF6B2B, 2, 50);
   scene.add(lavLight);
   var tealLight = new THREE.PointLight(0x38d9b4, 1.2, 35);
   tealLight.position.set(12, 6, 4);
@@ -563,7 +563,7 @@ window.addEventListener('scroll', function() {
       pos[i * 3] = Math.cos(ang) * rr;
       pos[i * 3 + 1] = lift;
       pos[i * 3 + 2] = Math.sin(ang) * rr * 0.75;
-      var pick = i % 3 === 0 ? new THREE.Color(0x9b8cff) : (i % 3 === 1 ? new THREE.Color(0x38d9b4) : new THREE.Color(0xc4b5fd));
+      var pick = i % 3 === 0 ? new THREE.Color(0xFF6B2B) : (i % 3 === 1 ? new THREE.Color(0x38d9b4) : new THREE.Color(0xFF9A70));
       var bright = 0.32 + Math.random() * 0.68;
       cols[i * 3] = pick.r * bright;
       cols[i * 3 + 1] = pick.g * bright;
@@ -586,14 +586,14 @@ window.addEventListener('scroll', function() {
   }
 
   var ND = [
-    { label:'AI Models',    sub:'LLMs · CV · NLP',          col:0x9b8cff, x: 0,   y: 0,    z: 0,   sz:0.76, ring:true  },
+    { label:'AI Models',    sub:'LLMs · CV · NLP',          col:0xFF6B2B, x: 0,   y: 0,    z: 0,   sz:0.76, ring:true  },
     { label:'Robotics',     sub:'NAO · Motors · Sensors',   col:0x38d9b4, x:-6,   y: 2.5,  z: 1,   sz:0.50 },
-    { label:'XR / Spatial', sub:'Unity · Depth · ONNX',     col:0xc4b5fd, x: 5.5, y: 3,    z:-1,   sz:0.50 },
+    { label:'XR / Spatial', sub:'Unity · Depth · ONNX',     col:0xFF9A70, x: 5.5, y: 3,    z:-1,   sz:0.50 },
     { label:'Hardware',     sub:'LoRaWAN · BLE · Edge',     col:0x38d9b4, x:-5.5, y:-3,    z: 0.5, sz:0.45 },
-    { label:'Industrial',   sub:'SCADA · MES · CV QC',      col:0x9b8cff, x: 5,   y:-3.5,  z:-0.5, sz:0.44 },
+    { label:'Industrial',   sub:'SCADA · MES · CV QC',      col:0xFF6B2B, x: 5,   y:-3.5,  z:-0.5, sz:0.44 },
     { label:'Data Layer',   sub:'Pipelines · ETL · APIs',   col:0xffffff, x: 0,   y:-5.5,  z: 1,   sz:0.38 },
     { label:'Interfaces',   sub:'CRM · ERP · Dashboards',   col:0xffffff, x: 0,   y: 5.5,  z:-1,   sz:0.38 },
-    { label:'Edge Compute', sub:'ONNX · TensorRT · WASM',   col:0xc4b5fd, x:-2.5, y:-1.5,  z: 3,   sz:0.36 },
+    { label:'Edge Compute', sub:'ONNX · TensorRT · WASM',   col:0xFF9A70, x:-2.5, y:-1.5,  z: 3,   sz:0.36 },
     { label:'Deployment',   sub:'Cloud · On-prem · Hybrid', col:0x38d9b4, x: 3,   y: 1.2,  z: 3,   sz:0.36 }
   ];
   var EDGES = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[1,3],[1,7],[2,8],[2,6],[3,5],[4,5],[6,8],[7,3],[7,5],[8,2]];
@@ -697,8 +697,8 @@ window.addEventListener('scroll', function() {
   gScene.add(pivot);
 
   gScene.add(new THREE.AmbientLight(0x0f1422, 4.1));
-  gScene.add(new THREE.HemisphereLight(0xc4b5fd, 0x08101a, 1.25));
-  var gLav = new THREE.PointLight(0x9b8cff, 4.2, 44);
+  gScene.add(new THREE.HemisphereLight(0xFF9A70, 0x08101a, 1.25));
+  var gLav = new THREE.PointLight(0xFF6B2B, 4.2, 44);
   gLav.position.set(0, 0, 8);
   gScene.add(gLav);
   var gTeal = new THREE.PointLight(0x38d9b4, 3.4, 34);
@@ -726,7 +726,7 @@ window.addEventListener('scroll', function() {
   });
 
   var tooltip = document.createElement('div');
-  tooltip.style.cssText = 'position:absolute;pointer-events:none;background:rgba(8,10,14,0.95);border:1px solid rgba(155,140,255,0.3);backdrop-filter:blur(12px);padding:.4rem .85rem;opacity:0;transition:opacity .2s;font-family:Syne,sans-serif;font-size:.68rem;font-weight:700;color:#9b8cff;white-space:nowrap;z-index:20;';
+  tooltip.style.cssText = 'position:absolute;pointer-events:none;background:rgba(8,10,14,0.95);border:1px solid rgba(255,107,43,0.3);backdrop-filter:blur(12px);padding:.4rem .85rem;opacity:0;transition:opacity .2s;font-family:Syne,sans-serif;font-size:.68rem;font-weight:700;color:#FF6B2B;white-space:nowrap;z-index:20;';
   wrap.appendChild(tooltip);
 
   var GRAPH_DRAG_SENSITIVITY = 0.0022;
@@ -891,3 +891,4 @@ export default function Page() {
     </>
   );
 }
+

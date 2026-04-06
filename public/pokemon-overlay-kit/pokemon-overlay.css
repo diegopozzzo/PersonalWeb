@@ -1,14 +1,14 @@
 .pk-overlay-root {
-  --pk-accent: #9b8cff;
+  --pk-accent: #FF6B2B;
   --pk-accent-2: #38d9b4;
-  --pk-border: rgba(155, 140, 255, 0.22);
+  --pk-border: rgba(255, 107, 43, 0.22);
   --pk-surface: rgba(8, 12, 18, 0.68);
   --pk-panel:
     linear-gradient(180deg, rgba(10, 12, 16, 0.86), rgba(7, 10, 16, 0.72));
   --pk-text: #f2f0ed;
   --pk-muted: rgba(242, 240, 237, 0.68);
   --pk-badge-bg: rgba(10, 12, 16, 0.88);
-  --pk-glow: rgba(155, 140, 255, 0.22);
+  --pk-glow: rgba(255, 107, 43, 0.22);
   --pk-glow-2: rgba(56, 217, 180, 0.16);
   position: fixed;
   inset: 0;
@@ -103,7 +103,7 @@
   border: 1px solid var(--pk-border);
   border-radius: 999px;
   background:
-    linear-gradient(135deg, rgba(155, 140, 255, 0.22), rgba(56, 217, 180, 0.14)),
+    linear-gradient(135deg, rgba(255, 107, 43, 0.22), rgba(56, 217, 180, 0.14)),
     var(--pk-badge-bg);
   color: var(--pk-text);
   font-size: 10px;
