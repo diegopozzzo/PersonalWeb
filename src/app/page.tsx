@@ -359,6 +359,8 @@ window.addEventListener('scroll', function() {
         btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
       });
       document.documentElement.lang = lang === 'es' ? 'es' : 'en';
+      window.__dbpaLang = lang;
+      window.dispatchEvent(new CustomEvent('dbpa:langchange', { detail: { lang: lang } }));
       try { localStorage.setItem('dbpa_lang', lang); } catch (_) {}
     }
 
@@ -585,17 +587,26 @@ window.addEventListener('scroll', function() {
     );
   }
 
+  function getGraphLanguage() {
+    return window.__dbpaLang === 'es' ? 'es' : 'en';
+  }
+
   var ND = [
-    { label:'AI Models',    sub:'LLMs · CV · NLP',          col:0xFF6B2B, x: 0,   y: 0,    z: 0,   sz:0.76, ring:true  },
-    { label:'Robotics',     sub:'NAO · Motors · Sensors',   col:0x38d9b4, x:-6,   y: 2.5,  z: 1,   sz:0.50 },
-    { label:'XR / Spatial', sub:'Unity · Depth · ONNX',     col:0xFF9A70, x: 5.5, y: 3,    z:-1,   sz:0.50 },
-    { label:'Hardware',     sub:'LoRaWAN · BLE · Edge',     col:0x38d9b4, x:-5.5, y:-3,    z: 0.5, sz:0.45 },
-    { label:'Industrial',   sub:'SCADA · MES · CV QC',      col:0xFF6B2B, x: 5,   y:-3.5,  z:-0.5, sz:0.44 },
-    { label:'Data Layer',   sub:'Pipelines · ETL · APIs',   col:0xffffff, x: 0,   y:-5.5,  z: 1,   sz:0.38 },
-    { label:'Interfaces',   sub:'CRM · ERP · Dashboards',   col:0xffffff, x: 0,   y: 5.5,  z:-1,   sz:0.38 },
-    { label:'Edge Compute', sub:'ONNX · TensorRT · WASM',   col:0xFF9A70, x:-2.5, y:-1.5,  z: 3,   sz:0.36 },
-    { label:'Deployment',   sub:'Cloud · On-prem · Hybrid', col:0x38d9b4, x: 3,   y: 1.2,  z: 3,   sz:0.36 }
+    { labelEn:'About Me',      labelEs:'Sobre Mi',        subEn:'DANCE-TRAVEL-CREATE-FOOTBALL',      subEs:'BAILE-VIAJES-CREAR-FUTBOL',       col:0xFF4F5E, x: 0,   y:-0.55, z: 0.2,  sz:0.82, ring:true  },
+    { labelEn:'Robotics',      labelEs:'Robotics',        subEn:'NAO-UNITREE-COBOTS',                subEs:'NAO-UNITREE-COBOTS',              col:0x38d9b4, x:-6.1, y: 2.35, z: 1.0,  sz:0.50 },
+    { labelEn:'XR Experience', labelEs:'Experiencia XR',  subEn:'QUEST-PICO-MAGICLEAP-HOLOLENS',     subEs:'QUEST-PICO-MAGICLEAP-HOLOLENS',   col:0xFF9A70, x: 5.9, y: 2.85, z:-0.9,  sz:0.50 },
+    { labelEn:'IoT Network',   labelEs:'Red IoT',         subEn:'BLE-LORAWAN-UWB',                   subEs:'BLE-LORAWAN-UWB',                 col:0x38d9b4, x:-5.9, y:-3.15, z: 0.45, sz:0.45 },
+    { labelEn:'Industrial',    labelEs:'Industrial',      subEn:'SIEMENS-ROCKWELL-ABB',              subEs:'SIEMENS-ROCKWELL-ABB',            col:0xFF6B2B, x: 5.2, y:-3.2,  z:-0.45, sz:0.44 },
+    { labelEn:'Web Design',    labelEs:'Diseno Web',      subEn:'UI-UX-FRONTEND',                    subEs:'UI-UX-FRONTEND',                  col:0xffffff, x: 0.15,y:-5.4,  z: 0.95, sz:0.38 },
+    { labelEn:'Interfaces',    labelEs:'Interfaces',      subEn:'CRM-ERP-DASHBOARDS',                subEs:'CRM-ERP-DASHBOARDS',              col:0xffffff, x: 0.55,y: 5.35, z:-0.8,  sz:0.38 },
+    { labelEn:'AI Models',     labelEs:'Modelos IA',      subEn:'LLM-VLM-ML-DL',                     subEs:'LLM-VLM-ML-DL',                   col:0xffffff, x:-0.35,y: 3.25, z: 2.6,  sz:0.40 },
+    { labelEn:'Deployment',    labelEs:'Deployment',      subEn:'CLOUD-ON-PREM-HYBRID',              subEs:'CLOUD-ON-PREM-HYBRID',            col:0x38d9b4, x: 3.35,y: 1.05, z: 2.7,  sz:0.36 }
   ];
+  ND.forEach(function(nd) {
+    var lang = getGraphLanguage();
+    nd.label = lang === 'es' ? nd.labelEs : nd.labelEn;
+    nd.sub = lang === 'es' ? nd.subEs : nd.subEn;
+  });
   var EDGES = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[1,3],[1,7],[2,8],[2,6],[3,5],[4,5],[6,8],[7,3],[7,5],[8,2]];
 
   var pivot = new THREE.Group();
@@ -715,12 +726,17 @@ window.addEventListener('scroll', function() {
     var c3 = new THREE.Color(hex);
     return 'rgba(' + Math.round(c3.r * 255) + ',' + Math.round(c3.g * 255) + ',' + Math.round(c3.b * 255) + ',' + alpha + ')';
   }
+  function renderNodeLabel(nd) {
+    return (
+      '<div style=\"font-family:Syne,sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.05em;color:rgba(242,240,237,0.94);text-shadow:0 0 18px ' + colorCss(nd.col, 0.72) + ';\">' + nd.label + '</div>' +
+      '<div style=\"font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,240,237,0.34);margin-top:2px;text-shadow:0 0 12px ' + colorCss(nd.col, 0.18) + ';\">' + nd.sub + '</div>'
+    );
+  }
+
   var labelEls = ND.map(function(nd) {
     var div = document.createElement('div');
     div.style.cssText = 'position:absolute;transform:translate(-50%,-130%);text-align:center;pointer-events:none;transition:opacity .25s;';
-    div.innerHTML =
-      '<div style=\"font-family:Syne,sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.05em;color:rgba(242,240,237,0.94);text-shadow:0 0 18px ' + colorCss(nd.col, 0.72) + ';\">' + nd.label + '</div>' +
-      '<div style=\"font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,240,237,0.34);margin-top:2px;text-shadow:0 0 12px ' + colorCss(nd.col, 0.18) + ';\">' + nd.sub + '</div>';
+    div.innerHTML = renderNodeLabel(nd);
     labelsDiv.appendChild(div);
     return div;
   });
@@ -728,6 +744,23 @@ window.addEventListener('scroll', function() {
   var tooltip = document.createElement('div');
   tooltip.style.cssText = 'position:absolute;pointer-events:none;background:rgba(8,10,14,0.95);border:1px solid rgba(255,107,43,0.3);backdrop-filter:blur(12px);padding:.4rem .85rem;opacity:0;transition:opacity .2s;font-family:Syne,sans-serif;font-size:.68rem;font-weight:700;color:#FF6B2B;white-space:nowrap;z-index:20;';
   wrap.appendChild(tooltip);
+
+  function syncGraphLanguage(lang) {
+    ND.forEach(function(nd, i) {
+      nd.label = lang === 'es' ? nd.labelEs : nd.labelEn;
+      nd.sub = lang === 'es' ? nd.subEs : nd.subEn;
+      if (labelEls[i]) labelEls[i].innerHTML = renderNodeLabel(nd);
+    });
+    if (hovIdx !== -1 && ND[hovIdx]) {
+      tooltip.innerHTML = '<span style=\"color:#38d9b4\">' + ND[hovIdx].label + '</span>&nbsp;&middot;&nbsp;<span style=\"color:rgba(242,240,237,.55);font-weight:400\">' + ND[hovIdx].sub + '</span>';
+    }
+  }
+
+  window.addEventListener('dbpa:langchange', function(e) {
+    var nextLang = e && e.detail && e.detail.lang === 'es' ? 'es' : 'en';
+    syncGraphLanguage(nextLang);
+  });
+  syncGraphLanguage(getGraphLanguage());
 
   var GRAPH_DRAG_SENSITIVITY = 0.0022;
   var GRAPH_DRAG_DAMPING = 0.84;
