@@ -9,6 +9,8 @@ const BROCHURE_HTML = `
 :root { --bg:#0A0C10; --surface:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); --white:#F2F0ED; --dim:rgba(242,240,237,0.45); --dimmer:rgba(242,240,237,0.22); --lavender:#FF6B2B; --teal:#38d9b4; --lav2:#FF9A70; }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+::selection { background: rgba(56,217,180,0.18); color: var(--white); }
+::-moz-selection { background: rgba(56,217,180,0.18); color: var(--white); }
 body::before { content:''; position:fixed; inset:0; background-image: linear-gradient(rgba(255,107,43,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.03) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
 #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; display:block; }
 #cursor { position:fixed; width:10px; height:10px; background:var(--lavender); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition: width .2s, height .2s; mix-blend-mode:screen; }
@@ -44,11 +46,39 @@ section { position:relative; z-index:10; }
 .news-list { list-style:none; display:flex; flex-direction:column; gap:.9rem; margin-top:1.25rem; }
 .project-tech { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
 .tech-tag { display:inline-block; border:1px solid var(--border); padding:.3rem .8rem; color:var(--teal); letter-spacing:.14em; text-transform:uppercase; font-size:.62rem; }
-.dash-metrics{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:1.2rem}
-.dash-card{border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:1.1rem 1.1rem 1rem;position:relative;overflow:hidden}
-.dash-k{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer);margin-bottom:.35rem}
-.dash-v{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.6rem}
-.dash-svg{width:100%;height:44px;display:block}
+.scope-dash{margin-top:1.25rem;border:1px solid rgba(255,255,255,0.09);background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));position:relative;overflow:hidden}
+.scope-dash::before{content:'';position:absolute;inset:-40% -20%;background:radial-gradient(circle at 30% 30%, rgba(56,217,180,0.12), transparent 40%), radial-gradient(circle at 70% 40%, rgba(255,107,43,0.14), transparent 44%);filter:blur(24px);opacity:.9;pointer-events:none}
+.scope-top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:1.25rem;align-items:flex-start;padding:1.2rem 1.2rem .95rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+.scope-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.92rem;letter-spacing:.04em}
+.scope-sub{margin-top:.3rem;font-size:.72rem;color:rgba(242,240,237,.42);line-height:1.5}
+.scope-chips{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end}
+.scope-chip{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.02);color:rgba(242,240,237,.55);padding:.35rem .55rem}
+.scope-chip.ok{border-color:rgba(56,217,180,0.24);color:rgba(56,217,180,.92);background:rgba(56,217,180,0.06)}
+.scope-chip.warn{border-color:rgba(255,107,43,0.28);color:rgba(255,107,43,.92);background:rgba(255,107,43,0.06)}
+.scope-body{position:relative;z-index:2;padding:1.15rem 1.2rem 1.2rem}
+.scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.scope-kpi{border:1px solid rgba(255,255,255,0.09);background:rgba(10,12,16,0.25);padding:.95rem .95rem .85rem;position:relative;overflow:hidden}
+.scope-kpi::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg, rgba(56,217,180,0.10), transparent 55%);opacity:.55;pointer-events:none}
+.scope-k{position:relative;z-index:2;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(242,240,237,.36);margin-bottom:.3rem}
+.scope-v{position:relative;z-index:2;font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.55rem}
+.scope-meta{position:relative;z-index:2;font-size:.70rem;color:rgba(242,240,237,.46);display:flex;gap:.6rem;flex-wrap:wrap}
+.scope-dot{display:inline-flex;align-items:center;gap:.35rem}
+.scope-dot i{width:6px;height:6px;border-radius:50%;background:rgba(56,217,180,.9);display:inline-block;box-shadow:0 0 18px rgba(56,217,180,.35)}
+.scope-dot.warn i{background:rgba(255,107,43,.9);box-shadow:0 0 18px rgba(255,107,43,.35)}
+.scope-svg{position:relative;z-index:2;width:100%;height:44px;display:block}
+.scope-row{margin-top:1rem;border-top:1px solid rgba(255,255,255,0.07);padding-top:1rem;display:grid;grid-template-columns:1.25fr .75fr;gap:1rem}
+.scope-table{border:1px solid rgba(255,255,255,0.09);background:rgba(10,12,16,0.22);padding:.9rem}
+.scope-h{font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(242,240,237,.34);margin-bottom:.65rem}
+.scope-line{display:flex;justify-content:space-between;gap:1rem;font-size:.76rem;color:rgba(242,240,237,.52);padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.scope-line:last-child{border-bottom:0}
+.scope-line b{font-weight:600;color:rgba(242,240,237,.82)}
+.scope-spark{border:1px solid rgba(255,255,255,0.09);background:rgba(10,12,16,0.22);padding:.9rem;position:relative;overflow:hidden}
+.scope-spark::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 45% 40%, rgba(255,154,112,0.11), transparent 55%);filter:blur(18px);opacity:.9;pointer-events:none}
+.scope-bars{position:relative;z-index:2;display:flex;align-items:flex-end;gap:7px;height:110px;margin-top:.6rem}
+.scope-bar{width:10px;background:linear-gradient(180deg, rgba(56,217,180,.85), rgba(56,217,180,.12));border:1px solid rgba(56,217,180,0.22)}
+.scope-bar.alt{background:linear-gradient(180deg, rgba(255,107,43,.82), rgba(255,107,43,.10));border-color:rgba(255,107,43,0.24)}
+.scope-foot{position:relative;z-index:2;margin-top:.75rem;font-size:.68rem;color:rgba(242,240,237,.42);line-height:1.55}
+.scope-foot b{color:rgba(242,240,237,.78)}
 .reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease; }
 .reveal.on { opacity:1; transform:translateY(0); }
 .reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
@@ -129,35 +159,72 @@ section { position:relative; z-index:10; }
         <div class="mc-label">5 · Dashboards</div>
         <div class="project-title" style="font-size:1.25rem;font-weight:800;margin-bottom:.8rem;">Decision dashboards with real metrics</div>
         <div class="project-desc">Dashboards designed for decisions: KPI hierarchy, alerts, drill-down, and executive summaries. Not “pretty charts” — operational clarity.</div>
-        <div class="dash-metrics">
-          <div class="dash-card">
-            <div class="dash-k">Availability</div><div class="dash-v">97.2%</div>
-            <svg viewBox="0 0 140 44" class="dash-svg" aria-hidden="true">
-              <path d="M2 34 C 18 10, 32 36, 48 18 S 82 30, 98 16 S 124 22, 138 8" fill="none" stroke="rgba(56,217,180,.9)" stroke-width="2.2"/>
-              <path d="M2 42 L2 34 C 18 10, 32 36, 48 18 S 82 30, 98 16 S 124 22, 138 8 L138 42 Z" fill="rgba(56,217,180,.10)"/>
-            </svg>
+        <div class="scope-dash">
+          <div class="scope-top">
+            <div>
+              <div class="scope-title">SCOPE · Operations Snapshot</div>
+              <div class="scope-sub">Live signals → normalized KPIs → actions with traceability.</div>
+            </div>
+            <div class="scope-chips">
+              <span class="scope-chip ok">Stable</span>
+              <span class="scope-chip">Shift A</span>
+              <span class="scope-chip warn">2 alerts</span>
+            </div>
           </div>
-          <div class="dash-card">
-            <div class="dash-k">MAPE</div><div class="dash-v">&lt; 40%</div>
-            <svg viewBox="0 0 140 44" class="dash-svg" aria-hidden="true">
-              <rect x="8" y="20" width="14" height="18" fill="rgba(255,107,43,.22)"/>
-              <rect x="30" y="14" width="14" height="24" fill="rgba(255,107,43,.28)"/>
-              <rect x="52" y="10" width="14" height="28" fill="rgba(255,107,43,.38)"/>
-              <rect x="74" y="18" width="14" height="20" fill="rgba(56,217,180,.35)"/>
-              <rect x="96" y="8" width="14" height="30" fill="rgba(56,217,180,.48)"/>
-              <rect x="118" y="12" width="14" height="26" fill="rgba(56,217,180,.30)"/>
-            </svg>
-          </div>
-          <div class="dash-card">
-            <div class="dash-k">Alerts</div><div class="dash-v">Live</div>
-            <svg viewBox="0 0 140 44" class="dash-svg" aria-hidden="true">
-              <path d="M10 34 H46" stroke="rgba(242,240,237,.20)" stroke-width="2"/>
-              <path d="M10 24 H86" stroke="rgba(242,240,237,.18)" stroke-width="2"/>
-              <path d="M10 14 H118" stroke="rgba(242,240,237,.16)" stroke-width="2"/>
-              <circle cx="108" cy="14" r="3.2" fill="rgba(56,217,180,.95)"/>
-              <circle cx="78" cy="24" r="3.2" fill="rgba(255,107,43,.95)"/>
-              <circle cx="38" cy="34" r="3.2" fill="rgba(56,217,180,.75)"/>
-            </svg>
+
+          <div class="scope-body">
+            <div class="scope-grid">
+              <div class="scope-kpi">
+                <div class="scope-k">Availability</div>
+                <div class="scope-v">97.2%</div>
+                <svg viewBox="0 0 140 44" class="scope-svg" aria-hidden="true">
+                  <path d="M2 30 C 18 12, 34 34, 50 18 S 84 26, 98 14 S 124 20, 138 10" fill="none" stroke="rgba(56,217,180,.92)" stroke-width="2.2"/>
+                  <path d="M2 42 L2 30 C 18 12, 34 34, 50 18 S 84 26, 98 14 S 124 20, 138 10 L138 42 Z" fill="rgba(56,217,180,.10)"/>
+                </svg>
+                <div class="scope-meta">
+                  <span class="scope-dot"><i></i> Trend up</span>
+                  <span class="scope-dot warn"><i></i> Micro-stops</span>
+                </div>
+              </div>
+
+              <div class="scope-kpi">
+                <div class="scope-k">Forecast error (MAPE)</div>
+                <div class="scope-v">38%</div>
+                <svg viewBox="0 0 140 44" class="scope-svg" aria-hidden="true">
+                  <path d="M6 36 L20 30 L34 33 L48 24 L62 26 L76 18 L90 22 L104 16 L118 20 L132 14" fill="none" stroke="rgba(255,107,43,.88)" stroke-width="2.2"/>
+                  <path d="M6 42 L6 36 L20 30 L34 33 L48 24 L62 26 L76 18 L90 22 L104 16 L118 20 L132 14 L132 42 Z" fill="rgba(255,107,43,.10)"/>
+                </svg>
+                <div class="scope-meta">
+                  <span class="scope-dot warn"><i></i> Needs tuning</span>
+                  <span class="scope-dot"><i></i> New data</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="scope-row">
+              <div class="scope-table">
+                <div class="scope-h">Top drivers (last 6h)</div>
+                <div class="scope-line"><span>Line 02 — Speed variance</span><b>+14%</b></div>
+                <div class="scope-line"><span>Packaging — Sensor drift</span><b>+9%</b></div>
+                <div class="scope-line"><span>Downtime — Changeover</span><b>12 min</b></div>
+              </div>
+
+              <div class="scope-spark">
+                <div class="scope-h">Throughput (units)</div>
+                <div class="scope-bars" aria-hidden="true">
+                  <div class="scope-bar" style="height:34%"></div>
+                  <div class="scope-bar" style="height:46%"></div>
+                  <div class="scope-bar alt" style="height:38%"></div>
+                  <div class="scope-bar" style="height:58%"></div>
+                  <div class="scope-bar" style="height:72%"></div>
+                  <div class="scope-bar alt" style="height:61%"></div>
+                  <div class="scope-bar" style="height:79%"></div>
+                  <div class="scope-bar" style="height:88%"></div>
+                  <div class="scope-bar" style="height:84%"></div>
+                </div>
+                <div class="scope-foot"><b>Actionable</b>: auto-generate the shift brief + ticket the top driver.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
