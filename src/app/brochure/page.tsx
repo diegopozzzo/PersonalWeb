@@ -22,6 +22,10 @@ nav.scrolled { background:rgba(10,12,16,0.92); backdrop-filter:blur(20px); borde
 .nav-links { display:flex; gap:2rem; list-style:none; }
 .nav-links a { font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--dim); transition:color .2s; }
 .nav-links a:hover { color:var(--lavender); }
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.lang-switch{display:flex;align-items:center;gap:.3rem;border:1px solid var(--border);background:rgba(255,255,255,0.02);padding:.2rem}
+.lang-btn{border:0;background:transparent;color:var(--dim);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:.28rem .5rem;cursor:pointer}
+.lang-btn.active{color:var(--white);background:rgba(255,107,43,0.18)}
 .nav-cta { font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.55rem 1.4rem; transition:opacity .2s; }
 .nav-cta:hover { opacity:.85; }
 section { position:relative; z-index:10; }
@@ -39,6 +43,11 @@ section { position:relative; z-index:10; }
 .btn-ghost { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--dim); border-bottom:1px solid var(--border); padding-bottom:2px; }
 .magnus-cards,.projects-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:3.25rem; }
 .magnus-card,.project-card { background:var(--surface); border:1px solid var(--border); padding:2.5rem; position:relative; overflow:hidden; }
+.media-shot{margin-top:1.25rem;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.25);padding:.65rem;position:relative;overflow:hidden}
+.media-shot::before{content:'';position:absolute;inset:-50% -30%;background:radial-gradient(circle at 35% 45%, rgba(56,217,180,0.12), transparent 48%), radial-gradient(circle at 70% 40%, rgba(255,107,43,0.12), transparent 52%);filter:blur(22px);opacity:.85;pointer-events:none}
+.media-shot img{position:relative;z-index:2;width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,0.10);filter:saturate(1.05) contrast(1.02)}
+.media-cap{position:relative;z-index:2;margin-top:.65rem;display:flex;justify-content:space-between;gap:1rem;align-items:center;font-size:.66rem;color:rgba(242,240,237,.46);letter-spacing:.08em}
+.media-cap b{color:rgba(242,240,237,.78);font-weight:600}
 .mc-label { font-size:.58rem; color:var(--lavender); margin-bottom:1.2rem; letter-spacing:.14em; text-transform:uppercase; }
 .mc-title,.project-title { font-family:'Syne', sans-serif; }
 .mc-title { font-size:1.6rem; font-weight:800; margin-bottom:.7rem; }
@@ -91,7 +100,7 @@ section { position:relative; z-index:10; }
 }
 </style>
 <canvas id="bg-canvas"></canvas><div id="cursor"></div><div id="cursor-ring"></div>
-<nav id="nav"><a href="/" class="nav-logo">DBP<span>A</span></a><ul class="nav-links"><li><a href="/">Home</a></li><li><a href="#brochure">Brochure</a></li></ul><a href="/" class="nav-cta">Return</a></nav>
+<nav id="nav"><a href="/" class="nav-logo">DBP<span>A</span></a><ul class="nav-links"><li><a href="/">Home</a></li><li><a href="#brochure">Brochure</a></li></ul><div class="nav-right"><div class="lang-switch" aria-label="Language switcher"><button class="lang-btn active" data-lang="en" type="button">EN</button><button class="lang-btn" data-lang="es" type="button">ES</button></div><a href="/" class="nav-cta">Return</a></div></nav>
 
 <section id="brochure">
   <div class="section-inner">
@@ -108,6 +117,10 @@ section { position:relative; z-index:10; }
         <div class="mc-label">1 · SCOPE</div>
         <div class="mc-title">Industrial AI that runs the business (not just the plant)</div>
         <div class="mc-desc">SCOPE is a multi-agent industrial AI system that discovers environments, builds a living knowledge graph, and executes work across <b>operations</b>, <b>maintenance</b>, <b>quality</b>, and <b>finance</b>. It reads live signals, explains what matters, and delivers actions and reports automatically.</div>
+        <div class="media-shot">
+          <img src="/brochure/scope.jpg" alt="SCOPE demo preview" loading="lazy" />
+          <div class="media-cap"><span><b>SCOPE</b> · Demo snapshot</span><span>From the live demo video</span></div>
+        </div>
         <ul class="news-list">
           <li><b>Autonomous discovery</b>: assets, variables, screens, and relationships — without hardcoding.</li>
           <li><b>Memory + rules</b>: semantic/episodic/procedural persistence to improve every session.</li>
@@ -149,6 +162,10 @@ section { position:relative; z-index:10; }
         <div class="mc-label">4 · Forecast</div>
         <div class="project-title" style="font-size:1.25rem;font-weight:800;margin-bottom:.8rem;">Plan with confidence (demand, capacity, cash)</div>
         <div class="project-desc">Forecast.com turns historical data into actionable projections: scenarios, trends, and planning horizons you can trust — built for operational and commercial decisions.</div>
+        <div class="media-shot">
+          <img src="/brochure/forecast.png" alt="Forecast dashboard screenshot" loading="lazy" />
+          <div class="media-cap"><span><b>Forecast</b> · Predictive models</span><span>Platform UI snapshot</span></div>
+        </div>
         <div class="hero-btns" style="margin-top:1.2rem;opacity:1;animation:none;">
           <a href="https://magnusgc.consulting/productos/forecast" class="btn-grad" target="_blank" rel="noreferrer">Forecast.com</a>
           <a href="/#contact" class="btn-ghost">Evaluate with my data</a>
@@ -274,6 +291,102 @@ window.addEventListener('scroll', function() {
   var nav = document.getElementById('nav');
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
 });
+
+(function() {
+  var ES = {
+    "Home": "Inicio",
+    "Brochure": "Brochure",
+    "Return": "Volver",
+    "Back to website": "Volver al sitio",
+    "Contact": "Contacto",
+    "Sell the outcome, then ship the system.": "Vende el resultado, luego despliega el sistema.",
+    "A visual, executive-ready snapshot of the solutions I build: industrial AI that plugs into operations and finance, autonomous robotics with industrial allies, end-to-end agents, forecasting, decision dashboards, and aerospace education programs.": "Una vista ejecutiva, lista para decisión, de las soluciones que construyo: IA industrial conectada a operaciones y finanzas, robótica autónoma con aliados industriales, agentes end-to-end, forecasting, dashboards de decisión y programas de educación aeroespacial.",
+    "Industrial AI that runs the business (not just the plant)": "IA industrial que corre el negocio (no solo la planta)",
+    "SCOPE is a multi-agent industrial AI system that discovers environments, builds a living knowledge graph, and executes work across operations, maintenance, quality, and finance. It reads live signals, explains what matters, and delivers actions and reports automatically.": "SCOPE es un sistema de IA industrial multi-agente que descubre entornos, construye un grafo de conocimiento vivo y ejecuta trabajo en operaciones, mantenimiento, calidad y finanzas. Lee señales en vivo, explica lo importante y entrega acciones y reportes automáticamente.",
+    "SCOPE demo preview": "Vista previa demo SCOPE",
+    "SCOPE · Demo snapshot": "SCOPE · Captura demo",
+    "From the live demo video": "Del video demo en vivo",
+    "Autonomous discovery: assets, variables, screens, and relationships — without hardcoding.": "Descubrimiento autónomo: activos, variables, pantallas y relaciones — sin hardcodear.",
+    "Memory + rules: semantic/episodic/procedural persistence to improve every session.": "Memoria + reglas: persistencia semántica/episódica/procedural para mejorar cada sesión.",
+    "From anomaly → plan: detect, reason, recommend, and escalate with traceability.": "De anomalía → plan: detecta, razona, recomienda y escala con trazabilidad.",
+    "Watch demo": "Ver demo",
+    "Deploy in my operation": "Desplegar en mi operación",
+    "Autonomous robotics, built with industrial partners": "Robótica autónoma, construida con aliados industriales",
+    "Discuss a pilot": "Conversar un piloto",
+    "Agents that execute — not chat": "Agentes que ejecutan — no solo conversan",
+    "Plan with confidence (demand, capacity, cash)": "Planifica con confianza (demanda, capacidad, caja)",
+    "Forecast.com turns historical data into actionable projections: scenarios, trends, and planning horizons you can trust — built for operational and commercial decisions.": "Forecast.com convierte data histórica en proyecciones accionables: escenarios, tendencias y horizontes de planificación confiables — diseñado para decisiones operativas y comerciales.",
+    "Forecast dashboard screenshot": "Captura dashboard Forecast",
+    "Forecast · Predictive models": "Forecast · Modelos predictivos",
+    "Platform UI snapshot": "Captura de la plataforma",
+    "Evaluate with my data": "Evaluar con mis datos",
+    "Decision dashboards with real metrics": "Dashboards de decisión con métricas reales",
+    "Dashboards designed for decisions: KPI hierarchy, alerts, drill-down, and executive summaries. Not “pretty charts” — operational clarity.": "Dashboards diseñados para decidir: jerarquía de KPIs, alertas, drill-down y resúmenes ejecutivos. No “gráficas bonitas” — claridad operativa.",
+    "SCOPE · Operations Snapshot": "SCOPE · Snapshot Operacional",
+    "Live signals → normalized KPIs → actions with traceability.": "Señales en vivo → KPIs normalizados → acciones con trazabilidad.",
+    "Stable": "Estable",
+    "Shift A": "Turno A",
+    "2 alerts": "2 alertas",
+    "Availability": "Disponibilidad",
+    "Trend up": "Tendencia al alza",
+    "Micro-stops": "Micro-paradas",
+    "Forecast error (MAPE)": "Error de pronóstico (MAPE)",
+    "Needs tuning": "Requiere ajuste",
+    "New data": "Data nueva",
+    "Top drivers (last 6h)": "Principales drivers (últimas 6h)",
+    "Line 02 — Speed variance": "Línea 02 — Varianza de velocidad",
+    "Packaging — Sensor drift": "Empaque — Deriva de sensor",
+    "Downtime — Changeover": "Paradas — Changeover",
+    "Throughput (units)": "Throughput (unid.)",
+    "Actionable: auto-generate the shift brief + ticket the top driver.": "Accionable: auto-generar el brief del turno + ticketear el driver principal.",
+    "Aerospace engineering + education that funds itself": "Ingeniería aeroespacial + educación que se financia sola",
+    "Partner / sponsor": "Aliado / sponsor"
+  };
+
+  function initLanguageSwitcher() {
+    var entries = [];
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var raw = node.nodeValue || '';
+      var clean = raw.trim();
+      if (!clean || !ES[clean]) continue;
+      var start = raw.indexOf(clean);
+      entries.push({
+        node: node,
+        before: raw.slice(0, start),
+        after: raw.slice(start + clean.length),
+        en: clean
+      });
+    }
+
+    function applyLang(lang) {
+      entries.forEach(function(item) {
+        var text = lang === 'es' && ES[item.en] ? ES[item.en] : item.en;
+        item.node.nodeValue = item.before + text + item.after;
+      });
+      document.querySelectorAll('.lang-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+      document.documentElement.lang = lang === 'es' ? 'es' : 'en';
+      window.__dbpaLang = lang;
+      try { localStorage.setItem('dbpa_lang', lang); } catch (_) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var lang = btn.getAttribute('data-lang') === 'es' ? 'es' : 'en';
+        applyLang(lang);
+      });
+    });
+
+    var stored = 'en';
+    try { stored = localStorage.getItem('dbpa_lang') || 'en'; } catch (_) {}
+    applyLang(stored === 'es' ? 'es' : 'en');
+  }
+
+  initLanguageSwitcher();
+})();
 
 (function() {
   var THREE = window.THREE;
