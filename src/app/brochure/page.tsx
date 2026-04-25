@@ -41,6 +41,14 @@ section { position:relative; z-index:10; }
 .btn-grad { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.85rem 2rem; transition: opacity .2s, transform .2s; display:inline-block; }
 .btn-grad:hover { opacity:.88; transform:translateY(-2px); }
 .btn-ghost { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--dim); border-bottom:1px solid var(--border); padding-bottom:2px; }
+.contact-links{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.1rem}
+.contact-pill{display:inline-flex;align-items:center;gap:.55rem;border:1px solid var(--border);background:rgba(255,255,255,0.02);padding:.55rem .9rem;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,240,237,.70);text-decoration:none}
+.contact-pill:hover{border-color:rgba(56,217,180,0.28);color:rgba(242,240,237,.92)}
+.contact-pill strong{font-weight:700;color:rgba(242,240,237,.92);letter-spacing:.06em;text-transform:none}
+.contact-pill.wa{border-color:rgba(56,217,180,0.22)}
+.contact-pill.wa:hover{border-color:rgba(56,217,180,0.45)}
+.contact-pill.li{border-color:rgba(255,107,43,0.22)}
+.contact-pill.li:hover{border-color:rgba(255,107,43,0.45)}
 .magnus-cards,.projects-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:3.25rem; }
 .magnus-card,.project-card { background:var(--surface); border:1px solid var(--border); padding:2.5rem; position:relative; overflow:hidden; }
 .media-shot{margin-top:1.25rem;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.25);padding:.65rem;position:relative;overflow:hidden}
@@ -110,6 +118,11 @@ section { position:relative; z-index:10; }
     <div class="hero-btns reveal" style="opacity:1;animation:none;">
       <a href="/" class="btn-ghost">Back to website</a>
       <a href="/#contact" class="btn-grad">Contact</a>
+    </div>
+    <div class="contact-links reveal">
+      <a class="contact-pill wa" href="https://wa.me/51955256450" target="_blank" rel="noreferrer">WhatsApp <strong>+51 955 256 450</strong></a>
+      <a class="contact-pill li" href="https://www.linkedin.com/in/diego-pozo-abregu/" target="_blank" rel="noreferrer">LinkedIn <strong>/diego-pozo-abregu</strong></a>
+      <a class="contact-pill" href="mailto:diegopozo@beyondhuman.services">Email <strong>diegopozo@beyondhuman.services</strong></a>
     </div>
 
     <div class="magnus-cards" style="margin-top:3.25rem">
@@ -305,6 +318,9 @@ window.addEventListener('scroll', function() {
     "Return": "Volver",
     "Back to website": "Volver al sitio",
     "Contact": "Contacto",
+    "WhatsApp": "WhatsApp",
+    "LinkedIn": "LinkedIn",
+    "Email": "Correo",
     "Sell the outcome, then ship the system.": "Vende el resultado, luego despliega el sistema.",
     "A visual, executive-ready snapshot of the solutions I build: industrial AI that plugs into operations and finance, autonomous robotics with industrial allies, end-to-end agents, forecasting, decision dashboards, and aerospace education programs.": "Una vista ejecutiva, lista para decisión, de las soluciones que construyo: IA industrial conectada a operaciones y finanzas, robótica autónoma con aliados industriales, agentes end-to-end, forecasting, dashboards de decisión y programas de educación aeroespacial.",
     "Industrial AI that runs the business (not just the plant)": "IA industrial que corre el negocio (no solo la planta)",
