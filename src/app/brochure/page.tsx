@@ -136,6 +136,12 @@ section { position:relative; z-index:10; }
         <div class="mc-label">2 · NONHUMAN</div>
         <div class="mc-title">Autonomous robotics, built with industrial partners</div>
         <div class="mc-desc">NONHUMAN is an embodied AI and robotics research + deployment ecosystem. Today it is in collaboration with <b>SIEMENS</b>, <b>DINAUT</b>, and <b>GLEXCO</b> to take autonomy from prototypes to production environments.</div>
+        <div class="media-shot">
+          <video controls playsinline preload="metadata" style="position:relative;z-index:2;width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.35)">
+            <source src="/WhatsApp%20Video%202026-04-25%20at%206.46.30%20PM.mp4" type="video/mp4" />
+          </video>
+          <div class="media-cap"><span><b>NONHUMAN</b> · Autonomous robotics</span><span>Field / demo clip</span></div>
+        </div>
         <ul class="news-list">
           <li><b>Embodied AI</b>: perception, control, edge AI, safety-first execution.</li>
           <li><b>Integration</b>: industrial stacks, data pipelines, and real constraints.</li>
