@@ -600,10 +600,19 @@ export default function BrochurePage() {
     (window as any).__dbpaBrochureThreeInit = false;
     const init = () => {
       if (cancelled) return;
-      // eslint-disable-next-line no-new-func
-      new Function(BROCHURE_JS)();
+      try {
+        // eslint-disable-next-line no-new-func
+        new Function(BROCHURE_JS)();
+      } catch (error) {
+        (window as any).__dbpaBrochureInit = false;
+        (window as any).__dbpaBrochureError = String(error);
+        // eslint-disable-next-line no-console
+        console.error("Brochure init failed", error);
+      }
     };
+    // Run twice to avoid rare hydration/DOM timing issues.
     init();
+    window.setTimeout(init, 250);
     return () => {
       cancelled = true;
       (window as any).__dbpaBrochureInit = false;
