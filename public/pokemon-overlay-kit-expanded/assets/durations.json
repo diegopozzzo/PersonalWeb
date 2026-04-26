@@ -4008,18 +4008,20 @@
     2
   ],
   "0006/Normal/Idle/Anim": [
-    18,
-    18
+    15,
+    15,
+    15,
+    15
   ],
   "0006/Normal/Walk/Anim": [
     8,
+    10,
     8,
-    8,
-    8
+    10
   ],
   "0006/Normal/Hurt/Anim": [
     2,
-    10
+    8
   ],
   "0006/Normal/Idle/Shadow": [
     18,
@@ -4037,17 +4039,19 @@
   ],
   "0130/Normal/Idle/Anim": [
     18,
-    18
+    8,
+    18,
+    8
   ],
   "0130/Normal/Walk/Anim": [
-    8,
-    8,
-    8,
-    8
+    10,
+    14,
+    10,
+    14
   ],
   "0130/Normal/Hurt/Anim": [
     2,
-    10
+    8
   ],
   "0130/Normal/Idle/Shadow": [
     18,
@@ -4064,18 +4068,20 @@
     10
   ],
   "0131/Normal/Idle/Anim": [
-    18,
-    18
+    40,
+    12,
+    16,
+    12
   ],
   "0131/Normal/Walk/Anim": [
-    8,
-    8,
-    8,
-    8
+    10,
+    12,
+    10,
+    12
   ],
   "0131/Normal/Hurt/Anim": [
     2,
-    10
+    8
   ],
   "0131/Normal/Idle/Shadow": [
     18,
@@ -4092,18 +4098,20 @@
     10
   ],
   "0144/Normal/Idle/Anim": [
-    18,
-    18
+    8,
+    10,
+    8,
+    16
   ],
   "0144/Normal/Walk/Anim": [
     8,
+    10,
     8,
-    8,
-    8
+    10
   ],
   "0144/Normal/Hurt/Anim": [
     2,
-    10
+    8
   ],
   "0144/Normal/Idle/Shadow": [
     18,
@@ -4118,5 +4126,59 @@
   "0144/Normal/Hurt/Shadow": [
     2,
     10
+  ],
+  "0006/Normal/Attack/Anim": [
+    2,
+    2,
+    2,
+    2,
+    4,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0130/Normal/Attack/Anim": [
+    4,
+    6,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0131/Normal/Attack/Anim": [
+    2,
+    2,
+    6,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0144/Normal/Attack/Anim": [
+    2,
+    2,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
   ]
 }

@@ -126,7 +126,7 @@ const POKEMON_LIBRARY = {
     role: "roster",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Hurt",
+    reactAction: "Attack",
     topAction: "Idle"
   },
   GYARADOS: {
@@ -135,7 +135,7 @@ const POKEMON_LIBRARY = {
     role: "roster",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Hurt",
+    reactAction: "Attack",
     topAction: "Idle"
   },
   LAPRAS: {
@@ -144,7 +144,7 @@ const POKEMON_LIBRARY = {
     role: "roster",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Hurt",
+    reactAction: "Attack",
     topAction: "Idle"
   },
   ARTICUNO: {
@@ -153,7 +153,7 @@ const POKEMON_LIBRARY = {
     role: "roster",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Hurt",
+    reactAction: "Attack",
     topAction: "Idle"
   }
 }
@@ -505,6 +505,18 @@ class PixelCanvasSprite {
       action: sequence.action,
       orientation: sequence.orientation,
       frames: sequence.frames,
+      baseContentBox: sequence.frames.reduce(
+        (acc, fr) => {
+          const ss = fr?.frame?.spriteSourceSize
+          if (!ss) return acc
+          const minX = Math.min(acc.minX, ss.x || 0)
+          const minY = Math.min(acc.minY, ss.y || 0)
+          const maxX = Math.max(acc.maxX, (ss.x || 0) + (ss.w || 0))
+          const maxY = Math.max(acc.maxY, (ss.y || 0) + (ss.h || 0))
+          return { minX, minY, maxX, maxY }
+        },
+        { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+      ),
       baseSourceSize: sequence.frames.reduce(
         (acc, fr) => {
           const ss = fr?.frame?.sourceSize
@@ -592,19 +604,26 @@ class PixelCanvasSprite {
     if (!currentFrame) return
 
     const rect = currentFrame.frame
-    const sourceSize = this.current.baseSourceSize?.w
-      ? this.current.baseSourceSize
-      : currentFrame.sourceSize
     const spriteSource = currentFrame.spriteSourceSize
+    const contentBox = this.current.baseContentBox?.maxX > -Infinity
+      ? this.current.baseContentBox
+      : {
+          minX: spriteSource.x || 0,
+          minY: spriteSource.y || 0,
+          maxX: (spriteSource.x || 0) + (spriteSource.w || 0),
+          maxY: (spriteSource.y || 0) + (spriteSource.h || 0),
+        }
+    const contentW = Math.max(1, (contentBox.maxX - contentBox.minX) || 1)
+    const contentH = Math.max(1, (contentBox.maxY - contentBox.minY) || 1)
     const availableWidth = this.size - 8
     const availableHeight = this.size - 8
     const scale = Math.min(
-      availableWidth / sourceSize.w,
-      availableHeight / sourceSize.h
+      availableWidth / contentW,
+      availableHeight / contentH
     )
 
-    const fullWidth = sourceSize.w * scale
-    const fullHeight = sourceSize.h * scale
+    const fullWidth = contentW * scale
+    const fullHeight = contentH * scale
     const offsetX = (this.size - fullWidth) / 2
     const offsetY = (this.size - fullHeight) / 2
 
@@ -614,8 +633,8 @@ class PixelCanvasSprite {
       rect.y,
       rect.w,
       rect.h,
-      offsetX + spriteSource.x * scale,
-      offsetY + spriteSource.y * scale,
+      offsetX + ((spriteSource.x || 0) - contentBox.minX) * scale,
+      offsetY + ((spriteSource.y || 0) - contentBox.minY) * scale,
       rect.w * scale,
       rect.h * scale
     )
@@ -635,7 +654,9 @@ class OverlayActor {
     this.pointerStart = null
     this.pointerOffset = null
     this.seed = Math.random() * Math.PI * 2
-    this.scale = options.size || (options.role === "top" ? 96 : 112)
+    // Default sprite size (px). Individual actors can override via options.size.
+    // Sized to match the project's global 1.6x scale.
+    this.scale = options.size || (options.role === "top" ? 154 : 180)
     this.speed = options.speed || (40 + Math.random() * 28)
     this.direction =
       options.direction === -1 || options.direction === "left"
