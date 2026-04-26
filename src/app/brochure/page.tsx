@@ -120,7 +120,7 @@ section { position:relative; z-index:10; }
 <section id="brochure">
   <div class="section-inner">
     <p class="eyebrow lav reveal">Brochure</p>
-    <h1 class="sec-title reveal">Sell the <span class="grad">outcome</span>, then ship the system.</h1>
+    <h1 class="sec-title reveal" data-i18n-key="hero_title">Sell the <span class="grad">outcome</span>, then ship the system.</h1>
     <p class="sec-body reveal">A visual, executive-ready snapshot of the solutions I build: industrial AI that plugs into operations and finance, autonomous robotics with industrial allies, end-to-end agents, forecasting, decision dashboards, and aerospace education programs.</p>
     <div class="hero-btns reveal" style="opacity:1;animation:none;">
       <a href="/" class="btn-ghost">Back to website</a>
@@ -388,7 +388,7 @@ window.addEventListener('scroll', function() {
     "WhatsApp": "WhatsApp",
     "LinkedIn": "LinkedIn",
     "Email": "Correo",
-    "Sell the outcome, then ship the system.": "Vende el resultado, luego despliega el sistema.",
+    "hero_title": "Vende el <span class=\"grad\">resultado</span>, luego despliega el sistema.",
     "A visual, executive-ready snapshot of the solutions I build: industrial AI that plugs into operations and finance, autonomous robotics with industrial allies, end-to-end agents, forecasting, decision dashboards, and aerospace education programs.": "Una vista ejecutiva, lista para decisión, de las soluciones que construyo: IA industrial conectada a operaciones y finanzas, robótica autónoma con aliados industriales, agentes end-to-end, forecasting, dashboards de decisión y programas de educación aeroespacial.",
     "Industrial AI that runs the business (not just the plant)": "IA industrial que corre el negocio (no solo la planta)",
     "scope_desc": "SCOPE es un sistema de IA industrial multi-agente que descubre entornos, construye un grafo de conocimiento vivo y ejecuta trabajo en <b>operaciones</b>, <b>mantenimiento</b>, <b>calidad</b> y <b>finanzas</b>. Lee señales en vivo, explica lo importante y entrega acciones y reportes automáticamente.",
