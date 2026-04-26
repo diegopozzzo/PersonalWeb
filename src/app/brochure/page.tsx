@@ -172,15 +172,15 @@ section { position:relative; z-index:10; }
       <div class="magnus-card reveal reveal-d1">
         <div class="mc-label">1 · SCOPE</div>
         <div class="mc-title">Industrial AI that runs the business (not just the plant)</div>
-        <div class="mc-desc">SCOPE is a multi-agent industrial AI system that discovers environments, builds a living knowledge graph, and executes work across <b>operations</b>, <b>maintenance</b>, <b>quality</b>, and <b>finance</b>. It reads live signals, explains what matters, and delivers actions and reports automatically.</div>
+        <div class="mc-desc" data-i18n-key="scope_desc">SCOPE is a multi-agent industrial AI system that discovers environments, builds a living knowledge graph, and executes work across <b>operations</b>, <b>maintenance</b>, <b>quality</b>, and <b>finance</b>. It reads live signals, explains what matters, and delivers actions and reports automatically.</div>
         <div class="media-shot">
           <img src="/brochure/scope.jpg" alt="SCOPE demo preview" loading="lazy" />
-          <div class="media-cap"><span><b>SCOPE</b> · Demo snapshot</span><span>From the live demo video</span></div>
+          <div class="media-cap"><span data-i18n-key="scope_cap_1"><b>SCOPE</b> · Demo snapshot</span><span data-i18n-key="scope_cap_2">From the live demo video</span></div>
         </div>
         <ul class="news-list">
-          <li><b>Autonomous discovery</b>: assets, variables, screens, and relationships — without hardcoding.</li>
-          <li><b>Memory + rules</b>: semantic/episodic/procedural persistence to improve every session.</li>
-          <li><b>From anomaly → plan</b>: detect, reason, recommend, and escalate with traceability.</li>
+          <li data-i18n-key="scope_b1"><b>Autonomous discovery</b>: assets, variables, screens, and relationships — without hardcoding.</li>
+          <li data-i18n-key="scope_b2"><b>Memory + rules</b>: semantic/episodic/procedural persistence to improve every session.</li>
+          <li data-i18n-key="scope_b3"><b>From anomaly → plan</b>: detect, reason, recommend, and escalate with traceability.</li>
         </ul>
         <div class="hero-btns" style="margin-top:1.35rem;opacity:1;animation:none;">
           <a href="https://youtu.be/tEk-KDUBvTs?si=JiwbkbPZTUJmufts" class="btn-grad" target="_blank" rel="noreferrer">Watch demo</a>
@@ -191,17 +191,17 @@ section { position:relative; z-index:10; }
       <div class="magnus-card reveal reveal-d2">
         <div class="mc-label">2 · NONHUMAN</div>
         <div class="mc-title">Autonomous robotics, built with industrial partners</div>
-        <div class="mc-desc">NONHUMAN is an embodied AI and robotics research + deployment ecosystem. Today it is in collaboration with <b>SIEMENS</b>, <b>DINAUT</b>, and <b>GLEXCO</b> to take autonomy from prototypes to production environments.</div>
+        <div class="mc-desc" data-i18n-key="nonhuman_desc">NONHUMAN is an embodied AI and robotics research + deployment ecosystem. Today it is in collaboration with <b>SIEMENS</b>, <b>DINAUT</b>, and <b>GLEXCO</b> to take autonomy from prototypes to production environments.</div>
         <div class="media-shot">
           <video controls playsinline preload="metadata" style="position:relative;z-index:2;width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.35)">
             <source src="/WhatsApp%20Video%202026-04-25%20at%206.46.30%20PM.mp4" type="video/mp4" />
           </video>
-          <div class="media-cap"><span><b>NONHUMAN</b> · Autonomous robotics</span><span>Field / demo clip</span></div>
+          <div class="media-cap"><span data-i18n-key="nonhuman_cap_1"><b>NONHUMAN</b> · Autonomous robotics</span><span data-i18n-key="nonhuman_cap_2">Field / demo clip</span></div>
         </div>
         <ul class="news-list">
-          <li><b>Embodied AI</b>: perception, control, edge AI, safety-first execution.</li>
-          <li><b>Integration</b>: industrial stacks, data pipelines, and real constraints.</li>
-          <li><b>Deployment models</b>: pilots, managed rollouts, and scalable operations.</li>
+          <li data-i18n-key="nonhuman_b1"><b>Embodied AI</b>: perception, control, edge AI, safety-first execution.</li>
+          <li data-i18n-key="nonhuman_b2"><b>Integration</b>: industrial stacks, data pipelines, and real constraints.</li>
+          <li data-i18n-key="nonhuman_b3"><b>Deployment models</b>: pilots, managed rollouts, and scalable operations.</li>
         </ul>
         <div class="hero-btns" style="margin-top:1.35rem;opacity:1;animation:none;">
           <a href="https://nonhuman.site/" class="btn-grad" target="_blank" rel="noreferrer">nonhuman.site</a>
@@ -214,7 +214,11 @@ section { position:relative; z-index:10; }
       <div class="project-card reveal reveal-d1">
         <div class="mc-label">3 · End-to-End Agents</div>
         <div class="project-title" style="font-size:1.25rem;font-weight:800;margin-bottom:.8rem;">Agents that execute — not chat</div>
-        <div class="project-desc">The core value is <b>throughput</b>: agents that understand context, follow business rules, and reliably execute tasks across tools (APIs, DBs, docs, email, calendars). Less busywork. Faster cycles. Fewer errors.</div>
+        <div class="project-desc" data-i18n-key="agents_desc">The core value is <b>throughput</b>: agents that understand context, follow business rules, and reliably execute tasks across tools (APIs, DBs, docs, email, calendars). Less busywork. Faster cycles. Fewer errors.</div>
+        <div class="media-shot">
+          <img src="/brochure/agents.png" alt="End-to-end agents dashboard screenshot" loading="lazy" />
+          <div class="media-cap"><span data-i18n-key="agents_cap_1"><b>Agents</b> · End-to-end execution</span><span data-i18n-key="agents_cap_2">Operational workflow snapshot</span></div>
+        </div>
         <div class="project-tech">
           <span class="tech-tag">Orchestration</span><span class="tech-tag">Rules</span><span class="tech-tag">Memory</span><span class="tech-tag">Audit trail</span>
         </div>
@@ -226,7 +230,7 @@ section { position:relative; z-index:10; }
         <div class="project-desc">Forecast.com turns historical data into actionable projections: scenarios, trends, and planning horizons you can trust — built for operational and commercial decisions.</div>
         <div class="media-shot">
           <img src="/brochure/forecast.png" alt="Forecast dashboard screenshot" loading="lazy" />
-          <div class="media-cap"><span><b>Forecast</b> · Predictive models</span><span>Platform UI snapshot</span></div>
+          <div class="media-cap"><span data-i18n-key="forecast_cap_1"><b>Forecast</b> · Predictive models</span><span data-i18n-key="forecast_cap_2">Platform UI snapshot</span></div>
         </div>
         <div class="hero-btns" style="margin-top:1.2rem;opacity:1;animation:none;">
           <a href="https://magnusgc.consulting/productos/forecast" class="btn-grad" target="_blank" rel="noreferrer">Forecast.com</a>
@@ -301,7 +305,7 @@ section { position:relative; z-index:10; }
                   <div class="scope-bar" style="height:88%"></div>
                   <div class="scope-bar" style="height:84%"></div>
                 </div>
-                <div class="scope-foot"><b>Actionable</b>: auto-generate the shift brief + ticket the top driver.</div>
+                <div class="scope-foot" data-i18n-key="dash_action"><b>Actionable</b>: auto-generate the shift brief + ticket the top driver.</div>
               </div>
             </div>
           </div>
@@ -311,7 +315,7 @@ section { position:relative; z-index:10; }
       <div class="project-card reveal reveal-d4">
         <div class="mc-label">6 · GIA PUCP</div>
         <div class="project-title" style="font-size:1.25rem;font-weight:800;margin-bottom:.8rem;">Aerospace engineering + education that funds itself</div>
-        <div class="project-desc">A commercial model around an educational rocketry kit (primary / secondary / higher-ed) to sustain the flagship program (<b>KUNTUR</b>) — with pilots, sponsorships, and institutional partnerships.</div>
+        <div class="project-desc" data-i18n-key="gia_desc">A commercial model around an educational rocketry kit (primary / secondary / higher-ed) to sustain the flagship program (<b>KUNTUR</b>) — with pilots, sponsorships, and institutional partnerships.</div>
         <div class="hero-btns" style="margin-top:1.2rem;opacity:1;animation:none;">
           <a href="https://www.giaperu.space/" class="btn-grad" target="_blank" rel="noreferrer">giaperu.space</a>
           <a href="/#contact" class="btn-ghost">Partner / sponsor</a>
@@ -387,23 +391,30 @@ window.addEventListener('scroll', function() {
     "Sell the outcome, then ship the system.": "Vende el resultado, luego despliega el sistema.",
     "A visual, executive-ready snapshot of the solutions I build: industrial AI that plugs into operations and finance, autonomous robotics with industrial allies, end-to-end agents, forecasting, decision dashboards, and aerospace education programs.": "Una vista ejecutiva, lista para decisión, de las soluciones que construyo: IA industrial conectada a operaciones y finanzas, robótica autónoma con aliados industriales, agentes end-to-end, forecasting, dashboards de decisión y programas de educación aeroespacial.",
     "Industrial AI that runs the business (not just the plant)": "IA industrial que corre el negocio (no solo la planta)",
-    "SCOPE is a multi-agent industrial AI system that discovers environments, builds a living knowledge graph, and executes work across operations, maintenance, quality, and finance. It reads live signals, explains what matters, and delivers actions and reports automatically.": "SCOPE es un sistema de IA industrial multi-agente que descubre entornos, construye un grafo de conocimiento vivo y ejecuta trabajo en operaciones, mantenimiento, calidad y finanzas. Lee señales en vivo, explica lo importante y entrega acciones y reportes automáticamente.",
-    "SCOPE demo preview": "Vista previa demo SCOPE",
-    "SCOPE · Demo snapshot": "SCOPE · Captura demo",
-    "From the live demo video": "Del video demo en vivo",
-    "Autonomous discovery: assets, variables, screens, and relationships — without hardcoding.": "Descubrimiento autónomo: activos, variables, pantallas y relaciones — sin hardcodear.",
-    "Memory + rules: semantic/episodic/procedural persistence to improve every session.": "Memoria + reglas: persistencia semántica/episódica/procedural para mejorar cada sesión.",
-    "From anomaly → plan: detect, reason, recommend, and escalate with traceability.": "De anomalía → plan: detecta, razona, recomienda y escala con trazabilidad.",
+    "scope_desc": "SCOPE es un sistema de IA industrial multi-agente que descubre entornos, construye un grafo de conocimiento vivo y ejecuta trabajo en <b>operaciones</b>, <b>mantenimiento</b>, <b>calidad</b> y <b>finanzas</b>. Lee señales en vivo, explica lo importante y entrega acciones y reportes automáticamente.",
+    "scope_cap_1": "<b>SCOPE</b> · Captura demo",
+    "scope_cap_2": "Del video demo en vivo",
+    "scope_b1": "<b>Descubrimiento autónomo</b>: activos, variables, pantallas y relaciones — sin hardcodear.",
+    "scope_b2": "<b>Memoria + reglas</b>: persistencia semántica/episódica/procedural para mejorar cada sesión.",
+    "scope_b3": "<b>De anomalía → plan</b>: detecta, razona, recomienda y escala con trazabilidad.",
     "Watch demo": "Ver demo",
     "Deploy in my operation": "Desplegar en mi operación",
     "Autonomous robotics, built with industrial partners": "Robótica autónoma, construida con aliados industriales",
+    "nonhuman_desc": "NONHUMAN es un ecosistema de investigación y despliegue en embodied AI y robótica. Hoy colabora con <b>SIEMENS</b>, <b>DINAUT</b> y <b>GLEXCO</b> para llevar la autonomía de prototipos a entornos de producción.",
+    "nonhuman_cap_1": "<b>NONHUMAN</b> · Robótica autónoma",
+    "nonhuman_cap_2": "Clip de campo / demo",
+    "nonhuman_b1": "<b>Embodied AI</b>: percepción, control, edge AI, ejecución safety-first.",
+    "nonhuman_b2": "<b>Integración</b>: stacks industriales, pipelines de datos y restricciones reales.",
+    "nonhuman_b3": "<b>Modelos de despliegue</b>: pilotos, rollouts gestionados y operaciones escalables.",
     "Discuss a pilot": "Conversar un piloto",
     "Agents that execute — not chat": "Agentes que ejecutan — no solo conversan",
+    "agents_desc": "El valor central es el <b>throughput</b>: agentes que entienden contexto, siguen reglas de negocio y ejecutan tareas de forma confiable entre herramientas (APIs, BD, docs, correo, calendarios). Menos trabajo manual. Ciclos más rápidos. Menos errores.",
+    "agents_cap_1": "<b>Agentes</b> · Ejecución end-to-end",
+    "agents_cap_2": "Captura de flujo operativo",
     "Plan with confidence (demand, capacity, cash)": "Planifica con confianza (demanda, capacidad, caja)",
     "Forecast.com turns historical data into actionable projections: scenarios, trends, and planning horizons you can trust — built for operational and commercial decisions.": "Forecast.com convierte data histórica en proyecciones accionables: escenarios, tendencias y horizontes de planificación confiables — diseñado para decisiones operativas y comerciales.",
-    "Forecast dashboard screenshot": "Captura dashboard Forecast",
-    "Forecast · Predictive models": "Forecast · Modelos predictivos",
-    "Platform UI snapshot": "Captura de la plataforma",
+    "forecast_cap_1": "<b>Forecast</b> · Modelos predictivos",
+    "forecast_cap_2": "Captura de la plataforma",
     "Evaluate with my data": "Evaluar con mis datos",
     "Decision dashboards with real metrics": "Dashboards de decisión con métricas reales",
     "Dashboards designed for decisions: KPI hierarchy, alerts, drill-down, and executive summaries. Not “pretty charts” — operational clarity.": "Dashboards diseñados para decidir: jerarquía de KPIs, alertas, drill-down y resúmenes ejecutivos. No “gráficas bonitas” — claridad operativa.",
@@ -423,8 +434,9 @@ window.addEventListener('scroll', function() {
     "Packaging — Sensor drift": "Empaque — Deriva de sensor",
     "Downtime — Changeover": "Paradas — Changeover",
     "Throughput (units)": "Throughput (unid.)",
-    "Actionable: auto-generate the shift brief + ticket the top driver.": "Accionable: auto-generar el brief del turno + ticketear el driver principal.",
+    "dash_action": "<b>Accionable</b>: auto-generar el brief del turno + ticketear el driver principal.",
     "Aerospace engineering + education that funds itself": "Ingeniería aeroespacial + educación que se financia sola",
+    "gia_desc": "Un modelo comercial alrededor de un kit educativo de cohetería (primaria / secundaria / superior) para sostener el programa bandera (<b>KUNTUR</b>) — con pilotos, sponsorships y alianzas institucionales.",
     "Partner / sponsor": "Aliado / sponsor"
   };
 
@@ -450,6 +462,20 @@ window.addEventListener('scroll', function() {
         var text = lang === 'es' && ES[item.en] ? ES[item.en] : item.en;
         item.node.nodeValue = item.before + text + item.after;
       });
+
+      document.querySelectorAll('[data-i18n-key]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-key');
+        if (!key) return;
+        if (!el.getAttribute('data-i18n-default')) {
+          el.setAttribute('data-i18n-default', el.innerHTML);
+        }
+        if (lang === 'es' && ES[key]) {
+          el.innerHTML = ES[key];
+        } else {
+          el.innerHTML = el.getAttribute('data-i18n-default') || el.innerHTML;
+        }
+      });
+
       document.querySelectorAll('.lang-btn').forEach(function(btn) {
         btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
       });
