@@ -500,75 +500,87 @@ window.addEventListener('scroll', function() {
 })();
 
 (function() {
-  var THREE = window.THREE;
-  if (!THREE) return;
-  var canvas = document.getElementById('bg-canvas');
-  if (!canvas) return;
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x0A0C10, 1);
-
-  var scene  = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0, 30);
-
-  var tgX = 0, tgY = 0, camX = 0, camY = 0;
-  document.addEventListener('mousemove', function(e) {
-    tgX = (e.clientX / window.innerWidth  - 0.5) * 2;
-    tgY = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
-
-  function makeCloud(count, radius, spread, hex, ptSize, opacity) {
-    var geo  = new THREE.BufferGeometry();
-    var pos  = new Float32Array(count * 3);
-    var cols = new Float32Array(count * 3);
-    var col  = new THREE.Color(hex);
-    for (var i = 0; i < count; i++) {
-      var r  = Math.random() * radius;
-      var th = Math.random() * Math.PI * 2;
-      var ph = Math.acos(2 * Math.random() - 1);
-      pos[i*3]   = r * Math.sin(ph) * Math.cos(th) + (Math.random() - 0.5) * spread;
-      pos[i*3+1] = r * Math.sin(ph) * Math.sin(th) + (Math.random() - 0.5) * spread;
-      pos[i*3+2] = r * Math.cos(ph)                + (Math.random() - 0.5) * spread;
-      var b = 0.35 + Math.random() * 0.65;
-      cols[i*3] = col.r * b; cols[i*3+1] = col.g * b; cols[i*3+2] = col.b * b;
-    }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('color',    new THREE.BufferAttribute(cols, 3));
-    var mat = new THREE.PointsMaterial({
-      size: ptSize, vertexColors: true, transparent: true, opacity: opacity,
-      sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
-    });
-    return new THREE.Points(geo, mat);
-  }
-
-  var cloud1 = makeCloud(6500, 24, 2,   0xFF6B2B, 0.050, 0.66);
-  var cloud2 = makeCloud(3800, 18, 1.5, 0x38d9b4, 0.040, 0.58);
-  var cloud3 = makeCloud(2200, 12, 1.0, 0xFF9A70, 0.035, 0.48);
-  scene.add(cloud1, cloud2, cloud3);
-
-  window.addEventListener('resize', function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+  function initThree() {
+    if (window.__dbpaBrochureThreeInit) return;
+    window.__dbpaBrochureThreeInit = true;
+    var THREE = window.THREE;
+    if (!THREE) return;
+    var canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+    renderer.setClearColor(0x0A0C10, 1);
 
-  var t = 0;
-  function animate() {
-    requestAnimationFrame(animate);
-    t += 0.007;
-    camX += (tgX - camX) * 0.03;
-    camY += (tgY - camY) * 0.03;
-    camera.position.x = camX * 2.5;
-    camera.position.y = -camY * 1.8;
-    camera.lookAt(0, 0, 0);
-    cloud1.rotation.y = t * 0.05;
-    cloud2.rotation.y = -t * 0.035; cloud2.rotation.x = t * 0.015;
-    cloud3.rotation.z = t * 0.025;
-    renderer.render(scene, camera);
+    var scene  = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 30);
+
+    var tgX = 0, tgY = 0, camX = 0, camY = 0;
+    document.addEventListener('mousemove', function(e) {
+      tgX = (e.clientX / window.innerWidth  - 0.5) * 2;
+      tgY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    function makeCloud(count, radius, spread, hex, ptSize, opacity) {
+      var geo  = new THREE.BufferGeometry();
+      var pos  = new Float32Array(count * 3);
+      var cols = new Float32Array(count * 3);
+      var col  = new THREE.Color(hex);
+      for (var i = 0; i < count; i++) {
+        var r  = Math.random() * radius;
+        var th = Math.random() * Math.PI * 2;
+        var ph = Math.acos(2 * Math.random() - 1);
+        pos[i*3]   = r * Math.sin(ph) * Math.cos(th) + (Math.random() - 0.5) * spread;
+        pos[i*3+1] = r * Math.sin(ph) * Math.sin(th) + (Math.random() - 0.5) * spread;
+        pos[i*3+2] = r * Math.cos(ph)                + (Math.random() - 0.5) * spread;
+        var b = 0.35 + Math.random() * 0.65;
+        cols[i*3] = col.r * b; cols[i*3+1] = col.g * b; cols[i*3+2] = col.b * b;
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute('color',    new THREE.BufferAttribute(cols, 3));
+      var mat = new THREE.PointsMaterial({
+        size: ptSize, vertexColors: true, transparent: true, opacity: opacity,
+        sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
+      });
+      return new THREE.Points(geo, mat);
+    }
+
+    var cloud1 = makeCloud(6500, 24, 2,   0xFF6B2B, 0.050, 0.66);
+    var cloud2 = makeCloud(3800, 18, 1.5, 0x38d9b4, 0.040, 0.58);
+    var cloud3 = makeCloud(2200, 12, 1.0, 0xFF9A70, 0.035, 0.48);
+    scene.add(cloud1, cloud2, cloud3);
+
+    window.addEventListener('resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    var t = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      t += 0.007;
+      camX += (tgX - camX) * 0.03;
+      camY += (tgY - camY) * 0.03;
+      camera.position.x = camX * 2.5;
+      camera.position.y = -camY * 1.8;
+      camera.lookAt(0, 0, 0);
+      cloud1.rotation.y = t * 0.05;
+      cloud2.rotation.y = -t * 0.035; cloud2.rotation.x = t * 0.015;
+      cloud3.rotation.z = t * 0.025;
+      renderer.render(scene, camera);
+    }
+    animate();
   }
-  animate();
+
+  (function waitForThree() {
+    if (window.THREE) {
+      initThree();
+      return;
+    }
+    window.setTimeout(waitForThree, 140);
+  })();
 })();
 
 if ('IntersectionObserver' in window) {
@@ -585,23 +597,17 @@ export default function BrochurePage() {
   useEffect(() => {
     let cancelled = false;
     (window as any).__dbpaBrochureInit = false;
+    (window as any).__dbpaBrochureThreeInit = false;
     const init = () => {
       if (cancelled) return;
-      const w = window as any;
-      if (!w.THREE) return;
       // eslint-disable-next-line no-new-func
       new Function(BROCHURE_JS)();
     };
-    const t = setInterval(() => {
-      if ((window as any).THREE) {
-        init();
-        clearInterval(t);
-      }
-    }, 100);
+    init();
     return () => {
       cancelled = true;
-      clearInterval(t);
       (window as any).__dbpaBrochureInit = false;
+      (window as any).__dbpaBrochureThreeInit = false;
     };
   }, []);
 
