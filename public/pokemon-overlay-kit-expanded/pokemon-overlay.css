@@ -272,11 +272,23 @@
   box-shadow: inset 0 0 0 1px rgba(255, 107, 43, 0.14);
 }
 
-.pk-overlay-toolbar-button img {
+.pk-overlay-toolbar-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pk-overlay-toolbar-icon img {
   width: 28px;
   height: 28px;
+  object-fit: contain;
   image-rendering: pixelated;
-  flex: 0 0 auto;
   filter: drop-shadow(0 0 12px rgba(255, 107, 43, 0.16));
 }
 
@@ -285,6 +297,11 @@
   font-size: 11px;
   font-weight: 700;
   color: var(--pk-text);
+  line-height: 1.15;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pk-overlay-toolbar-role {

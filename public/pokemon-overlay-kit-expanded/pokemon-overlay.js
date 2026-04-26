@@ -1139,7 +1139,8 @@ class PokemonOverlay {
     this.running = true
     this.lastTick = performance.now()
     this.accumulator = 0
-    this.targetStep = 1 / 30
+    // Simulate actors at ~24fps (cursor stays smooth).
+    this.targetStep = 1 / 24
     this.pointerX = window.innerWidth / 2
     this.pointerY = window.innerHeight / 2
     this.pointerMove = this.pointerMove.bind(this)
@@ -1401,9 +1402,14 @@ class PokemonOverlay {
       button.className = "pk-overlay-toolbar-button"
       button.type = "button"
 
+      const iconWrap = document.createElement("span")
+      iconWrap.className = "pk-overlay-toolbar-icon"
+
       const image = document.createElement("img")
       image.alt = POKEMON_LIBRARY[key].label
       image.src = resolveAsset(`./assets/portraits/${POKEMON_LIBRARY[key].id}.png`)
+      image.decoding = "async"
+      image.loading = "lazy"
 
       const labelWrap = document.createElement("span")
       const name = document.createElement("span")
@@ -1417,7 +1423,8 @@ class PokemonOverlay {
       labelWrap.appendChild(name)
       labelWrap.appendChild(role)
 
-      button.appendChild(image)
+      iconWrap.appendChild(image)
+      button.appendChild(iconWrap)
       button.appendChild(labelWrap)
       button.addEventListener("click", () => this.setCursorPokemon(key, true))
 

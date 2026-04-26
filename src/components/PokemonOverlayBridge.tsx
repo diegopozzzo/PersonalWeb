@@ -143,16 +143,6 @@ function getOverlayOptions(
         facing: "left",
         interactive: true,
       },
-      {
-        pokemon: "ARTICUNO",
-        anchorX: "52%",
-        anchorY: "112px",
-        size: s(84),
-        floatX: 20,
-        floatY: 14,
-        facing: "left",
-        interactive: true,
-      },
     ],
     centerCompanions: [],
     headerWalkers: [
@@ -173,18 +163,6 @@ function getOverlayOptions(
       },
     ],
     bottomWalkers: [
-      {
-        pokemon: "AXEW",
-        startX: "5vw",
-        minX: "2%",
-        maxX: "18%",
-        size: s(82),
-        speed: 22,
-        floatX: 10,
-        floatY: 5,
-        laneOffsetY: 8,
-        direction: 1,
-      },
       {
         pokemon: "CHARMANDER",
         startX: "28%",
