@@ -13,7 +13,7 @@ const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
 // Global visual scale for all overlay actors.
 // Keep this conservative so sprites don't overpower the hero content.
-const OVERLAY_SIZE_SCALE = 1.35;
+const OVERLAY_SIZE_SCALE = 1.0;
 const s = (px: number) => Math.round(px * OVERLAY_SIZE_SCALE);
 
 function getAssetVersion() {
@@ -316,9 +316,9 @@ function getOverlayOptions(
       glow: "rgba(255, 107, 43, 0.24)",
       glow2: "rgba(56, 217, 180, 0.18)",
     },
-    cursorScale: 1.06,
-    cursorOffsetX: -24,
-    cursorOffsetY: -22,
+    cursorScale: 1.0,
+    cursorOffsetX: -18,
+    cursorOffsetY: -18,
     cursorSmoothing: 18,
   };
 }

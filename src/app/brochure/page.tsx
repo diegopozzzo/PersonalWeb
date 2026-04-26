@@ -333,6 +333,17 @@ if (window.__dbpaBrochureInit) return;
 window.__dbpaBrochureInit = true;
 document.documentElement.classList.add('js');
 
+// If the Pokemon overlay was active on the previous route, it can hide the
+// brochure cursor + capture pointer events. Force-clean it on this route.
+(function cleanupOverlayArtifacts() {
+  try {
+    document.body.classList.remove('pk-overlay-cursor-enabled', 'pk-overlay-dragging');
+    document.querySelectorAll('.pk-overlay-root, .pk-overlay-cursor, .pk-overlay-badge, .pk-overlay-toolbar, .pk-overlay-tour, .pk-overlay-actor').forEach(function(el) {
+      try { el.remove(); } catch (_e) {}
+    });
+  } catch (_e) {}
+})();
+
 const cursorEl = document.getElementById('cursor');
 const ringEl = document.getElementById('cursor-ring');
 document.addEventListener('mousemove', function(e) {
@@ -583,6 +594,86 @@ window.addEventListener('scroll', function() {
     }
     window.setTimeout(waitForThree, 140);
   })();
+})();
+
+// Fallback animated background (2D canvas) when WebGL/Three isn't available.
+(function initCanvasFallback() {
+  var canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  if (window.__dbpaBrochureCanvasInit) return;
+  window.__dbpaBrochureCanvasInit = true;
+
+  // If Three started successfully, skip fallback.
+  if (window.__dbpaBrochureThreeInit && window.THREE) {
+    return;
+  }
+
+  var ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  var w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  var mx = w * 0.5, my = h * 0.5;
+  document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; }, { passive: true });
+
+  var stars = [];
+  var count = Math.max(120, Math.min(240, Math.floor((w * h) / 9000)));
+  for (var i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 0.6 + Math.random() * 1.6,
+      z: 0.2 + Math.random() * 0.8,
+      tw: Math.random() * Math.PI * 2
+    });
+  }
+
+  var t = 0;
+  function frame() {
+    t += 0.012;
+    ctx.clearRect(0, 0, w, h);
+
+    // soft nebula gradients
+    var gx = (mx / w - 0.5);
+    var gy = (my / h - 0.5);
+    var g1 = ctx.createRadialGradient(w*0.35 + gx*40, h*0.35 + gy*30, 0, w*0.35, h*0.35, Math.max(w,h)*0.75);
+    g1.addColorStop(0, 'rgba(255,107,43,0.12)');
+    g1.addColorStop(1, 'rgba(10,12,16,0)');
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, 0, w, h);
+
+    var g2 = ctx.createRadialGradient(w*0.70 - gx*50, h*0.30 - gy*35, 0, w*0.70, h*0.30, Math.max(w,h)*0.70);
+    g2.addColorStop(0, 'rgba(56,217,180,0.10)');
+    g2.addColorStop(1, 'rgba(10,12,16,0)');
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, w, h);
+
+    // stars
+    for (var s = 0; s < stars.length; s++) {
+      var st = stars[s];
+      st.tw += 0.02 + st.z * 0.03;
+      var a = 0.22 + (Math.sin(st.tw) * 0.08 + 0.08) * st.z;
+      var px = st.x + gx * 18 * st.z;
+      var py = st.y + gy * 14 * st.z;
+      ctx.fillStyle = 'rgba(242,240,237,' + a.toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.arc(px, py, st.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 
 if ('IntersectionObserver' in window) {
