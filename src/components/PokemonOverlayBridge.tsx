@@ -119,6 +119,7 @@ function getOverlayOptions(lang: "en" | "es") {
         floatX: 18,
         floatY: 12,
         facing: "right",
+        interactive: false,
       },
       {
         pokemon: "LUCARIO",
@@ -128,6 +129,7 @@ function getOverlayOptions(lang: "en" | "es") {
         floatX: 16,
         floatY: 11,
         facing: "left",
+        interactive: false,
       },
     ],
     centerCompanions: [],
