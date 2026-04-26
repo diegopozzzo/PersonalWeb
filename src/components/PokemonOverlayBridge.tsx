@@ -44,7 +44,9 @@ function getCurrentLang(): "en" | "es" {
 }
 
 function isDesktopOverlayAllowed() {
-  return window.innerWidth > 1040 && !window.matchMedia("(pointer: coarse)").matches;
+  // Allow the overlay on smaller screens and touch devices too.
+  // It uses Pointer Events, so drag/click still works on mobile.
+  return window.innerWidth > 760;
 }
 
 function isOverlayDisabled() {
