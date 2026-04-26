@@ -41,14 +41,21 @@ section { position:relative; z-index:10; }
 .btn-grad { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.85rem 2rem; transition: opacity .2s, transform .2s; display:inline-block; }
 .btn-grad:hover { opacity:.88; transform:translateY(-2px); }
 .btn-ghost { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--dim); border-bottom:1px solid var(--border); padding-bottom:2px; }
-.contact-links{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.1rem}
-.contact-pill{display:inline-flex;align-items:center;gap:.55rem;border:1px solid var(--border);background:rgba(255,255,255,0.02);padding:.55rem .9rem;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,240,237,.70);text-decoration:none}
-.contact-pill:hover{border-color:rgba(56,217,180,0.28);color:rgba(242,240,237,.92)}
-.contact-pill strong{font-weight:700;color:rgba(242,240,237,.92);letter-spacing:.06em;text-transform:none}
-.contact-pill.wa{border-color:rgba(56,217,180,0.22)}
-.contact-pill.wa:hover{border-color:rgba(56,217,180,0.45)}
-.contact-pill.li{border-color:rgba(255,107,43,0.22)}
-.contact-pill.li:hover{border-color:rgba(255,107,43,0.45)}
+.contact-cards{display:grid;grid-template-columns:1fr;gap:.9rem;margin:1.35rem 0 0;max-width:560px}
+.contact-card{display:flex;align-items:center;gap:1rem;padding:1rem 1.15rem;border:1px solid rgba(255,255,255,0.09);background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));text-decoration:none;position:relative;overflow:hidden}
+.contact-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%, rgba(56,217,180,0.10), transparent 55%), radial-gradient(circle at 85% 40%, rgba(255,107,43,0.10), transparent 58%);filter:blur(18px);opacity:.9;pointer-events:none}
+.contact-card:hover{border-color:rgba(56,217,180,0.25);transform:translateY(-1px)}
+.contact-ic{position:relative;z-index:2;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.35)}
+.contact-ic svg{width:20px;height:20px;display:block}
+.contact-txt{position:relative;z-index:2;display:flex;flex-direction:column;gap:.18rem;text-align:left}
+.contact-h{font-family:'Syne',sans-serif;font-weight:800;font-size:.92rem;color:rgba(242,240,237,.92)}
+.contact-s{font-size:.84rem;color:rgba(242,240,237,.48);letter-spacing:.01em}
+.contact-card.wa{border-color:rgba(56,217,180,0.18)}
+.contact-card.wa .contact-ic{border-color:rgba(56,217,180,0.22);background:rgba(56,217,180,0.06)}
+.contact-card.li{border-color:rgba(150,110,255,0.22)}
+.contact-card.li .contact-ic{border-color:rgba(150,110,255,0.25);background:rgba(150,110,255,0.08)}
+.contact-card.em{border-color:rgba(255,255,255,0.10)}
+.contact-card.em .contact-ic{border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.04)}
 .magnus-cards,.projects-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:3.25rem; }
 .magnus-card,.project-card { background:var(--surface); border:1px solid var(--border); padding:2.5rem; position:relative; overflow:hidden; }
 .media-shot{margin-top:1.25rem;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.25);padding:.65rem;position:relative;overflow:hidden}
@@ -119,10 +126,46 @@ section { position:relative; z-index:10; }
       <a href="/" class="btn-ghost">Back to website</a>
       <a href="/#contact" class="btn-grad">Contact</a>
     </div>
-    <div class="contact-links reveal">
-      <a class="contact-pill wa" href="https://wa.me/51955256450" target="_blank" rel="noreferrer">WhatsApp <strong>+51 955 256 450</strong></a>
-      <a class="contact-pill li" href="https://www.linkedin.com/in/diego-pozo-abregu/" target="_blank" rel="noreferrer">LinkedIn <strong>/diego-pozo-abregu</strong></a>
-      <a class="contact-pill" href="mailto:diegopozo@beyondhuman.services">Email <strong>diegopozo@beyondhuman.services</strong></a>
+    <div class="contact-cards reveal">
+      <a class="contact-card wa" href="https://wa.me/51955256450" target="_blank" rel="noreferrer">
+        <div class="contact-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 3.5C7.31 3.5 3.5 7.09 3.5 11.5c0 1.63.52 3.16 1.41 4.44L4 21l5.26-1.7c1.18.55 2.5.86 3.94.86 4.69 0 8.5-3.59 8.5-8s-3.81-8-8.7-8z" stroke="rgba(56,217,180,.95)" stroke-width="1.5" opacity=".95"/>
+            <path d="M9.2 9.1c.18-.42.37-.42.55-.42h.46c.15 0 .35.05.53.28.18.23.7.86.7 2.06 0 1.2-.73 2.36-.84 2.52-.11.16-.16.37.02.7.18.33.8 1.27 1.74 2.06 1.21 1.01 2.23 1.33 2.56 1.47.33.14.52.12.71-.07.19-.18.82-.95 1.04-1.27.22-.33.44-.28.73-.16.29.12 1.84.86 2.15 1.02.31.16.52.23.6.35.07.12.07.7-.17 1.38-.24.67-1.39 1.28-1.95 1.37-.51.08-1.16.12-1.87-.11-.43-.14-.98-.32-1.69-.62-2.97-1.28-4.9-4.41-5.05-4.62-.14-.21-1.2-1.6-1.2-3.05 0-1.45.78-2.17.95-2.38z" fill="rgba(56,217,180,.92)"/>
+          </svg>
+        </div>
+        <div class="contact-txt">
+          <div class="contact-h">WhatsApp</div>
+          <div class="contact-s">+51 955 256 450</div>
+        </div>
+      </a>
+
+      <a class="contact-card li" href="https://www.linkedin.com/in/diego-pozo-abregu/" target="_blank" rel="noreferrer">
+        <div class="contact-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6.6 9.3H3.9V20h2.7V9.3z" fill="rgba(196,178,255,.95)"/>
+            <path d="M5.25 8.1c.92 0 1.66-.73 1.66-1.62S6.17 4.86 5.25 4.86c-.92 0-1.66.73-1.66 1.62S4.33 8.1 5.25 8.1z" fill="rgba(196,178,255,.95)"/>
+            <path d="M20.2 20h-2.7v-5.6c0-1.34-.02-3.06-1.93-3.06-1.93 0-2.22 1.45-2.22 2.96V20h-2.7V9.3h2.6v1.46h.04c.37-.68 1.3-1.4 2.67-1.4 2.86 0 3.39 1.82 3.39 4.18V20z" fill="rgba(196,178,255,.95)"/>
+          </svg>
+        </div>
+        <div class="contact-txt">
+          <div class="contact-h">LinkedIn</div>
+          <div class="contact-s">linkedin.com</div>
+        </div>
+      </a>
+
+      <a class="contact-card em" href="mailto:diegopozo@beyondhuman.services">
+        <div class="contact-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4.5 7.5h15v9.5c0 1.1-.9 2-2 2h-11c-1.1 0-2-.9-2-2V7.5z" stroke="rgba(242,240,237,.85)" stroke-width="1.5"/>
+            <path d="M5.2 8.2l6.4 5.1c.3.24.8.24 1.1 0l6.1-5" stroke="rgba(242,240,237,.70)" stroke-width="1.5" opacity=".95"/>
+          </svg>
+        </div>
+        <div class="contact-txt">
+          <div class="contact-h">Email</div>
+          <div class="contact-s">diegopozo@beyondhuman.services</div>
+        </div>
+      </a>
     </div>
 
     <div class="magnus-cards" style="margin-top:3.25rem">
