@@ -11,7 +11,9 @@ const OVERLAY_ASSET_BASE = "/pokemon-overlay-kit-expanded";
 const OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
 const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
-const OVERLAY_SIZE_SCALE = 1.6;
+// Global visual scale for all overlay actors.
+// Keep this conservative so sprites don't overpower the hero content.
+const OVERLAY_SIZE_SCALE = 1.35;
 const s = (px: number) => Math.round(px * OVERLAY_SIZE_SCALE);
 
 function getAssetVersion() {
@@ -125,7 +127,7 @@ function getOverlayOptions(
         pokemon: "GENGAR",
         anchorX: "4%",
         anchorY: "108px",
-        size: s(92),
+        size: s(84),
         floatX: 18,
         floatY: 12,
         facing: "right",
@@ -135,7 +137,7 @@ function getOverlayOptions(
         pokemon: "LUCARIO",
         anchorX: "89%",
         anchorY: "154px",
-        size: s(98),
+        size: s(88),
         floatX: 16,
         floatY: 11,
         facing: "left",
@@ -145,7 +147,7 @@ function getOverlayOptions(
         pokemon: "ARTICUNO",
         anchorX: "52%",
         anchorY: "112px",
-        size: s(92),
+        size: s(84),
         floatX: 20,
         floatY: 14,
         facing: "left",
@@ -162,7 +164,7 @@ function getOverlayOptions(
         startY: "6px",
         headerTop: "4px",
         headerHeight: "88px",
-        size: s(82),
+        size: s(76),
         speed: 11,
         floatY: 0.8,
         direction: 1,
@@ -176,7 +178,7 @@ function getOverlayOptions(
         startX: "5vw",
         minX: "2%",
         maxX: "18%",
-        size: s(90),
+        size: s(82),
         speed: 22,
         floatX: 10,
         floatY: 5,
@@ -188,7 +190,7 @@ function getOverlayOptions(
         startX: "28%",
         minX: "21%",
         maxX: "44%",
-        size: s(94),
+        size: s(86),
         speed: 24,
         floatX: 10,
         floatY: 5,
@@ -200,7 +202,7 @@ function getOverlayOptions(
         startX: "54%",
         minX: "49%",
         maxX: "70%",
-        size: s(96),
+        size: s(88),
         speed: 26,
         floatX: 10,
         floatY: 4,
@@ -212,7 +214,7 @@ function getOverlayOptions(
         startX: "72%",
         minX: "67%",
         maxX: "81%",
-        size: s(94),
+        size: s(86),
         speed: 23,
         floatX: 9,
         floatY: 5,
@@ -224,7 +226,7 @@ function getOverlayOptions(
         startX: "84%",
         minX: "80%",
         maxX: "92%",
-        size: s(92),
+        size: s(84),
         speed: 25,
         floatX: 9,
         floatY: 5,
@@ -236,7 +238,7 @@ function getOverlayOptions(
         startX: "18%",
         minX: "10%",
         maxX: "30%",
-        size: s(98),
+        size: s(90),
         speed: 28,
         floatX: 11,
         floatY: 5,
@@ -248,7 +250,7 @@ function getOverlayOptions(
         startX: "48%",
         minX: "40%",
         maxX: "62%",
-        size: s(104),
+        size: s(96),
         speed: 20,
         floatX: 12,
         floatY: 6,
@@ -260,7 +262,7 @@ function getOverlayOptions(
         startX: "92%",
         minX: "86%",
         maxX: "98%",
-        size: s(96),
+        size: s(88),
         speed: 18,
         floatX: 10,
         floatY: 5,
@@ -314,9 +316,9 @@ function getOverlayOptions(
       glow: "rgba(255, 107, 43, 0.24)",
       glow2: "rgba(56, 217, 180, 0.18)",
     },
-    cursorScale: 1.12,
-    cursorOffsetX: -26,
-    cursorOffsetY: -24,
+    cursorScale: 1.06,
+    cursorOffsetX: -24,
+    cursorOffsetY: -22,
     cursorSmoothing: 18,
   };
 }
