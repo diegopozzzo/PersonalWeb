@@ -365,6 +365,14 @@ class PixelCanvasSprite {
       action: sequence.action,
       orientation: sequence.orientation,
       frames: sequence.frames,
+      baseSourceSize: sequence.frames.reduce(
+        (acc, fr) => {
+          const ss = fr?.frame?.sourceSize
+          if (!ss) return acc
+          return { w: Math.max(acc.w, ss.w || 0), h: Math.max(acc.h, ss.h || 0) }
+        },
+        { w: 0, h: 0 }
+      ),
       loop,
       index: 0,
       elapsed: 0,
@@ -444,7 +452,9 @@ class PixelCanvasSprite {
     if (!currentFrame) return
 
     const rect = currentFrame.frame
-    const sourceSize = currentFrame.sourceSize
+    const sourceSize = this.current.baseSourceSize?.w
+      ? this.current.baseSourceSize
+      : currentFrame.sourceSize
     const spriteSource = currentFrame.spriteSourceSize
     const availableWidth = this.size - 8
     const availableHeight = this.size - 8
