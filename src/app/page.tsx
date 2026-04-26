@@ -9,7 +9,8 @@ const LANDING_HTML = `
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 :root { --bg:#0A0C10; --bg2:#0d1018; --surface:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); --white:#F2F0ED; --dim:rgba(242,240,237,0.45); --dimmer:rgba(242,240,237,0.22); --lavender:#FF6B2B; --teal:#38d9b4; --lav2:#FF9A70; --glow-lav:rgba(255,107,43,0.18); --glow-teal:rgba(56,217,180,0.14); }
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: auto; }
+html.cursor-on body { cursor: none; }
 body::before { content:''; position:fixed; inset:0; background-image: linear-gradient(rgba(255,107,43,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.03) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
 #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; display:block; }
 #cursor { position:fixed; width:10px; height:10px; background:var(--lavender); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition: width .2s, height .2s; mix-blend-mode:screen; }
@@ -159,6 +160,7 @@ window.__dbpaLandingInit = true;
 
 const cursorEl = document.getElementById('cursor');
 const ringEl = document.getElementById('cursor-ring');
+if (cursorEl && ringEl) document.documentElement.classList.add('cursor-on');
 document.addEventListener('mousemove', function(e) {
   if (!cursorEl || !ringEl) return;
   cursorEl.style.left = e.clientX + 'px';
