@@ -591,6 +591,13 @@ if ('IntersectionObserver' in window) {
 } else {
   document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('on'); });
 }
+
+// Fallback: ensure content is visible even if observer/timing fails.
+window.setTimeout(function() {
+  try {
+    document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('on'); });
+  } catch (_e) {}
+}, 120);
 `;
 
 export default function BrochurePage() {
