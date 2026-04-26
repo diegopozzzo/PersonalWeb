@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Script from "next/script";
 
 const BROCHURE_HTML = `
@@ -41,13 +40,14 @@ section { position:relative; z-index:10; }
 .btn-grad { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.85rem 2rem; transition: opacity .2s, transform .2s; display:inline-block; }
 .btn-grad:hover { opacity:.88; transform:translateY(-2px); }
 .btn-ghost { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--dim); border-bottom:1px solid var(--border); padding-bottom:2px; }
-.contact-cards{display:grid;grid-template-columns:1fr;gap:.9rem;margin:1.35rem 0 0;max-width:560px}
-.contact-card{display:flex;align-items:center;gap:1rem;padding:1rem 1.15rem;border:1px solid rgba(255,255,255,0.09);background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));text-decoration:none;position:relative;overflow:hidden}
+.contact-cards{display:flex;align-items:center;gap:.85rem;margin:1.35rem 0 0;max-width:560px}
+.contact-card{display:grid;place-items:center;width:54px;height:54px;border-radius:16px;border:1px solid rgba(255,255,255,0.10);background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));text-decoration:none;position:relative;overflow:hidden;transition:transform .2s ease,border-color .2s ease,background .2s ease}
 .contact-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%, rgba(56,217,180,0.10), transparent 55%), radial-gradient(circle at 85% 40%, rgba(255,107,43,0.10), transparent 58%);filter:blur(18px);opacity:.9;pointer-events:none}
-.contact-card:hover{border-color:rgba(56,217,180,0.25);transform:translateY(-1px)}
-.contact-ic{position:relative;z-index:2;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.35)}
+.contact-card:hover{border-color:rgba(56,217,180,0.25);transform:translateY(-2px)}
+.contact-card:focus-visible{outline:2px solid rgba(56,217,180,0.55);outline-offset:3px}
+.contact-ic{position:relative;z-index:2;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;border:1px solid rgba(255,255,255,0.10);background:rgba(10,12,16,0.25)}
 .contact-ic svg{width:20px;height:20px;display:block}
-.contact-txt{position:relative;z-index:2;display:flex;flex-direction:column;gap:.18rem;text-align:left}
+.contact-txt{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .contact-h{font-family:'Syne',sans-serif;font-weight:800;font-size:.92rem;color:rgba(242,240,237,.92)}
 .contact-s{font-size:.84rem;color:rgba(242,240,237,.48);letter-spacing:.01em}
 .contact-card.wa{border-color:rgba(56,217,180,0.18)}
@@ -103,8 +103,9 @@ section { position:relative; z-index:10; }
 .scope-bar.alt{background:linear-gradient(180deg, rgba(255,107,43,.82), rgba(255,107,43,.10));border-color:rgba(255,107,43,0.24)}
 .scope-foot{position:relative;z-index:2;margin-top:.75rem;font-size:.68rem;color:rgba(242,240,237,.42);line-height:1.55}
 .scope-foot b{color:rgba(242,240,237,.78)}
-.reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease; }
-.reveal.on { opacity:1; transform:translateY(0); }
+.reveal { opacity:1; transform:none; transition:opacity .8s ease, transform .8s ease; }
+.js .reveal { opacity:0; transform:translateY(28px); }
+.js .reveal.on { opacity:1; transform:translateY(0); }
 .reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
 @media (max-width:980px){
   .nav-links{display:none;}
@@ -126,21 +127,21 @@ section { position:relative; z-index:10; }
       <a href="/" class="btn-ghost">Back to website</a>
       <a href="/#contact" class="btn-grad">Contact</a>
     </div>
-    <div class="contact-cards reveal">
-      <a class="contact-card wa" href="https://wa.me/51955256450" target="_blank" rel="noreferrer">
+    <div class="contact-cards reveal" aria-label="Contact links">
+      <a class="contact-card wa" href="https://wa.me/51955256450" target="_blank" rel="noreferrer" aria-label="WhatsApp" title="WhatsApp">
         <div class="contact-ic" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M12 3.5C7.31 3.5 3.5 7.09 3.5 11.5c0 1.63.52 3.16 1.41 4.44L4 21l5.26-1.7c1.18.55 2.5.86 3.94.86 4.69 0 8.5-3.59 8.5-8s-3.81-8-8.7-8z" stroke="rgba(56,217,180,.95)" stroke-width="1.5" opacity=".95"/>
             <path d="M9.2 9.1c.18-.42.37-.42.55-.42h.46c.15 0 .35.05.53.28.18.23.7.86.7 2.06 0 1.2-.73 2.36-.84 2.52-.11.16-.16.37.02.7.18.33.8 1.27 1.74 2.06 1.21 1.01 2.23 1.33 2.56 1.47.33.14.52.12.71-.07.19-.18.82-.95 1.04-1.27.22-.33.44-.28.73-.16.29.12 1.84.86 2.15 1.02.31.16.52.23.6.35.07.12.07.7-.17 1.38-.24.67-1.39 1.28-1.95 1.37-.51.08-1.16.12-1.87-.11-.43-.14-.98-.32-1.69-.62-2.97-1.28-4.9-4.41-5.05-4.62-.14-.21-1.2-1.6-1.2-3.05 0-1.45.78-2.17.95-2.38z" fill="rgba(56,217,180,.92)"/>
           </svg>
         </div>
-        <div class="contact-txt">
+        <div class="contact-txt" aria-hidden="true">
           <div class="contact-h">WhatsApp</div>
           <div class="contact-s">+51 955 256 450</div>
         </div>
       </a>
 
-      <a class="contact-card li" href="https://www.linkedin.com/in/diego-pozo-abregu/" target="_blank" rel="noreferrer">
+      <a class="contact-card li" href="https://www.linkedin.com/in/diego-pozo-abregu/" target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn">
         <div class="contact-ic" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M6.6 9.3H3.9V20h2.7V9.3z" fill="rgba(196,178,255,.95)"/>
@@ -148,20 +149,20 @@ section { position:relative; z-index:10; }
             <path d="M20.2 20h-2.7v-5.6c0-1.34-.02-3.06-1.93-3.06-1.93 0-2.22 1.45-2.22 2.96V20h-2.7V9.3h2.6v1.46h.04c.37-.68 1.3-1.4 2.67-1.4 2.86 0 3.39 1.82 3.39 4.18V20z" fill="rgba(196,178,255,.95)"/>
           </svg>
         </div>
-        <div class="contact-txt">
+        <div class="contact-txt" aria-hidden="true">
           <div class="contact-h">LinkedIn</div>
           <div class="contact-s">linkedin.com</div>
         </div>
       </a>
 
-      <a class="contact-card em" href="mailto:diegopozo@beyondhuman.services">
+      <a class="contact-card em" href="mailto:diegopozo@beyondhuman.services" aria-label="Email" title="Email">
         <div class="contact-ic" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M4.5 7.5h15v9.5c0 1.1-.9 2-2 2h-11c-1.1 0-2-.9-2-2V7.5z" stroke="rgba(242,240,237,.85)" stroke-width="1.5"/>
             <path d="M5.2 8.2l6.4 5.1c.3.24.8.24 1.1 0l6.1-5" stroke="rgba(242,240,237,.70)" stroke-width="1.5" opacity=".95"/>
           </svg>
         </div>
-        <div class="contact-txt">
+        <div class="contact-txt" aria-hidden="true">
           <div class="contact-h">Email</div>
           <div class="contact-s">diegopozo@beyondhuman.services</div>
         </div>
@@ -330,6 +331,7 @@ const BROCHURE_JS = `
 'use strict';
 if (window.__dbpaBrochureInit) return;
 window.__dbpaBrochureInit = true;
+document.documentElement.classList.add('js');
 
 const cursorEl = document.getElementById('cursor');
 const ringEl = document.getElementById('cursor-ring');
@@ -601,34 +603,11 @@ window.setTimeout(function() {
 `;
 
 export default function BrochurePage() {
-  useEffect(() => {
-    let cancelled = false;
-    (window as any).__dbpaBrochureInit = false;
-    (window as any).__dbpaBrochureThreeInit = false;
-    const init = () => {
-      if (cancelled) return;
-      try {
-        // eslint-disable-next-line no-new-func
-        new Function(BROCHURE_JS)();
-      } catch (error) {
-        (window as any).__dbpaBrochureInit = false;
-        (window as any).__dbpaBrochureError = String(error);
-        // eslint-disable-next-line no-console
-        console.error("Brochure init failed", error);
-      }
-    };
-    // Run twice to avoid rare hydration/DOM timing issues.
-    init();
-    window.setTimeout(init, 250);
-    return () => {
-      cancelled = true;
-      (window as any).__dbpaBrochureInit = false;
-      (window as any).__dbpaBrochureThreeInit = false;
-    };
-  }, []);
-
   return (
     <>
+      <Script id="brochure-js" strategy="afterInteractive">
+        {BROCHURE_JS}
+      </Script>
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" strategy="beforeInteractive" />
       <div dangerouslySetInnerHTML={{ __html: BROCHURE_HTML }} />
     </>
