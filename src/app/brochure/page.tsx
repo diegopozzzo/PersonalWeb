@@ -339,15 +339,35 @@ document.addEventListener('mousemove', function(e) {
 document.querySelectorAll('a,button,input').forEach(function(el) {
   el.addEventListener('mouseenter', function() {
     if (!cursorEl || !ringEl) return;
-    cursorEl.style.width = '5px'; cursorEl.style.height = '5px';
-    ringEl.style.width = '54px'; ringEl.style.height = '54px';
+    cursorEl.style.width = '8px'; cursorEl.style.height = '8px';
+    ringEl.style.width = '58px'; ringEl.style.height = '58px';
+    ringEl.style.borderColor = 'rgba(56,217,180,0.55)';
+    ringEl.style.boxShadow = '0 0 0 1px rgba(56,217,180,0.14), 0 0 28px rgba(56,217,180,0.16)';
   });
   el.addEventListener('mouseleave', function() {
     if (!cursorEl || !ringEl) return;
     cursorEl.style.width = '10px'; cursorEl.style.height = '10px';
     ringEl.style.width = '36px'; ringEl.style.height = '36px';
+    ringEl.style.borderColor = 'rgba(255,107,43,0.4)';
+    ringEl.style.boxShadow = 'none';
   });
 });
+
+(function() {
+  var nav = document.getElementById('nav');
+  if (!nav || !cursorEl || !ringEl) return;
+  nav.addEventListener('mouseenter', function() {
+    ringEl.style.width = '66px'; ringEl.style.height = '66px';
+    ringEl.style.borderColor = 'rgba(255,107,43,0.55)';
+    ringEl.style.boxShadow = '0 0 0 1px rgba(255,107,43,0.16), 0 0 34px rgba(255,107,43,0.16)';
+  });
+  nav.addEventListener('mouseleave', function() {
+    ringEl.style.width = '36px'; ringEl.style.height = '36px';
+    ringEl.style.borderColor = 'rgba(255,107,43,0.4)';
+    ringEl.style.boxShadow = 'none';
+    cursorEl.style.width = '10px'; cursorEl.style.height = '10px';
+  });
+})();
 
 window.addEventListener('scroll', function() {
   var nav = document.getElementById('nav');

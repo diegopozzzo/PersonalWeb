@@ -694,7 +694,8 @@ class OverlayActor {
   }
 
   currentScale() {
-    return this.hovered ? 1.06 : 1
+    // Keep a constant visual size (no hover scaling).
+    return 1
   }
 
   onPointerEnter() {
