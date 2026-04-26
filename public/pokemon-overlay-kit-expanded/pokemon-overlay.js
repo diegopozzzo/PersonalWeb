@@ -119,6 +119,42 @@ const POKEMON_LIBRARY = {
     moveAction: "Walk",
     reactAction: "Stomp",
     topAction: "Idle"
+  },
+  CHARIZARD: {
+    id: "0006",
+    label: "Charizard",
+    role: "roster",
+    idleAction: "Idle",
+    moveAction: "Walk",
+    reactAction: "Hurt",
+    topAction: "Idle"
+  },
+  GYARADOS: {
+    id: "0130",
+    label: "Gyarados",
+    role: "roster",
+    idleAction: "Idle",
+    moveAction: "Walk",
+    reactAction: "Hurt",
+    topAction: "Idle"
+  },
+  LAPRAS: {
+    id: "0131",
+    label: "Lapras",
+    role: "roster",
+    idleAction: "Idle",
+    moveAction: "Walk",
+    reactAction: "Hurt",
+    topAction: "Idle"
+  },
+  ARTICUNO: {
+    id: "0144",
+    label: "Articuno",
+    role: "roster",
+    idleAction: "Idle",
+    moveAction: "Walk",
+    reactAction: "Hurt",
+    topAction: "Idle"
   }
 }
 
@@ -141,7 +177,11 @@ const DEFAULT_OPTIONS = {
     "SQUIRTLE",
     "LUCARIO",
     "MEW",
-    "SNORLAX"
+    "SNORLAX",
+    "CHARIZARD",
+    "GYARADOS",
+    "LAPRAS",
+    "ARTICUNO"
   ],
   showToolbar: true,
   toolbarCollapsed: false,

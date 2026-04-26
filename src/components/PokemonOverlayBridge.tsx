@@ -73,7 +73,7 @@ function getOverlayOptions(lang: "en" | "es") {
     lang === "es"
       ? {
           toolbarTitle: "Cursor roster",
-          toolbarSubtitle: "12 Pokemon | abre el selector y cambia el cursor",
+          toolbarSubtitle: "16 Pokemon | abre el selector y cambia el cursor",
           toolbarToggleHide: "Ocultar",
           toolbarToggleShow: "Mostrar",
           toolbarHint: "Click o arrastra los Pokemon visibles",
@@ -91,7 +91,7 @@ function getOverlayOptions(lang: "en" | "es") {
         }
       : {
           toolbarTitle: "Cursor roster",
-          toolbarSubtitle: "12 Pokemon | open the selector and switch the cursor",
+          toolbarSubtitle: "16 Pokemon | open the selector and switch the cursor",
           toolbarToggleHide: "Hide",
           toolbarToggleShow: "Show",
           toolbarHint: "Click or drag the visible Pokemon",
@@ -119,7 +119,6 @@ function getOverlayOptions(lang: "en" | "es") {
         floatX: 18,
         floatY: 12,
         facing: "right",
-        interactive: false,
       },
       {
         pokemon: "LUCARIO",
@@ -129,7 +128,6 @@ function getOverlayOptions(lang: "en" | "es") {
         floatX: 16,
         floatY: 11,
         facing: "left",
-        interactive: false,
       },
     ],
     centerCompanions: [],
@@ -225,6 +223,10 @@ function getOverlayOptions(lang: "en" | "es") {
       "LUCARIO",
       "MEW",
       "SNORLAX",
+      "CHARIZARD",
+      "GYARADOS",
+      "LAPRAS",
+      "ARTICUNO",
     ],
     showToolbar: true,
     toolbarCollapsed: true,
