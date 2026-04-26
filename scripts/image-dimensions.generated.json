@@ -1,0 +1,22 @@
+{
+  "/brochure/agents.png": {
+    "width": 1024,
+    "height": 461,
+    "webp": "/brochure/agents.webp"
+  },
+  "/brochure/forecast.png": {
+    "width": 1024,
+    "height": 608,
+    "webp": "/brochure/forecast.webp"
+  },
+  "/brochure/scope.jpg": {
+    "width": 1280,
+    "height": 720,
+    "webp": "/brochure/scope.webp"
+  },
+  "/diegopozo.png": {
+    "width": 640,
+    "height": 640,
+    "webp": "/diegopozo.webp"
+  }
+}

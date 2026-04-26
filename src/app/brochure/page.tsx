@@ -176,7 +176,10 @@ section { position:relative; z-index:10; }
         <div class="mc-title">Industrial AI that runs the business (not just the plant)</div>
         <div class="mc-desc" data-i18n-key="scope_desc">SCOPE is a multi-agent industrial AI system that discovers environments, builds a living knowledge graph, and executes work across <b>operations</b>, <b>maintenance</b>, <b>quality</b>, and <b>finance</b>. It reads live signals, explains what matters, and delivers actions and reports automatically.</div>
         <div class="media-shot">
-          <img src="/brochure/scope.jpg" alt="SCOPE demo preview" loading="lazy" />
+          <picture>
+            <source srcset="/brochure/scope.webp" type="image/webp" />
+            <img src="/brochure/scope.jpg" alt="SCOPE demo preview" width="1280" height="720" loading="lazy" decoding="async" />
+          </picture>
           <div class="media-cap"><span data-i18n-key="scope_cap_1"><b>SCOPE</b> · Demo snapshot</span><span data-i18n-key="scope_cap_2">From the live demo video</span></div>
         </div>
         <ul class="news-list">
@@ -218,7 +221,10 @@ section { position:relative; z-index:10; }
         <div class="project-title" style="font-size:1.25rem;font-weight:800;margin-bottom:.8rem;">Agents that execute — not chat</div>
         <div class="project-desc" data-i18n-key="agents_desc">The core value is <b>throughput</b>: agents that understand context, follow business rules, and reliably execute tasks across tools (APIs, DBs, docs, email, calendars). Less busywork. Faster cycles. Fewer errors.</div>
         <div class="media-shot">
-          <img src="/brochure/agents.png" alt="End-to-end agents dashboard screenshot" loading="lazy" />
+          <picture>
+            <source srcset="/brochure/agents.webp" type="image/webp" />
+            <img src="/brochure/agents.png" alt="End-to-end agents dashboard screenshot" width="1024" height="461" loading="lazy" decoding="async" />
+          </picture>
           <div class="media-cap"><span data-i18n-key="agents_cap_1"><b>Agents</b> · End-to-end execution</span><span data-i18n-key="agents_cap_2">Operational workflow snapshot</span></div>
         </div>
         <div class="project-tech">
@@ -231,7 +237,10 @@ section { position:relative; z-index:10; }
         <div class="project-title" style="font-size:1.25rem;font-weight:800;margin-bottom:.8rem;">Plan with confidence (demand, capacity, cash)</div>
         <div class="project-desc">Forecast.com turns historical data into actionable projections: scenarios, trends, and planning horizons you can trust — built for operational and commercial decisions.</div>
         <div class="media-shot">
-          <img src="/brochure/forecast.png" alt="Forecast dashboard screenshot" loading="lazy" />
+          <picture>
+            <source srcset="/brochure/forecast.webp" type="image/webp" />
+            <img src="/brochure/forecast.png" alt="Forecast dashboard screenshot" width="1024" height="608" loading="lazy" decoding="async" />
+          </picture>
           <div class="media-cap"><span data-i18n-key="forecast_cap_1"><b>Forecast</b> · Predictive models</span><span data-i18n-key="forecast_cap_2">Platform UI snapshot</span></div>
         </div>
         <div class="hero-btns" style="margin-top:1.2rem;opacity:1;animation:none;">
@@ -709,7 +718,7 @@ export default function BrochurePage() {
       <Script id="brochure-js" strategy="afterInteractive">
         {BROCHURE_JS}
       </Script>
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" strategy="beforeInteractive" />
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" strategy="afterInteractive" />
       <div dangerouslySetInnerHTML={{ __html: BROCHURE_HTML }} />
     </>
   );
