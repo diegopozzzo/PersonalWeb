@@ -1138,6 +1138,8 @@ class PokemonOverlay {
     this.toolbarButtons = new Map()
     this.running = true
     this.lastTick = performance.now()
+    this.accumulator = 0
+    this.targetStep = 1 / 30
     this.pointerX = window.innerWidth / 2
     this.pointerY = window.innerHeight / 2
     this.pointerMove = this.pointerMove.bind(this)
@@ -1168,6 +1170,11 @@ class PokemonOverlay {
     window.addEventListener("pointermove", this.pointerMove, { passive: true })
     window.addEventListener("pointerdown", this.pointerDown, { passive: true })
     window.addEventListener("resize", this.onResize)
+    document.addEventListener("visibilitychange", () => {
+      // Reset timing after tab resumes to avoid huge catch-up frames.
+      this.lastTick = performance.now()
+      this.accumulator = 0
+    })
 
     this.ready = Promise.all([
       this.cursor.ready,
@@ -1499,11 +1506,28 @@ class PokemonOverlay {
   tick(now) {
     if (!this.running) return
 
+    if (document.hidden) {
+      this.lastTick = now
+      requestAnimationFrame(this.tick)
+      return
+    }
+
     const deltaSeconds = Math.min((now - this.lastTick) / 1000, 0.05)
     this.lastTick = now
 
-    this.actors.forEach((actor) => actor.update(now, deltaSeconds))
-    this.resolveActorOverlaps(deltaSeconds)
+    // Throttle actor simulation to ~30fps to reduce CPU usage.
+    this.accumulator += deltaSeconds
+    const step = this.targetStep
+    const maxSteps = 2
+    let steps = 0
+    while (this.accumulator >= step && steps < maxSteps) {
+      this.actors.forEach((actor) => actor.update(now, step))
+      this.resolveActorOverlaps(step)
+      this.accumulator -= step
+      steps += 1
+    }
+
+    // Cursor stays smooth; it's cheap compared to actor updates.
     this.cursor.update(deltaSeconds)
 
     requestAnimationFrame(this.tick)

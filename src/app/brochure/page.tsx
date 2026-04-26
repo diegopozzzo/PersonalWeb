@@ -636,6 +636,8 @@ window.addEventListener('scroll', function() {
       y: Math.random() * h,
       r: 0.6 + Math.random() * 1.6,
       z: 0.2 + Math.random() * 0.8,
+      vx: (Math.random() - 0.5) * (0.18 + Math.random() * 0.25),
+      vy: (Math.random() - 0.5) * (0.18 + Math.random() * 0.25),
       tw: Math.random() * Math.PI * 2
     });
   }
@@ -660,11 +662,17 @@ window.addEventListener('scroll', function() {
     ctx.fillStyle = g2;
     ctx.fillRect(0, 0, w, h);
 
-    // stars
+    // stars (with slow drift + parallax)
     for (var s = 0; s < stars.length; s++) {
       var st = stars[s];
+      st.x += st.vx * (0.35 + st.z) * 0.55;
+      st.y += st.vy * (0.35 + st.z) * 0.55;
+      if (st.x < -10) st.x = w + 10;
+      if (st.x > w + 10) st.x = -10;
+      if (st.y < -10) st.y = h + 10;
+      if (st.y > h + 10) st.y = -10;
       st.tw += 0.02 + st.z * 0.03;
-      var a = 0.22 + (Math.sin(st.tw) * 0.08 + 0.08) * st.z;
+      var a = 0.30 + (Math.sin(st.tw) * 0.12 + 0.10) * st.z;
       var px = st.x + gx * 18 * st.z;
       var py = st.y + gy * 14 * st.z;
       ctx.fillStyle = 'rgba(242,240,237,' + a.toFixed(3) + ')';
