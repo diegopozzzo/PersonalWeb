@@ -1142,6 +1142,7 @@ class PokemonOverlay {
     // Simulate actors at ~20fps (cursor stays smooth).
     this.targetStep = 1 / 20
     this.overlapTick = 0
+    this.lastActiveAt = performance.now()
     this.pointerX = window.innerWidth / 2
     this.pointerY = window.innerHeight / 2
     this.pointerMove = this.pointerMove.bind(this)
@@ -1515,11 +1516,13 @@ class PokemonOverlay {
   pointerMove(event) {
     this.pointerX = event.clientX
     this.pointerY = event.clientY
+    this.lastActiveAt = performance.now()
     this.cursor.updateTarget(this.pointerX, this.pointerY)
   }
 
   pointerDown(event) {
     this.cursor.react()
+    this.lastActiveAt = performance.now()
 
     if (!this.toolbar || this.toolbar.classList.contains("is-collapsed")) {
       return
@@ -1537,6 +1540,9 @@ class PokemonOverlay {
 
   setDraggingState(isDragging) {
     document.body.classList.toggle("pk-overlay-dragging", Boolean(isDragging))
+    if (isDragging) {
+      this.lastActiveAt = performance.now()
+    }
   }
 
   onResize() {
@@ -1556,9 +1562,11 @@ class PokemonOverlay {
     const deltaSeconds = Math.min((now - this.lastTick) / 1000, 0.05)
     this.lastTick = now
 
-    // Throttle actor simulation to ~30fps to reduce CPU usage.
+    // Throttle actor simulation aggressively when idle to reduce CPU.
     this.accumulator += deltaSeconds
-    const step = this.targetStep
+    const idleForMs = now - (this.lastActiveAt || 0)
+    const idle = idleForMs > 1200 && !document.body.classList.contains("pk-overlay-dragging")
+    const step = idle ? Math.max(this.targetStep, 1 / 12) : this.targetStep
     const maxSteps = 1
     let steps = 0
     while (this.accumulator >= step && steps < maxSteps) {
