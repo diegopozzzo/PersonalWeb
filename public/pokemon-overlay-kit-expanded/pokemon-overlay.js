@@ -1189,64 +1189,97 @@ class PokemonOverlay {
   }
 
   resolveActorOverlaps(deltaSeconds) {
-    // Lightweight separation pass so actors don't stack on top of each other.
-    // Keep it cheap: only a few iterations and only between actors (cursor excluded).
+    // Separation pass so actors don't stack on top of each other.
+    // IMPORTANT perf: use a spatial hash to avoid O(n^2) checks as actor count grows.
     const actors = this.actors
       .filter((a) => a && a.element && a.asset)
       .filter((a) => !a.dragging)
 
     if (actors.length < 2) return
 
-    const iter = 2
     const padding = 8
 
-    for (let k = 0; k < iter; k += 1) {
-      for (let i = 0; i < actors.length; i += 1) {
-        for (let j = i + 1; j < actors.length; j += 1) {
-          const a = actors[i]
-          const b = actors[j]
+    // Cell size tuned for sprite sizes (~76-96) plus padding.
+    const cellSize = 140
+    const grid = new Map()
+    const keyOf = (cx, cy) => `${cx},${cy}`
 
-          // Prefer separating within the same band (top/top, bottom/bottom, header/header).
-          // Center actors repel everyone since they sit in the middle.
-          const sameBand =
-            a.options.role === b.options.role ||
-            a.options.role === "center" ||
-            b.options.role === "center"
+    // Build grid: put actors into cells by center point.
+    for (let i = 0; i < actors.length; i += 1) {
+      const a = actors[i]
+      const cx = Math.floor((a.x + a.scale / 2) / cellSize)
+      const cy = Math.floor((a.y + a.scale / 2) / cellSize)
+      const key = keyOf(cx, cy)
+      const bucket = grid.get(key)
+      if (bucket) bucket.push(i)
+      else grid.set(key, [i])
+    }
 
-          if (!sameBand) continue
+    // Only check neighbors (3x3 cells). Use a pair set to avoid duplicates.
+    const pairSeen = new Set()
 
-          const ax = a.x + a.scale / 2
-          const ay = a.y + a.scale / 2
-          const bx = b.x + b.scale / 2
-          const by = b.y + b.scale / 2
-          const dx = ax - bx
-          const dy = ay - by
+    for (let i = 0; i < actors.length; i += 1) {
+      const a = actors[i]
+      const acx = Math.floor((a.x + a.scale / 2) / cellSize)
+      const acy = Math.floor((a.y + a.scale / 2) / cellSize)
 
-          const minDist = (a.scale + b.scale) * 0.34 + padding
-          const dist = Math.hypot(dx, dy) || 0.0001
-          if (dist >= minDist) continue
+      for (let ox = -1; ox <= 1; ox += 1) {
+        for (let oy = -1; oy <= 1; oy += 1) {
+          const bucket = grid.get(keyOf(acx + ox, acy + oy))
+          if (!bucket) continue
 
-          const push = (minDist - dist) * 0.5
-          const nx = dx / dist
-          const ny = dy / dist
+          for (let bi = 0; bi < bucket.length; bi += 1) {
+            const j = bucket[bi]
+            if (j <= i) continue
 
-          // Make the push subtle and stable across frame rates.
-          const strength = clamp(deltaSeconds * 10, 0.2, 1)
-          const px = nx * push * strength
-          const py = ny * push * strength
+            const pairKey = i < j ? `${i}:${j}` : `${j}:${i}`
+            if (pairSeen.has(pairKey)) continue
+            pairSeen.add(pairKey)
 
-          // Top / header actors should not drift vertically too much.
-          const lockY =
-            a.options.role === "top" ||
-            a.options.role === "header" ||
-            a.options.role === "bottom"
+            const b = actors[j]
 
-          a.x = clamp(a.x + px, 0, window.innerWidth - a.scale)
-          b.x = clamp(b.x - px, 0, window.innerWidth - b.scale)
+            // Prefer separating within the same band (top/top, bottom/bottom, header/header).
+            // Center actors repel everyone since they sit in the middle.
+            const sameBand =
+              a.options.role === b.options.role ||
+              a.options.role === "center" ||
+              b.options.role === "center"
 
-          if (!lockY) {
-            a.y = clamp(a.y + py, 0, window.innerHeight - a.scale)
-            b.y = clamp(b.y - py, 0, window.innerHeight - b.scale)
+            if (!sameBand) continue
+
+            const ax = a.x + a.scale / 2
+            const ay = a.y + a.scale / 2
+            const bx = b.x + b.scale / 2
+            const by = b.y + b.scale / 2
+            const dx = ax - bx
+            const dy = ay - by
+
+            const minDist = (a.scale + b.scale) * 0.34 + padding
+            const dist = Math.hypot(dx, dy) || 0.0001
+            if (dist >= minDist) continue
+
+            const push = (minDist - dist) * 0.5
+            const nx = dx / dist
+            const ny = dy / dist
+
+            // Make the push subtle and stable across frame rates.
+            const strength = clamp(deltaSeconds * 10, 0.2, 1)
+            const px = nx * push * strength
+            const py = ny * push * strength
+
+            // Top / header actors should not drift vertically too much.
+            const lockY =
+              a.options.role === "top" ||
+              a.options.role === "header" ||
+              a.options.role === "bottom"
+
+            a.x = clamp(a.x + px, 0, window.innerWidth - a.scale)
+            b.x = clamp(b.x - px, 0, window.innerWidth - b.scale)
+
+            if (!lockY) {
+              a.y = clamp(a.y + py, 0, window.innerHeight - a.scale)
+              b.y = clamp(b.y - py, 0, window.innerHeight - b.scale)
+            }
           }
         }
       }
