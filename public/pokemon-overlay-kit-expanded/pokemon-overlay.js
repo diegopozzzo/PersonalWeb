@@ -1139,8 +1139,9 @@ class PokemonOverlay {
     this.running = true
     this.lastTick = performance.now()
     this.accumulator = 0
-    // Simulate actors at ~24fps (cursor stays smooth).
-    this.targetStep = 1 / 24
+    // Simulate actors at ~20fps (cursor stays smooth).
+    this.targetStep = 1 / 20
+    this.overlapTick = 0
     this.pointerX = window.innerWidth / 2
     this.pointerY = window.innerHeight / 2
     this.pointerMove = this.pointerMove.bind(this)
@@ -1525,11 +1526,16 @@ class PokemonOverlay {
     // Throttle actor simulation to ~30fps to reduce CPU usage.
     this.accumulator += deltaSeconds
     const step = this.targetStep
-    const maxSteps = 2
+    const maxSteps = 1
     let steps = 0
     while (this.accumulator >= step && steps < maxSteps) {
       this.actors.forEach((actor) => actor.update(now, step))
-      this.resolveActorOverlaps(step)
+      // Overlap resolution can get expensive as actor count grows.
+      // Running it every other simulation step keeps separation while cutting CPU.
+      this.overlapTick = (this.overlapTick + 1) | 0
+      if ((this.overlapTick & 1) === 0) {
+        this.resolveActorOverlaps(step)
+      }
       this.accumulator -= step
       steps += 1
     }
