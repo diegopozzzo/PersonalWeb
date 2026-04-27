@@ -267,7 +267,8 @@ function getOverlayOptions(
     cursorScale: 1.0,
     cursorOffsetX: -18,
     cursorOffsetY: -18,
-    cursorSmoothing: 18,
+    // Lower smoothing => cursor tracks closer to 1:1 with the real mouse.
+    cursorSmoothing: 6,
   };
 }
 
