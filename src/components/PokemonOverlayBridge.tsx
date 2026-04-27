@@ -409,7 +409,13 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
       queueOverlayMount();
     };
 
-    mountOverlay();
+    // Give the landing page a head start (LCP/INP) before the overlay mounts.
+    // This also reduces contention with the background animation and fonts on first paint.
+    window.setTimeout(() => {
+      if (!cancelled) {
+        mountOverlay();
+      }
+    }, 650);
 
     const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
     langButtons.forEach((button) => {

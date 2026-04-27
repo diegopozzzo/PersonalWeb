@@ -1,9 +1,11 @@
 ﻿"use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import Script from "next/script";
-import PokemonOverlayBridge from "@/components/PokemonOverlayBridge";
 import LandingHero from "@/components/LandingHero";
+
+const PokemonOverlayBridge = dynamic(() => import("@/components/PokemonOverlayBridge"), { ssr: false });
 
 const LANDING_HTML_HEAD = `
 <style>
