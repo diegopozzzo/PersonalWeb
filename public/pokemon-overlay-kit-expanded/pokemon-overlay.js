@@ -160,6 +160,7 @@ const POKEMON_LIBRARY = {
 
 const DEFAULT_OPTIONS = {
   root: document.body,
+  showCursor: true,
   cursorPokemon: "HONEDGE",
   topCompanions: ["PIKACHU", "EEVEE", "MEW"],
   centerCompanions: [],
@@ -1154,12 +1155,14 @@ class PokemonOverlay {
     this.badge.className = "pk-overlay-badge"
 
     this.cursorPokemon = this.resolveInitialCursor()
-    this.cursor = new OverlayCursor(this, this.cursorPokemon)
+    this.cursor = this.options.showCursor === false ? null : new OverlayCursor(this, this.cursorPokemon)
 
     this.applyTheme()
     this.root.appendChild(this.badge)
     this.options.root.appendChild(this.root)
-    document.body.classList.add("pk-overlay-cursor-enabled")
+    if (this.cursor) {
+      document.body.classList.add("pk-overlay-cursor-enabled")
+    }
 
     this.createTopActors()
     this.createCenterActors()
@@ -1180,7 +1183,7 @@ class PokemonOverlay {
     })
 
     this.ready = Promise.all([
-      this.cursor.ready,
+      ...(this.cursor ? [this.cursor.ready] : []),
       ...this.actors.map((actor) => actor.ready)
     ]).then(() => {
       this.refreshSelectionState()
@@ -1517,11 +1520,15 @@ class PokemonOverlay {
     this.pointerX = event.clientX
     this.pointerY = event.clientY
     this.lastActiveAt = performance.now()
-    this.cursor.updateTarget(this.pointerX, this.pointerY)
+    if (this.cursor) {
+      this.cursor.updateTarget(this.pointerX, this.pointerY)
+    }
   }
 
   pointerDown(event) {
-    this.cursor.react()
+    if (this.cursor) {
+      this.cursor.react()
+    }
     this.lastActiveAt = performance.now()
 
     if (!this.toolbar || this.toolbar.classList.contains("is-collapsed")) {
@@ -1582,7 +1589,9 @@ class PokemonOverlay {
     }
 
     // Cursor stays smooth; it's cheap compared to actor updates.
-    this.cursor.update(deltaSeconds)
+    if (this.cursor) {
+      this.cursor.update(deltaSeconds)
+    }
 
     requestAnimationFrame(this.tick)
   }
@@ -1591,7 +1600,9 @@ class PokemonOverlay {
     if (!POKEMON_LIBRARY[key]) return
 
     this.cursorPokemon = key
-    await this.cursor.setPokemon(key)
+    if (this.cursor) {
+      await this.cursor.setPokemon(key)
+    }
     this.refreshSelectionState()
 
     try {
@@ -1631,7 +1642,9 @@ class PokemonOverlay {
     window.removeEventListener("pointerdown", this.pointerDown)
     window.removeEventListener("resize", this.onResize)
     this.actors.forEach((actor) => actor.destroy())
-    this.cursor.destroy()
+    if (this.cursor) {
+      this.cursor.destroy()
+    }
     this.root.remove()
     document.body.classList.remove("pk-overlay-cursor-enabled")
     document.body.classList.remove("pk-overlay-dragging")

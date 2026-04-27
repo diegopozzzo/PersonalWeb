@@ -62,7 +62,8 @@
 }
 
 .pk-overlay-actor.header {
-  z-index: 560;
+  /* Above site nav (nav is ~1200) so the header walker is always visible */
+  z-index: 1250;
 }
 
 .pk-overlay-actor.center {

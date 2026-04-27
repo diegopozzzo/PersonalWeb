@@ -79,6 +79,7 @@ function getOverlayOptions(
   lang: "en" | "es",
   options: {
     toolbarCollapsed?: boolean;
+    minimal?: boolean;
   } = {}
 ) {
   const copy =
@@ -121,8 +122,11 @@ function getOverlayOptions(
         };
 
   return {
+    showCursor: options.minimal ? false : true,
     cursorPokemon: "HONEDGE",
-    topCompanions: [
+    topCompanions: options.minimal
+      ? []
+      : [
       {
         pokemon: "GENGAR",
         anchorX: "4%",
@@ -162,7 +166,9 @@ function getOverlayOptions(
         mountToBody: true,
       },
     ],
-    bottomWalkers: [
+    bottomWalkers: options.minimal
+      ? []
+      : [
       {
         pokemon: "CHARMANDER",
         startX: "18%",
@@ -230,7 +236,7 @@ function getOverlayOptions(
       "LAPRAS",
       "ARTICUNO",
     ],
-    showToolbar: true,
+    showToolbar: options.minimal ? false : true,
     toolbarCollapsed: options.toolbarCollapsed ?? true,
     toolbarTitle: copy.toolbarTitle,
     toolbarSubtitle: copy.toolbarSubtitle,
@@ -344,11 +350,7 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
         return;
       }
 
-      if (isOverlayDisabled()) {
-        destroyOverlay();
-        ensureLauncher();
-        return;
-      }
+      const disabled = isOverlayDisabled();
 
       const bootId = bootRef.current + 1;
       bootRef.current = bootId;
@@ -371,12 +373,17 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
         removeLauncher();
         destroyOverlay();
         overlayRef.current = overlayModule.createPokemonOverlay({
-          ...getOverlayOptions(lang, { toolbarCollapsed: toolbarCollapsedRef.current }),
-          onDisable: () => {
-            setOverlayDisabled(true);
-            destroyOverlay();
-            ensureLauncher();
-          },
+          ...getOverlayOptions(lang, {
+            toolbarCollapsed: toolbarCollapsedRef.current,
+            minimal: disabled,
+          }),
+          onDisable: disabled
+            ? undefined
+            : () => {
+                setOverlayDisabled(true);
+                destroyOverlay();
+                ensureLauncher();
+              },
         });
       } catch (error) {
         console.error("Pokemon overlay failed to load", error);
