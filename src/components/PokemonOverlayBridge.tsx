@@ -8,7 +8,10 @@ type OverlayInstance = {
 
 const STYLESHEET_ID = "dbpa-pokemon-overlay-styles";
 const OVERLAY_ASSET_BASE = "/pokemon-overlay-kit-expanded";
-const OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
+/** User explicitly enabled the Pokémon cursor overlay (`localStorage`): `dbpa_overlay_enabled=1`. */
+const OVERLAY_ENABLED_KEY = "dbpa_overlay_enabled";
+/** Legacy hide flag from older builds; honoured until user clicks Enable Pokemon (then cleared). */
+const LEGACY_OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
 const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
 // Global visual scale for all overlay actors.
@@ -48,28 +51,29 @@ function getCurrentLang(): "en" | "es" {
   return document.documentElement.lang === "es" ? "es" : "en";
 }
 
-function isDesktopOverlayAllowed() {
-  // Allow the overlay on smaller screens and touch devices too.
-  // It uses Pointer Events, so drag/click still works on mobile.
-  return window.innerWidth > 760;
+function isOverlayViewportOk() {
+  return typeof window !== "undefined" && window.innerWidth > 380;
 }
 
-function isOverlayDisabled() {
+function isOverlayOptedIn() {
   try {
-    return window.localStorage.getItem(OVERLAY_DISABLED_KEY) === "1";
+    if (window.localStorage.getItem(LEGACY_OVERLAY_DISABLED_KEY) === "1") {
+      return false;
+    }
+    return window.localStorage.getItem(OVERLAY_ENABLED_KEY) === "1";
   } catch (_error) {
     return false;
   }
 }
 
-function setOverlayDisabled(value: boolean) {
+function persistOverlayOptIn(value: boolean) {
   try {
     if (value) {
-      window.localStorage.setItem(OVERLAY_DISABLED_KEY, "1");
+      window.localStorage.setItem(OVERLAY_ENABLED_KEY, "1");
+      window.localStorage.removeItem(LEGACY_OVERLAY_DISABLED_KEY);
       return;
     }
-
-    window.localStorage.removeItem(OVERLAY_DISABLED_KEY);
+    window.localStorage.removeItem(OVERLAY_ENABLED_KEY);
   } catch (_error) {
     // ignore storage failures
   }
@@ -295,7 +299,7 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
     const ensureLauncher = () => {
       removeLauncher();
 
-      if (!isDesktopOverlayAllowed() || !isOverlayDisabled()) {
+      if (!isOverlayViewportOk() || isOverlayOptedIn()) {
         return;
       }
 
@@ -323,7 +327,7 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
       launcher.style.backdropFilter = "blur(16px)";
 
       const handleLauncherClick = () => {
-        setOverlayDisabled(false);
+        persistOverlayOptIn(true);
         removeLauncher();
         void mountOverlay();
       };
@@ -345,13 +349,17 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
       const assetVersion = getAssetVersion();
       ensureStylesheet(assetVersion);
 
-      if (!isDesktopOverlayAllowed()) {
+      if (!isOverlayViewportOk()) {
         destroyOverlay();
         removeLauncher();
         return;
       }
 
-      const disabled = isOverlayDisabled();
+      if (!isOverlayOptedIn()) {
+        destroyOverlay();
+        ensureLauncher();
+        return;
+      }
 
       const bootId = bootRef.current + 1;
       bootRef.current = bootId;
@@ -376,15 +384,13 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
         overlayRef.current = overlayModule.createPokemonOverlay({
           ...getOverlayOptions(lang, {
             toolbarCollapsed: toolbarCollapsedRef.current,
-            minimal: disabled,
+            minimal: false,
           }),
-          onDisable: disabled
-            ? undefined
-            : () => {
-                setOverlayDisabled(true);
-                destroyOverlay();
-                ensureLauncher();
-              },
+          onDisable: () => {
+            persistOverlayOptIn(false);
+            destroyOverlay();
+            ensureLauncher();
+          },
         });
       } catch (error) {
         console.error("Pokemon overlay failed to load", error);
@@ -407,21 +413,27 @@ export default function PokemonOverlayBridge(props: { toolbarCollapsed?: boolean
     };
 
     const handleLanguageClick = () => {
-      if (isOverlayDisabled()) {
+      if (!isOverlayOptedIn()) {
         ensureLauncher();
         return;
       }
-
       queueOverlayMount();
     };
 
-    // Give the landing page a head start (LCP/INP) before the overlay mounts.
-    // This also reduces contention with the background animation and fonts on first paint.
-    window.setTimeout(() => {
-      if (!cancelled) {
-        mountOverlay();
+    const bootstrapOverlay = () => {
+      if (cancelled) return;
+      if (isOverlayOptedIn()) {
+        queueOverlayMount();
+      } else {
+        ensureLauncher();
       }
-    }, 650);
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(() => bootstrapOverlay(), { timeout: 1400 });
+    } else {
+      window.setTimeout(bootstrapOverlay, 400);
+    }
 
     const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
     langButtons.forEach((button) => {

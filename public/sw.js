@@ -1,5 +1,5 @@
 /* Minimal SW: cache-first for hashed static, SWR for navigations */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC_CACHE = `static-${VERSION}`;
 const HTML_CACHE = `html-${VERSION}`;
 

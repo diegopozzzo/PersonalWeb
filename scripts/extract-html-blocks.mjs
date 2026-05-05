@@ -1,0 +1,82 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.join(__dirname, "..");
+const pagePath = path.join(root, "src", "app", "page.tsx");
+const page = fs.readFileSync(pagePath, "utf8");
+if (!page.includes("const LANDING_HTML_HEAD = `")) {
+  console.error(
+    "extract-html-blocks: src/app/page.tsx no longer embeds LANDING_HTML_* templates. Edit src/lib/landing-html.ts directly, or restore the template literals in page.tsx and re-run."
+  );
+  process.exit(1);
+}
+
+function sliceTemplate(marker, until) {
+  const i = page.indexOf(marker);
+  if (i === -1) throw new Error(`Missing ${marker}`);
+  const tick = page.indexOf("`", i) + 1;
+  const end = page.lastIndexOf("`", page.indexOf(until, tick));
+  return page.slice(tick, end);
+}
+
+function toExport(name, value) {
+  return `export const ${name} = ${JSON.stringify(value)};\n`;
+}
+
+let head = sliceTemplate("const LANDING_HTML_HEAD = `", "const LANDING_HTML_REST");
+const rest = sliceTemplate("const LANDING_HTML_REST = `", "const LANDING_JS");
+
+head = head.replace("font-sizfe", "font-size");
+
+const navCssExtra = `
+.nav-menu-toggle{display:none;flex-direction:column;justify-content:center;align-items:center;gap:6px;width:46px;height:46px;padding:0;margin-left:.7rem;margin-right:auto;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,0.03);color:var(--dim);cursor:pointer;flex-shrink:0;}
+.nav-menu-toggle:focus-visible{outline:2px solid rgba(56,217,180,0.35);outline-offset:2px}
+.nav-toggle-bar{width:18px;height:2px;background:currentColor;display:block;border-radius:1px;opacity:.92;}
+.nav-mobile-panel{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1195;display:none!important;flex-direction:column;padding:clamp(7rem,16vh,9.5rem) 1.25rem 2rem;background:rgba(10,12,16,0.94);backdrop-filter:blur(20px);overflow:auto;-webkit-overflow-scrolling:touch}
+.nav-mobile-panel.open{display:flex!important}
+.nav-mobile-panel .nav-mobile-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.25rem}
+.nav-mobile-panel a{display:block;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--dim);padding:.9rem .75rem;border-radius:12px}
+.nav-mobile-panel a:hover,.nav-mobile-panel a:focus-visible{color:var(--lavender)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+body.dbpa-nav-mobile-open{overflow:hidden;}
+@media (prefers-reduced-motion: reduce) {
+.scroll-line { animation: none !important; }
+html { scroll-behavior: auto !important; }
+}
+@media(max-width:980px){
+.nav-menu-toggle{display:flex!important}
+}
+`;
+
+head = head.replace("</style>", `${navCssExtra}\n</style>`);
+
+const newNavBlock = `<canvas id="bg-canvas"></canvas><div id="cursor"></div><div id="cursor-ring"></div>
+<nav id="nav"><a href="#hero" class="nav-logo">DBP<span>A</span></a><button type="button" class="nav-menu-toggle" id="nav-mobile-toggle" aria-expanded="false" aria-controls="nav-mobile-panel" aria-label="Open navigation menu"><span class="sr-only">Menu</span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span></button><ul class="nav-links"><li><a href="#architecture">Architecture</a></li><li><a href="/brochure">Brochure</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li></ul><div class="nav-right"><div class="lang-switch" aria-label="Language switcher"><button class="lang-btn active" data-lang="en" type="button">EN</button><button class="lang-btn" data-lang="es" type="button">ES</button></div><a href="#contact" class="nav-cta">Contact</a></div></nav>
+<div id="nav-mobile-panel" class="nav-mobile-panel" hidden role="dialog" aria-modal="true" aria-label="Site navigation" aria-hidden="true"><ul class="nav-mobile-list"><li><a href="#architecture">Architecture</a></li><li><a href="/brochure">Brochure</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#contact">Contact</a></li></ul></div>
+`;
+
+const navPos = head.indexOf('<nav id="nav"><a href="#" class="nav-logo">');
+const canvasStart = head.lastIndexOf("<canvas id=\"bg-canvas\"", navPos);
+if (canvasStart === -1 || navPos === -1)
+  throw new Error("canvas/nav anchors not found");
+const navEnd = head.indexOf("</nav>", navPos) + "</nav>".length;
+head = head.slice(0, canvasStart) + newNavBlock + head.slice(navEnd);
+
+const outfile = path.join(root, "src", "lib", "landing-html.ts");
+fs.writeFileSync(
+  outfile,
+  [
+    `/**`,
+    ` * Static HTML blobs for home (SEO-friendly structure injected below React hero).`,
+    ` * Generated by scripts/extract-html-blocks.mjs from src/app/page.tsx templates.`,
+    ` */`,
+    ``,
+    toExport("LANDING_HTML_HEAD", head),
+    ``,
+    toExport("LANDING_HTML_REST", rest),
+    "",
+  ].join("\n")
+);
+console.log("wrote", outfile);
