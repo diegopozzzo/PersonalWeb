@@ -9,7 +9,8 @@ const LANDING_HTML = `
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 :root { --bg:#0A0C10; --bg2:#0d1018; --surface:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); --white:#F2F0ED; --dim:rgba(242,240,237,0.45); --dimmer:rgba(242,240,237,0.22); --lavender:#FF6B2B; --teal:#38d9b4; --lav2:#FF9A70; --glow-lav:rgba(255,107,43,0.18); --glow-teal:rgba(56,217,180,0.14); }
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: auto; -webkit-text-size-adjust: 100%; }
+html.cursor-on body { cursor: none; }
 body::before { content:''; position:fixed; inset:0; background-image: linear-gradient(rgba(255,107,43,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.03) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
 #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; display:block; }
 #cursor { position:fixed; width:10px; height:10px; background:var(--lavender); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition: width .2s, height .2s; mix-blend-mode:screen; }
@@ -25,8 +26,19 @@ nav.scrolled { background:rgba(10,12,16,0.92); backdrop-filter:blur(20px); borde
 .lang-switch { display:flex; align-items:center; gap:.3rem; border:1px solid var(--border); background:rgba(255,255,255,0.02); padding:.2rem; }
 .lang-btn { border:0; background:transparent; color:var(--dim); font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; padding:.28rem .5rem; cursor:pointer; }
 .lang-btn.active { color:var(--white); background:rgba(255,107,43,0.18); }
-.nav-cta { font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.55rem 1.4rem; transition:opacity .2s; }
+.nav-cta { font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--bg); background:linear-gradient(135deg, var(--lavender), var(--teal)); padding:.55rem 1.4rem; transition:opacity .2s; display:inline-flex; align-items:center; min-height:44px; border-radius:999px; }
 .nav-cta:hover { opacity:.85; }
+.nav-menu-toggle { display:none; width:44px; height:44px; padding:0; border:1px solid var(--border); background:rgba(255,255,255,0.04); cursor:pointer; flex-direction:column; justify-content:center; align-items:center; gap:5px; border-radius:12px; flex-shrink:0; }
+.nav-toggle-bar { display:block; width:18px; height:2px; background:var(--white); border-radius:1px; transition:transform .2s, opacity .2s; }
+.nav-menu-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.nav-menu-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) { opacity:0; }
+.nav-menu-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-mobile-panel { display:none; position:fixed; inset:0; z-index:490; background:rgba(10,12,16,0.97); backdrop-filter:blur(16px); padding:5.5rem 1.25rem 2rem; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.nav-mobile-panel.is-open { display:block; }
+.nav-mobile-list { list-style:none; display:flex; flex-direction:column; gap:.35rem; }
+.nav-mobile-list a { display:flex; align-items:center; min-height:48px; padding:.65rem .5rem; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--dim); border-radius:12px; }
+.nav-mobile-list a:hover, .nav-mobile-list a:focus-visible { color:var(--lavender); background:rgba(255,255,255,0.04); outline:none; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 section { position:relative; z-index:10; }
 #hero { height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:0 3.5rem; pointer-events:auto; }
 #hero a, #hero button { pointer-events:auto; }
@@ -116,10 +128,45 @@ footer { position:relative; z-index:10; padding:2.5rem 3.5rem; border-top:1px so
 @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 @keyframes scrollPulse { 0%,100%{transform:scaleY(1);opacity:.5} 50%{transform:scaleY(.55);opacity:1} }
-@media (max-width:980px){ .nav-links{display:none;} .nh-layout,.preseed-layout,.arch-grid,.magnus-cards,.projects-grid,.hero-layout,.news-grid{grid-template-columns:1fr;} #hero,.section-inner,.contact-inner,nav,footer{padding-left:1.25rem;padding-right:1.25rem;} #hero{height:auto;min-height:100vh;padding-top:8rem;padding-bottom:5rem;} body{cursor:auto;} #cursor,#cursor-ring{display:none;} .nav-right{gap:.45rem;} .lang-btn{padding:.2rem .4rem;} .nav-cta{padding:.5rem .9rem;} #arch-graph-wrap{height:440px;margin:2.5rem 0 1rem;} .hero-layout{gap:2rem;} .scroll-hint{display:none;} }
+@media (max-width:980px){
+  .nav-links{display:none;}
+  .nav-menu-toggle{display:flex;}
+  nav{padding:1rem 1.25rem; padding-top:max(1rem, env(safe-area-inset-top)); gap:.75rem;}
+  .nh-layout,.preseed-layout,.arch-grid,.magnus-cards,.projects-grid,.hero-layout,.news-grid{grid-template-columns:1fr;}
+  #hero,.section-inner,.contact-inner,footer{padding-left:max(1.25rem, env(safe-area-inset-left)); padding-right:max(1.25rem, env(safe-area-inset-right));}
+  #hero{height:auto; min-height:100svh; padding-top:6.5rem; padding-bottom:4rem;}
+  html.cursor-on body, body{cursor:auto;}
+  #cursor,#cursor-ring{display:none !important;}
+  .nav-right{gap:.45rem; margin-left:auto;}
+  .lang-btn{min-width:40px; min-height:40px; padding:.35rem .55rem;}
+  .nav-cta{padding:.65rem 1rem; font-size:.62rem;}
+  #arch-graph-wrap{height:min(52vh, 440px); margin:2rem 0 1rem;}
+  .hero-layout{gap:2rem;}
+  .hero-btns{flex-wrap:wrap; gap:.85rem;}
+  .btn-grad,.btn-ghost{min-height:44px; display:inline-flex; align-items:center;}
+  .hero-name{font-size:clamp(2.2rem, 10vw, 3.4rem);}
+  .hero-desc{max-width:100%;}
+  .sec-title{font-size:clamp(1.65rem, 7vw, 2.4rem);}
+  .magnus-header{align-items:flex-start;}
+  .scroll-hint{display:none;}
+  footer{flex-direction:column; align-items:flex-start; gap:1.25rem; padding:2rem 1.25rem; padding-bottom:max(2rem, env(safe-area-inset-bottom));}
+  .footer-right{flex-wrap:wrap; gap:1rem 1.25rem;}
+  .footer-right a{min-height:44px; display:inline-flex; align-items:center;}
+  .contact-inner{padding:4.5rem 1.25rem;}
+  .section-inner{padding:4.5rem max(1.25rem, env(safe-area-inset-left));}
+  .preseed-quote{padding-left:1rem;}
+}
+@media (max-width:480px){
+  nav{padding:.85rem 1rem;}
+  .nav-logo{font-size:.92rem;}
+  .hero-role-link{padding:.9rem;}
+  #arch-graph-wrap{height:min(48vh, 360px);}
+  .news-title{font-size:1.25rem;}
+}
 </style>
 <canvas id="bg-canvas"></canvas><div id="cursor"></div><div id="cursor-ring"></div>
-<nav id="nav"><a href="#" class="nav-logo">DBP<span>A</span></a><ul class="nav-links"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#preseed">Pre-seed</a></li><li><a href="#projects">Projects</a></li></ul><div class="nav-right"><div class="lang-switch" aria-label="Language switcher"><button class="lang-btn active" data-lang="en" type="button">EN</button><button class="lang-btn" data-lang="es" type="button">ES</button></div><a href="#contact" class="nav-cta">Contact</a></div></nav>
+<nav id="nav"><a href="#hero" class="nav-logo">DBP<span>A</span></a><button type="button" class="nav-menu-toggle" id="nav-mobile-toggle" aria-expanded="false" aria-controls="nav-mobile-panel" aria-label="Open navigation menu"><span class="sr-only">Menu</span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span></button><ul class="nav-links"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#preseed">Pre-seed</a></li><li><a href="#projects">Projects</a></li></ul><div class="nav-right"><div class="lang-switch" aria-label="Language switcher"><button class="lang-btn active" data-lang="en" type="button">EN</button><button class="lang-btn" data-lang="es" type="button">ES</button></div><a href="#contact" class="nav-cta">Contact</a></div></nav>
+<div id="nav-mobile-panel" class="nav-mobile-panel" hidden role="dialog" aria-modal="true" aria-label="Site navigation" aria-hidden="true"><ul class="nav-mobile-list"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#preseed">Pre-seed</a></li><li><a href="#projects">Projects</a></li><li><a href="#contact">Contact</a></li></ul></div>
 <section id="hero"><div class="hero-layout"><div class="hero-copy"><p class="hero-tag">Smart Solutions · Lima, Peru</p><h1 class="hero-name">Diego Bruno<br>Pozo Abregu</h1><p class="hero-subtitle">Know How</p><p class="hero-desc">I design and connect intelligent systems across AI, robotics, and industrial technology to build robust real-world solutions alongside strategic allies committed to automation and the large-scale expansion of intelligent solutions.</p><div class="hero-btns"><a href="#contact" class="btn-grad">Let's talk</a><a href="#architecture" class="btn-ghost">Explore architecture ↓</a></div></div><div class="hero-roles"><a class="hero-role-link" href="https://humans-machines.nonhuman.site/" target="_blank" rel="noreferrer"><span class="hero-role-code">CEO</span><span class="hero-role-company">BEYONDHUMAN</span><span class="hero-role-title">Chief Executive Officer</span></a><a class="hero-role-link" href="https://nonhuman.site/" target="_blank" rel="noreferrer"><span class="hero-role-code">CBO</span><span class="hero-role-company">NONHUMAN</span><span class="hero-role-title">Chief Business Officer</span></a><a class="hero-role-link" href="https://www.giaperu.space/" target="_blank" rel="noreferrer"><span class="hero-role-code">CBO</span><span class="hero-role-company">GIA PUCP</span><span class="hero-role-title">Chief Business Officer</span></a><a class="hero-role-link" href="https://www.magnusgc.consulting/" target="_blank" rel="noreferrer"><span class="hero-role-code">BDA</span><span class="hero-role-company">MAGNUS G.C. CONSULTING</span><span class="hero-role-title">Business Development Associate</span></a></div></div><div class="scroll-hint"><div class="scroll-line"></div><span>Scroll</span></div></section>
 <section id="architecture"><div class="section-inner"><p class="eyebrow lav reveal">Systems Thinking</p><h2 class="sec-title reveal">I build the <span class="grad">connective tissue</span><br>between intelligence and deployment.</h2><p class="sec-body reveal">AI models, hardware systems, human interfaces, and industrial constraints rarely speak the same language. I translate between them — designing coherent architectures that work end-to-end, from model selection to physical deployment.</p><div id="arch-graph-wrap" class="reveal"><canvas id="arch-canvas"></canvas></div></div></section>
 <section id="nonhuman"><div class="section-inner"><p class="eyebrow reveal">Understanding New Types of Intelligence</p><h2 class="sec-title reveal"><span class="grad">NONHUMAN</span></h2><div class="nh-layout"><div><p class="sec-body reveal" style="margin-bottom:2.5rem;">NONHUMAN is an embodied AI and robotics research group based in Lima, Peru, building a bridge from frontier research to real deployments.</p><ul class="nh-list"><li class="nh-item reveal reveal-d1"><div class="nh-dot"></div><div><div class="nh-item-title">Research Lab (Core)</div><div class="nh-item-desc">Study and development of machine learning, LLMs, physical AI and autonomous control for humanoid and bimanual systems focused on LATAM realities.</div></div></li><li class="nh-item reveal reveal-d2"><div class="nh-dot"></div><div><div class="nh-item-title">Open Technical Ecosystem</div><div class="nh-item-desc">Active publication and experimentation culture on GitHub and Hugging Face to make advanced AI and robotics research more accessible to builders.</div></div></li><li class="nh-item reveal reveal-d3"><div class="nh-dot"></div><div><div class="nh-item-title">Physical AI + Industrial Integration</div><div class="nh-item-desc">Software and hardware integration through robotic arms, 3D perception, edge AI and industrial stacks, including Siemens-oriented architectures (Jetson edge, OPC UA/PROFINET workflows).</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">Flagship R&D Directions</div><div class="nh-item-desc">Low-cost robotics training systems (SO-ARM100), LLM architecture exploration (MIND), diffusion modeling work (DDPM), and data-centric learning methods such as reinforcement and imitation learning.</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">Human & Machines (Commercial Arm)</div><div class="nh-item-desc">Robots as a Service (RaaS) for retail, events, museums and hospitality: deploy robots to capture attention, generate interaction, and convert visits into memorable brand experiences.</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">RaaS Capabilities and Model</div><div class="nh-item-desc">Remote Presence (teleoperation), Learned Tasks (beta), Coordinated Movement (beta), flexible event/monthly managed services, safety-first deployments, and current early-partner waitlist execution.</div></div></li></ul></div><div class="nh-visual reveal"><div class="nh-logo">NONHUMAN</div><div class="nh-tagline">Embodied AI Research + RaaS Execution</div><div class="nh-stat"><div class="nh-stat-label">Role</div><div class="nh-stat-val">CBO</div></div><div class="nh-stat"><div class="nh-stat-label">Human & Machines Role</div><div class="nh-stat-val" style="font-size:1rem;color:var(--white)">CEO</div></div><div class="nh-stat"><div class="nh-stat-label">Focus</div><div class="nh-stat-val" style="font-size:1rem;color:var(--white)">Research + Physical AI Products</div></div><div class="nh-stat"><div class="nh-stat-label">Trusted By</div><div class="nh-stat-val" style="font-size:1rem;color:var(--white)">PUCP · DINAUT · Ciclos Café · Siemens</div></div></div></div></div></section>
@@ -137,9 +184,49 @@ const LANDING_JS = `
 if (window.__dbpaLandingInit) return;
 window.__dbpaLandingInit = true;
 
+(function enableCustomCursorDesktop() {
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (fine && window.innerWidth > 980) document.documentElement.classList.add('cursor-on');
+})();
+
+(function initMobileNav() {
+  var toggle = document.getElementById('nav-mobile-toggle');
+  var panel = document.getElementById('nav-mobile-panel');
+  if (!toggle || !panel) return;
+
+  function setOpen(open) {
+    var es = document.documentElement.lang === 'es';
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open
+      ? (es ? 'Cerrar menú de navegación' : 'Close navigation menu')
+      : (es ? 'Abrir menú de navegación' : 'Open navigation menu'));
+    panel.classList.toggle('is-open', open);
+    panel.hidden = !open;
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  toggle.addEventListener('click', function() {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  panel.querySelectorAll('a').forEach(function(link) {
+    link.addEventListener('click', function() { setOpen(false); });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 980) setOpen(false);
+  });
+})();
+
 const cursorEl = document.getElementById('cursor');
 const ringEl = document.getElementById('cursor-ring');
 document.addEventListener('mousemove', function(e) {
+  if (!document.documentElement.classList.contains('cursor-on')) return;
   if (!cursorEl || !ringEl) return;
   cursorEl.style.left = e.clientX + 'px';
   cursorEl.style.top  = e.clientY + 'px';
@@ -167,6 +254,10 @@ window.addEventListener('scroll', function() {
 (function() {
   var ES = {
     "Architecture": "Arquitectura",
+    "Open navigation menu": "Abrir menú de navegación",
+    "Close navigation menu": "Cerrar menú de navegación",
+    "Menu": "Menú",
+    "Site navigation": "Navegación del sitio",
     "GIA PUCP": "GIA PUCP",
     "News": "Noticias",
     "Pre-seed": "Pre-semilla",
@@ -360,6 +451,16 @@ window.addEventListener('scroll', function() {
       });
       document.documentElement.lang = lang === 'es' ? 'es' : 'en';
       window.__dbpaLang = lang;
+      var navToggle = document.getElementById('nav-mobile-toggle');
+      if (navToggle) {
+        var open = navToggle.getAttribute('aria-expanded') === 'true';
+        var key = open ? 'Close navigation menu' : 'Open navigation menu';
+        navToggle.setAttribute('aria-label', lang === 'es' && ES[key] ? ES[key] : key);
+      }
+      var navPanel = document.getElementById('nav-mobile-panel');
+      if (navPanel) {
+        navPanel.setAttribute('aria-label', lang === 'es' && ES['Site navigation'] ? ES['Site navigation'] : 'Site navigation');
+      }
       window.dispatchEvent(new CustomEvent('dbpa:langchange', { detail: { lang: lang } }));
       try { localStorage.setItem('dbpa_lang', lang); } catch (_) {}
     }
