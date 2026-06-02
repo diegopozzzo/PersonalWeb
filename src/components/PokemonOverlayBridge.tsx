@@ -8,7 +8,7 @@ type OverlayInstance = {
 
 const STYLESHEET_ID = "dbpa-pokemon-overlay-styles";
 const OVERLAY_ASSET_BASE = "/pokemon-overlay-kit-expanded";
-const OVERLAY_CACHE_VERSION = "20260602h";
+const OVERLAY_CACHE_VERSION = "20260602i";
 const OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
 const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
