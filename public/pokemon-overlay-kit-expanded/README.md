@@ -1,31 +1,19 @@
 # Pokemon Overlay Kit Expanded
 
-Kit portable para integrar una capa interactiva Pokemon encima de otra web, ahora con un roster curado de 12 Pokemon.
+Kit portable para integrar una capa interactiva Pokemon encima de otra web, con un roster curado de 12 Pokemon sincronizado con [pokemonAutoChess 6.10.0](https://github.com/keldaanCommunity/pokemonAutoChess) y formas PMD Collab.
 
 ## Que incluye
 
 - Honedge como mouse custom por defecto.
-- Pikachu, Eevee y Mew como companeros superiores.
-- Gengar, Machop, Axew y Charmander caminando en la franja inferior.
-- Selector para cambiar el mouse entre 12 Pokemon.
+- Pikachu y Eevee como companeros superiores recomendados.
+- Kecleon, Charmander, Machop, Mr. Mime y Meowth (Galar) como walkers inferiores en el sitio.
+- Selector para cambiar el mouse entre 12 Pokemon (`assetId` por forma cuando aplica).
 - Demo lista para abrir en navegador.
-- Creditos separados en `CREDITS.md`.
-- Guia de seleccion en `ROSTER.md`.
+- Creditos en `CREDITS.md` y guia en `ROSTER.md`.
 
 ## Roster incluido
 
-- Honedge
-- Pikachu
-- Eevee
-- Gengar
-- Machop
-- Axew
-- Charmander
-- Bulbasaur
-- Squirtle
-- Lucario
-- Mew
-- Snorlax
+- Honedge, Gengar, Machop, Kecleon, Pikachu (f6), Eevee, Charmander, Mr. Mime, Meowth (Galar), Lucario, Tandemaus, Snorlax
 
 ## Carpeta
 
@@ -35,6 +23,16 @@ Kit portable para integrar una capa interactiva Pokemon encima de otra web, ahor
 - `ROSTER.md`
 - `assets/`
 - `CREDITS.md`
+
+## Sincronizar sprites desde PAC / PMD
+
+En la raiz del portfolio (clones `.tmp-pac` y `.tmp-spritecollab`):
+
+```bash
+npm run sync:pokemon-overlay
+```
+
+El manifest vive en `scripts/pokemon-overlay-sync-manifest.json`.
 
 ## Como usarlo en otra web
 
@@ -58,20 +56,20 @@ import { createPokemonOverlay } from "/pokemon-overlay-kit-expanded/pokemon-over
 
 const overlay = createPokemonOverlay({
   cursorPokemon: "HONEDGE",
-  topCompanions: ["PIKACHU", "EEVEE", "MEW"],
-  bottomWalkers: ["GENGAR", "MACHOP", "AXEW", "CHARMANDER"],
+  topCompanions: ["PIKACHU", "EEVEE"],
+  bottomWalkers: ["KECLEON", "CHARMANDER", "MACHOP", "MR_MIME", "MEOWTH_GALAR"],
   toolbarPokemon: [
     "HONEDGE",
     "GENGAR",
     "MACHOP",
-    "AXEW",
+    "KECLEON",
     "PIKACHU",
     "EEVEE",
     "CHARMANDER",
-    "BULBASAUR",
-    "SQUIRTLE",
+    "MR_MIME",
+    "MEOWTH_GALAR",
     "LUCARIO",
-    "MEW",
+    "ARCHALUDON",
     "SNORLAX"
   ]
 })
@@ -82,18 +80,17 @@ overlay.destroy()
 
 ## Recomendaciones rapidas
 
-- Usa de 2 a 4 `topCompanions` para que respiren mejor en la cabecera.
-- Usa de 3 a 5 `bottomWalkers` si quieres evitar saturar la parte baja.
-- Deja a Honedge, Gengar o Lucario como cursores si quieres una silueta mas legible.
+- Usa de 2 a 4 companeros en header si los anclas manualmente.
+- Usa de 3 a 5 `bottomWalkers` para no saturar la parte baja.
+- Las variantes de forma usan `assetId` en disco (`0025-f06`, `0052-f02`, etc.).
 
 ## Nota tecnica
 
-- Este kit usa ES modules y `fetch()` para cargar atlas y duraciones.
-- No lo abras por `file://`; sirvelo con un server estatico.
-- Los sprites se renderizan en `canvas`, sin dependencia de Phaser.
+- ES modules y `fetch()` para atlas y duraciones.
+- No abras por `file://`; sirve con un server estatico.
+- Render en `canvas`, sin Phaser en runtime.
 
 ## Nota legal
 
-- El codigo del repo original y los assets no necesariamente comparten el mismo nivel de permiso practico para reutilizacion publica.
-- Aqui deje los creditos fuente para los Pokemon usados, pero eso no reemplaza una revision legal propia.
-- Si tu web va a crecer o monetizarse despues, mi recomendacion sigue siendo migrar a arte propio o con licencia clara.
+- Creditos en `CREDITS.md`; no sustituyen revision legal propia.
+- Obra derivada de fans; Pokemon (c) The Pokemon Company.

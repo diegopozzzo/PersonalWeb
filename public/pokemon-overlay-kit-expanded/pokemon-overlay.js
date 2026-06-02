@@ -14,6 +14,7 @@ const ORIENTATION = {
 const POKEMON_LIBRARY = {
   HONEDGE: {
     id: "0679",
+    assetId: "0679",
     label: "Honedge",
     role: "mouse",
     idleAction: "Idle",
@@ -23,6 +24,7 @@ const POKEMON_LIBRARY = {
   },
   GENGAR: {
     id: "0094",
+    assetId: "0094",
     label: "Gengar",
     role: "bottom",
     idleAction: "Idle",
@@ -32,6 +34,7 @@ const POKEMON_LIBRARY = {
   },
   MACHOP: {
     id: "0066",
+    assetId: "0066",
     label: "Machop",
     role: "bottom",
     idleAction: "Idle",
@@ -39,26 +42,29 @@ const POKEMON_LIBRARY = {
     reactAction: "Kick",
     topAction: "Idle"
   },
-  AXEW: {
-    id: "0610",
-    label: "Axew",
+  KECLEON: {
+    id: "0352",
+    assetId: "0352-f01",
+    label: "Kecleon",
     role: "bottom",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Bite",
+    reactAction: "Hop",
     topAction: "Idle"
   },
   PIKACHU: {
     id: "0025",
+    assetId: "0025-f06",
     label: "Pikachu",
     role: "top",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Shock",
+    reactAction: "Charge",
     topAction: "Idle"
   },
   EEVEE: {
     id: "0133",
+    assetId: "0133",
     label: "Eevee",
     role: "top",
     idleAction: "Idle",
@@ -68,6 +74,7 @@ const POKEMON_LIBRARY = {
   },
   CHARMANDER: {
     id: "0004",
+    assetId: "0004",
     label: "Charmander",
     role: "bottom",
     idleAction: "Idle",
@@ -75,26 +82,29 @@ const POKEMON_LIBRARY = {
     reactAction: "DeepBreath",
     topAction: "Pose"
   },
-  BULBASAUR: {
-    id: "0001",
-    label: "Bulbasaur",
-    role: "roster",
+  MR_MIME: {
+    id: "0122",
+    assetId: "0122-f01",
+    label: "Mr. Mime",
+    role: "bottom",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Rotate",
+    reactAction: "Hop",
     topAction: "Idle"
   },
-  SQUIRTLE: {
-    id: "0007",
-    label: "Squirtle",
-    role: "roster",
+  MEOWTH_GALAR: {
+    id: "0052",
+    assetId: "0052-f02",
+    label: "Meowth",
+    role: "bottom",
     idleAction: "Idle",
     moveAction: "Walk",
-    reactAction: "Pose",
+    reactAction: "Hop",
     topAction: "Idle"
   },
   LUCARIO: {
     id: "0448",
+    assetId: "0448",
     label: "Lucario",
     role: "bottom",
     idleAction: "Idle",
@@ -102,10 +112,11 @@ const POKEMON_LIBRARY = {
     reactAction: "Strike",
     topAction: "Pose"
   },
-  MEW: {
-    id: "0151",
-    label: "Mew",
-    role: "top",
+  ARCHALUDON: {
+    id: "0924",
+    assetId: "0924-f01",
+    label: "Tandemaus",
+    role: "roster",
     idleAction: "Idle",
     moveAction: "Walk",
     reactAction: "Charge",
@@ -113,6 +124,7 @@ const POKEMON_LIBRARY = {
   },
   SNORLAX: {
     id: "0143",
+    assetId: "0143",
     label: "Snorlax",
     role: "bottom",
     idleAction: "Idle",
@@ -125,22 +137,22 @@ const POKEMON_LIBRARY = {
 const DEFAULT_OPTIONS = {
   root: document.body,
   cursorPokemon: "HONEDGE",
-  topCompanions: ["PIKACHU", "EEVEE", "MEW"],
+  topCompanions: ["PIKACHU", "EEVEE"],
   centerCompanions: [],
   headerWalkers: [],
-  bottomWalkers: ["GENGAR", "MACHOP", "AXEW", "CHARMANDER"],
+  bottomWalkers: ["KECLEON", "CHARMANDER", "MACHOP", "MR_MIME", "MEOWTH_GALAR"],
   toolbarPokemon: [
     "HONEDGE",
     "GENGAR",
     "MACHOP",
-    "AXEW",
+    "KECLEON",
     "PIKACHU",
     "EEVEE",
     "CHARMANDER",
-    "BULBASAUR",
-    "SQUIRTLE",
+    "MR_MIME",
+    "MEOWTH_GALAR",
     "LUCARIO",
-    "MEW",
+    "ARCHALUDON",
     "SNORLAX"
   ],
   showToolbar: true,
@@ -295,6 +307,10 @@ async function loadDurations() {
   return durationsPromise
 }
 
+function getAssetId(meta) {
+  return meta.assetId ?? meta.id
+}
+
 async function loadPokemonAsset(key) {
   if (assetCache.has(key)) {
     return assetCache.get(key)
@@ -305,16 +321,18 @@ async function loadPokemonAsset(key) {
     throw new Error(`Pokemon no soportado: ${key}`)
   }
 
+  const assetId = getAssetId(meta)
+
   const assetPromise = Promise.all([
     loadDurations(),
-    fetch(resolveAsset(`./assets/sprites/${meta.id}.json`)).then((response) => {
+    fetch(resolveAsset(`./assets/sprites/${assetId}.json`)).then((response) => {
       if (!response.ok) {
         throw new Error(`No se pudo cargar atlas de ${meta.label}`)
       }
       return response.json()
     }),
-    loadImage(resolveAsset(`./assets/sprites/${meta.id}.png`)),
-    resolveAsset(`./assets/portraits/${meta.id}.png`)
+    loadImage(resolveAsset(`./assets/sprites/${assetId}.png`)),
+    resolveAsset(`./assets/portraits/${assetId}.png`)
   ]).then(([durations, atlas, image, portraitUrl]) => {
     return new PokemonAtlasAsset(meta, atlas, image, durations, portraitUrl)
   })
@@ -357,7 +375,7 @@ class PokemonAtlasAsset {
       return this.sequenceCache.get(cacheKey)
     }
 
-    const durationKey = `${this.meta.id}/Normal/${action}/Anim`
+    const durationKey = `${getAssetId(this.meta)}/Normal/${action}/Anim`
     const durationUnits = this.durations[durationKey]
     const actionFrames = this.framesByAction[action]
 
@@ -1259,7 +1277,9 @@ class PokemonOverlay {
 
       const image = document.createElement("img")
       image.alt = POKEMON_LIBRARY[key].label
-      image.src = resolveAsset(`./assets/portraits/${POKEMON_LIBRARY[key].id}.png`)
+      image.src = resolveAsset(
+        `./assets/portraits/${getAssetId(POKEMON_LIBRARY[key])}.png`
+      )
 
       const labelWrap = document.createElement("span")
       const name = document.createElement("span")

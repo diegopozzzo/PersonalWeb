@@ -1,0 +1,66 @@
+{
+  "pacVersion": "6.10.0",
+  "pacRepo": ".tmp-pac",
+  "spriteCollabRepo": ".tmp-spritecollab",
+  "kitDir": "public/pokemon-overlay-kit-expanded",
+  "reactActionPriority": [
+    "Shock",
+    "Charge",
+    "Kick",
+    "Swing",
+    "Bite",
+    "Stomp",
+    "Strike",
+    "Hop",
+    "Pose",
+    "DeepBreath",
+    "Rotate"
+  ],
+  "entries": [
+    { "key": "HONEDGE", "pacId": "0679", "assetId": "0679", "refresh": true },
+    { "key": "GENGAR", "pacId": "0094", "assetId": "0094", "refresh": true },
+    { "key": "MACHOP", "pacId": "0066", "assetId": "0066", "refresh": true },
+    {
+      "key": "PIKACHU",
+      "pacId": "0025-9999",
+      "assetId": "0025-f06",
+      "portraitPath": "0025/9999/0000/0001/Happy.png",
+      "idleAction": "Idle",
+      "moveAction": "Walk",
+      "reactAction": "Charge"
+    },
+    { "key": "EEVEE", "pacId": "0133", "assetId": "0133", "refresh": true },
+    { "key": "CHARMANDER", "pacId": "0004", "assetId": "0004", "refresh": true },
+    { "key": "LUCARIO", "pacId": "0448", "assetId": "0448", "refresh": true },
+    { "key": "SNORLAX", "pacId": "0143", "assetId": "0143", "refresh": true },
+    {
+      "key": "ARCHALUDON",
+      "label": "Tandemaus",
+      "pacId": "0924",
+      "assetId": "0924-f01",
+      "portraitPath": "0924/0001/0001/Happy.png"
+    },
+    {
+      "key": "KECLEON",
+      "label": "Kecleon",
+      "spriteCollabIndex": "0352-0001",
+      "assetId": "0352-f01",
+      "portraitPath": "0352/0001/Happy.png"
+    },
+    {
+      "key": "MR_MIME",
+      "label": "Mr. Mime",
+      "spriteCollabIndex": "0122-0001",
+      "assetId": "0122-f01",
+      "portraitPath": "0122/0001/0001/Normal.png"
+    },
+    {
+      "key": "MEOWTH_GALAR",
+      "label": "Meowth",
+      "spriteCollabIndex": "0052-0002",
+      "assetId": "0052-f02",
+      "portraitPath": "0052/0002/Happy.png"
+    }
+  ],
+  "removeAssetIds": ["0001", "0007", "0610", "0151", "0025"]
+}

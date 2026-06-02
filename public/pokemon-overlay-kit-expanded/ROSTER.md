@@ -1,60 +1,64 @@
-# Roster Curado
+# Roster curado (12 Pokemon)
 
-Este pack ampliado conserva los seis Pokemon del kit original y suma otros seis que funcionan bien en web por mezcla de reconocimiento, silueta y variedad de animaciones.
+Roster sincronizado con Pokemon Auto Chess 6.10.0 y formas PMD Collab indicadas en el plan de overlay.
 
 ## Seleccion
 
 ### Honedge
 
-Ideal como cursor por su forma direccional y su animacion `Swing`.
+Cursor por defecto. `Swing` funciona bien al click.
 
-### Pikachu
+### Pikachu (forma Libre, `0025-f06`)
 
-Mascota universal. Funciona muy bien arriba o como cursor alterno por `Shock`.
+Mascota de cabecera. `Charge` como reaccion (atlas PAC `0025-9999`).
 
 ### Eevee
 
-Companero amable y muy web-friendly. Su `Hop` funciona bien para hover o click.
+Companero superior amable. `Hop` en hover o click.
 
 ### Gengar
 
-Aporta contraste y carisma. `Charge` le da buena reaccion en la franja inferior.
+Contraste y carisma en header. `Charge` en la franja inferior si lo usas como walker.
 
 ### Machop
 
-Muy claro al caminar y con un `Kick` que se siente contundente al click.
+Silueta clara al caminar. `Kick` contundente al click.
 
-### Axew
+### Kecleon (forma Purple, `0352-f01`)
 
-Pequeno, simpatico y con `Bite` para interacciones cortas.
+Walker inferior. `Hop` como gesto de reaccion.
 
 ### Charmander
 
-Uno de los starters mas reconocibles. `DeepBreath` se siente perfecto para reaccion.
+Starter reconocible. `DeepBreath` en reaccion, `Pose` arriba.
 
-### Bulbasaur
+### Mr. Mime (forma Galar, `0122-f01`)
 
-Starter muy estable visualmente. `Rotate` le da un gesto distinto al resto.
+Walker con buena lectura en tamano medio. `Hop` disponible.
 
-### Squirtle
+### Meowth (forma Galar, `0052-f02`)
 
-Otro clasico muy facil de integrar en interfaces. `Pose` se lee bien en tamaños chicos.
+Cierra la franja inferior con silueta horizontal. `Hop` disponible.
 
 ### Lucario
 
-Muy fuerte como cursor alterno o caminante por su silueta vertical y `Strike`.
+Cursor alterno o companion de header. `Strike` vertical y legible.
 
-### Mew
+### Tandemaus (`0924-f01`)
 
-Sirve arriba porque flota bien y suaviza la composicion visual del header.
+Slot de roster / toolbar (dex 0924, forma 1 en PMD Collab). `Charge` si esta en el atlas.
 
 ### Snorlax
 
-Aporta humor y masa visual en la parte baja. `Stomp` funciona como reaccion destacada.
+Walker de header (barra superior). `Stomp` para interacciones pesadas.
 
-## Combinaciones recomendadas
+## Recomendaciones
 
-- Header amigable: `PIKACHU`, `EEVEE`, `MEW`
-- Footer con energia: `GENGAR`, `MACHOP`, `AXEW`, `CHARMANDER`
-- Cursor alterno legible: `HONEDGE`, `LUCARIO`, `GENGAR`
-- Pagina con tono tierno: `PIKACHU`, `EEVEE`, `BULBASAUR`, `SQUIRTLE`
+- Cursor: Honedge, Gengar o Lucario.
+- Header walkers: Snorlax (una sola pasada lenta).
+- Footer walkers: hasta 5 (Kecleon, Charmander, Machop, Mr. Mime, Meowth).
+- Toolbar: los 12 keys de `POKEMON_LIBRARY`.
+
+## Salieron del roster anterior
+
+Bulbasaur, Squirtle, Axew, Mew (assets retirados del kit).

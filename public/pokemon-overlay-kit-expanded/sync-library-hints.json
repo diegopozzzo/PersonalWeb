@@ -1,0 +1,74 @@
+{
+  "HONEDGE": {
+    "assetId": "0679",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Swing"
+  },
+  "GENGAR": {
+    "assetId": "0094",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Charge"
+  },
+  "MACHOP": {
+    "assetId": "0066",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Kick"
+  },
+  "PIKACHU": {
+    "assetId": "0025-f06",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Charge"
+  },
+  "EEVEE": {
+    "assetId": "0133",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Hop"
+  },
+  "CHARMANDER": {
+    "assetId": "0004",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Kick"
+  },
+  "LUCARIO": {
+    "assetId": "0448",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Strike"
+  },
+  "SNORLAX": {
+    "assetId": "0143",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Charge"
+  },
+  "ARCHALUDON": {
+    "assetId": "0924-f01",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Charge"
+  },
+  "KECLEON": {
+    "assetId": "0352-f01",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Hop"
+  },
+  "MR_MIME": {
+    "assetId": "0122-f01",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Hop"
+  },
+  "MEOWTH_GALAR": {
+    "assetId": "0052-f02",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Hop"
+  }
+}

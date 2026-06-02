@@ -8,11 +8,14 @@ type OverlayInstance = {
 
 const STYLESHEET_ID = "dbpa-pokemon-overlay-styles";
 const OVERLAY_ASSET_BASE = "/pokemon-overlay-kit-expanded";
+const OVERLAY_CACHE_VERSION = "20260602";
 const OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
 const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
 function getAssetVersion() {
-  return process.env.NODE_ENV === "production" ? "" : `?v=${Date.now()}`;
+  return process.env.NODE_ENV === "production"
+    ? `?v=${OVERLAY_CACHE_VERSION}`
+    : `?v=${Date.now()}`;
 }
 
 function ensureStylesheet(version: string) {
@@ -150,7 +153,7 @@ function getOverlayOptions(lang: "en" | "es") {
     ],
     bottomWalkers: [
       {
-        pokemon: "AXEW",
+        pokemon: "KECLEON",
         startX: "5vw",
         minX: "2%",
         maxX: "18%",
@@ -186,7 +189,7 @@ function getOverlayOptions(lang: "en" | "es") {
         direction: 1,
       },
       {
-        pokemon: "BULBASAUR",
+        pokemon: "MR_MIME",
         startX: "72%",
         minX: "67%",
         maxX: "81%",
@@ -198,7 +201,7 @@ function getOverlayOptions(lang: "en" | "es") {
         direction: 1,
       },
       {
-        pokemon: "SQUIRTLE",
+        pokemon: "MEOWTH_GALAR",
         startX: "84%",
         minX: "80%",
         maxX: "92%",
@@ -214,14 +217,14 @@ function getOverlayOptions(lang: "en" | "es") {
       "HONEDGE",
       "GENGAR",
       "MACHOP",
-      "AXEW",
+      "KECLEON",
       "PIKACHU",
       "EEVEE",
       "CHARMANDER",
-      "BULBASAUR",
-      "SQUIRTLE",
+      "MR_MIME",
+      "MEOWTH_GALAR",
       "LUCARIO",
-      "MEW",
+      "ARCHALUDON",
       "SNORLAX",
     ],
     showToolbar: true,
