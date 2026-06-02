@@ -8,7 +8,7 @@ type OverlayInstance = {
 
 const STYLESHEET_ID = "dbpa-pokemon-overlay-styles";
 const OVERLAY_ASSET_BASE = "/pokemon-overlay-kit-expanded";
-const OVERLAY_CACHE_VERSION = "20260602b";
+const OVERLAY_CACHE_VERSION = "20260602g";
 const OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
 const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
@@ -76,7 +76,7 @@ function getOverlayOptions(lang: "en" | "es") {
     lang === "es"
       ? {
           toolbarTitle: "Cursor roster",
-          toolbarSubtitle: "12 Pokemon | abre el selector y cambia el cursor",
+          toolbarSubtitle: "14 Pokemon | abre el selector y cambia el cursor",
           toolbarToggleHide: "Ocultar",
           toolbarToggleShow: "Mostrar",
           toolbarHint: "Click o arrastra los Pokemon visibles",
@@ -94,7 +94,7 @@ function getOverlayOptions(lang: "en" | "es") {
         }
       : {
           toolbarTitle: "Cursor roster",
-          toolbarSubtitle: "12 Pokemon | open the selector and switch the cursor",
+          toolbarSubtitle: "14 Pokemon | open the selector and switch the cursor",
           toolbarToggleHide: "Hide",
           toolbarToggleShow: "Show",
           toolbarHint: "Click or drag the visible Pokemon",
@@ -159,8 +159,10 @@ function getOverlayOptions(lang: "en" | "es") {
       "GENGAR",
       "MACHOP",
       "KECLEON",
-      "PIKACHU",
+      "PIKACHU_LIBRE",
+      "PIKACHU_SURFER",
       "EEVEE",
+      "SQUIRTLE",
       "CHARMANDER",
       "MR_MIME",
       "MEOWTH_GALAR",
@@ -205,7 +207,9 @@ function getOverlayOptions(lang: "en" | "es") {
       targetFps: 30,
       lazyLoadActors: true,
       pauseWhenHidden: true,
-      staggerActorMs: 150,
+      staggerActorMs: 200,
+      walkerLoadDelayMs: 2400,
+      pauseWalkersWhenArchVisible: true,
     },
   };
 }
@@ -374,9 +378,9 @@ export default function PokemonOverlayBridge() {
       };
 
       if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(run, { timeout: 2200 });
+        window.requestIdleCallback(run, { timeout: 3200 });
       } else {
-        setTimeout(run, 600);
+        setTimeout(run, 1200);
       }
     };
 

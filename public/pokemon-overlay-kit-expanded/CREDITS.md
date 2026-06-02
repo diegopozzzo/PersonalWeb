@@ -28,10 +28,20 @@ Este kit reutiliza 12 Pokemon del repo [keldaanCommunity/pokemonAutoChess](https
 - Sprite primary: CHUNSOFT
 - Sprite secondary: Emboarger
 
-### Pikachu — forma Libre (`0025-f06`, PAC `0025-9999`)
+### Pikachu (`0025`)
+
+- Portrait primary: CHUNSOFT
+- Sprite primary: CHUNSOFT
+
+### Pikachu — forma Libre (`0025-f06`, PMDCollab forma 6)
 
 - Portrait primary: PMDCollab contributor (tracker `0025/0006`)
-- Sprite primary: PMDCollab contributor (tracker `0025/0006`)
+- Sprite primary: PMDCollab contributor (tracker `0025/0006`, [PMD Sprite Repository](https://sprites.pmdcollab.org/#/0025?form=6))
+
+### Pikachu Surf (`0025-surfer`, PAC `0025-9999`)
+
+- Portrait primary: PMDCollab contributor (tracker `0025/9999`)
+- Sprite primary: PMDCollab contributor (tracker `0025/9999`)
 
 ### Eevee (`0133`)
 

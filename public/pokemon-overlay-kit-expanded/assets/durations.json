@@ -2575,98 +2575,6 @@
     2,
     4
   ],
-  "0025-f06/Shiny/Idle/Anim": [
-    40,
-    2,
-    3,
-    3,
-    3,
-    2
-  ],
-  "0025-f06/Shiny/Walk/Anim": [
-    8,
-    10,
-    8,
-    10
-  ],
-  "0025-f06/Shiny/Sleep/Anim": [
-    30,
-    35
-  ],
-  "0025-f06/Shiny/Hop/Anim": [
-    2,
-    1,
-    2,
-    3,
-    4,
-    4,
-    3,
-    2,
-    1,
-    2
-  ],
-  "0025-f06/Shiny/Hurt/Anim": [
-    2,
-    8
-  ],
-  "0025-f06/Shiny/Attack/Anim": [
-    2,
-    4,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    4
-  ],
-  "0025-f06/Shiny/Idle/Shadow": [
-    40,
-    2,
-    3,
-    3,
-    3,
-    2
-  ],
-  "0025-f06/Shiny/Walk/Shadow": [
-    8,
-    10,
-    8,
-    10
-  ],
-  "0025-f06/Shiny/Sleep/Shadow": [
-    30,
-    35
-  ],
-  "0025-f06/Shiny/Hop/Shadow": [
-    2,
-    1,
-    2,
-    3,
-    4,
-    4,
-    3,
-    2,
-    1,
-    2
-  ],
-  "0025-f06/Shiny/Hurt/Shadow": [
-    2,
-    8
-  ],
-  "0025-f06/Shiny/Attack/Shadow": [
-    2,
-    4,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    4
-  ],
   "0025-f06/Normal/Charge/Anim": [
     2,
     2,
@@ -2683,15 +2591,14 @@
     1,
     2,
     6,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
   ],
   "0025-f06/Normal/Charge/Shadow": [
     2,
@@ -2709,19 +2616,6 @@
     1,
     2,
     6,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3
-  ],
-  "0025-f06/Shiny/Charge/Anim": [
-    2,
-    2,
     2,
     2,
     2,
@@ -2730,46 +2624,6 @@
     2,
     2,
     2
-  ],
-  "0025-f06/Shiny/Shoot/Anim": [
-    1,
-    2,
-    6,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3
-  ],
-  "0025-f06/Shiny/Charge/Shadow": [
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2
-  ],
-  "0025-f06/Shiny/Shoot/Shadow": [
-    1,
-    2,
-    6,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3
   ],
   "0924-f01/Normal/Idle/Anim": [
     68,
@@ -3600,5 +3454,577 @@
     2,
     2,
     2
+  ],
+  "0025-surfer/Normal/Idle/Anim": [
+    40,
+    2,
+    3,
+    3,
+    3,
+    2
+  ],
+  "0025-surfer/Normal/Walk/Anim": [
+    8,
+    10,
+    8,
+    10
+  ],
+  "0025-surfer/Normal/Sleep/Anim": [
+    30,
+    35
+  ],
+  "0025-surfer/Normal/Hop/Anim": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0025-surfer/Normal/Hurt/Anim": [
+    2,
+    8
+  ],
+  "0025-surfer/Normal/Attack/Anim": [
+    2,
+    4,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    4
+  ],
+  "0025-surfer/Normal/Idle/Shadow": [
+    40,
+    2,
+    3,
+    3,
+    3,
+    2
+  ],
+  "0025-surfer/Normal/Walk/Shadow": [
+    8,
+    10,
+    8,
+    10
+  ],
+  "0025-surfer/Normal/Sleep/Shadow": [
+    30,
+    35
+  ],
+  "0025-surfer/Normal/Hop/Shadow": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0025-surfer/Normal/Hurt/Shadow": [
+    2,
+    8
+  ],
+  "0025-surfer/Normal/Attack/Shadow": [
+    2,
+    4,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    4
+  ],
+  "0025-surfer/Shiny/Idle/Anim": [
+    40,
+    2,
+    3,
+    3,
+    3,
+    2
+  ],
+  "0025-surfer/Shiny/Walk/Anim": [
+    8,
+    10,
+    8,
+    10
+  ],
+  "0025-surfer/Shiny/Sleep/Anim": [
+    30,
+    35
+  ],
+  "0025-surfer/Shiny/Hop/Anim": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0025-surfer/Shiny/Hurt/Anim": [
+    2,
+    8
+  ],
+  "0025-surfer/Shiny/Attack/Anim": [
+    2,
+    4,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    4
+  ],
+  "0025-surfer/Shiny/Idle/Shadow": [
+    40,
+    2,
+    3,
+    3,
+    3,
+    2
+  ],
+  "0025-surfer/Shiny/Walk/Shadow": [
+    8,
+    10,
+    8,
+    10
+  ],
+  "0025-surfer/Shiny/Sleep/Shadow": [
+    30,
+    35
+  ],
+  "0025-surfer/Shiny/Hop/Shadow": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0025-surfer/Shiny/Hurt/Shadow": [
+    2,
+    8
+  ],
+  "0025-surfer/Shiny/Attack/Shadow": [
+    2,
+    4,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    4
+  ],
+  "0025-surfer/Normal/Charge/Anim": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0025-surfer/Normal/Shoot/Anim": [
+    1,
+    2,
+    6,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "0025-surfer/Normal/Charge/Shadow": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0025-surfer/Normal/Shoot/Shadow": [
+    1,
+    2,
+    6,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "0025-surfer/Shiny/Charge/Anim": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0025-surfer/Shiny/Shoot/Anim": [
+    1,
+    2,
+    6,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "0025-surfer/Shiny/Charge/Shadow": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0025-surfer/Shiny/Shoot/Shadow": [
+    1,
+    2,
+    6,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "0007/Normal/Idle/Anim": [
+    30,
+    2,
+    2,
+    4,
+    4,
+    4,
+    2,
+    2
+  ],
+  "0007/Normal/Walk/Anim": [
+    12,
+    8,
+    12,
+    8
+  ],
+  "0007/Normal/Sleep/Anim": [
+    30,
+    35
+  ],
+  "0007/Normal/Hop/Anim": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0007/Normal/Hurt/Anim": [
+    2,
+    8
+  ],
+  "0007/Normal/Shoot/Anim": [
+    2,
+    6,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0007/Normal/DeepBreath/Anim": [
+    12,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    10,
+    4
+  ],
+  "0007/Normal/Idle/Shadow": [
+    30,
+    2,
+    2,
+    4,
+    4,
+    4,
+    2,
+    2
+  ],
+  "0007/Normal/Walk/Shadow": [
+    12,
+    8,
+    12,
+    8
+  ],
+  "0007/Normal/Sleep/Shadow": [
+    30,
+    35
+  ],
+  "0007/Normal/Hop/Shadow": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0007/Normal/Hurt/Shadow": [
+    2,
+    8
+  ],
+  "0007/Normal/Shoot/Shadow": [
+    2,
+    6,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0007/Normal/DeepBreath/Shadow": [
+    12,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    10,
+    4
+  ],
+  "0007/Shiny/Idle/Anim": [
+    30,
+    2,
+    2,
+    4,
+    4,
+    4,
+    2,
+    2
+  ],
+  "0007/Shiny/Walk/Anim": [
+    12,
+    8,
+    12,
+    8
+  ],
+  "0007/Shiny/Sleep/Anim": [
+    30,
+    35
+  ],
+  "0007/Shiny/Hop/Anim": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0007/Shiny/Hurt/Anim": [
+    2,
+    8
+  ],
+  "0007/Shiny/Shoot/Anim": [
+    2,
+    6,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0007/Shiny/DeepBreath/Anim": [
+    12,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    10,
+    4
+  ],
+  "0007/Shiny/Idle/Shadow": [
+    30,
+    2,
+    2,
+    4,
+    4,
+    4,
+    2,
+    2
+  ],
+  "0007/Shiny/Walk/Shadow": [
+    12,
+    8,
+    12,
+    8
+  ],
+  "0007/Shiny/Sleep/Shadow": [
+    30,
+    35
+  ],
+  "0007/Shiny/Hop/Shadow": [
+    2,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    2
+  ],
+  "0007/Shiny/Hurt/Shadow": [
+    2,
+    8
+  ],
+  "0007/Shiny/Shoot/Shadow": [
+    2,
+    6,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "0007/Shiny/DeepBreath/Shadow": [
+    12,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    10,
+    4
+  ],
+  "0007/Normal/Pose/Anim": [
+    12,
+    2,
+    8
+  ],
+  "0007/Normal/Pose/Shadow": [
+    12,
+    2,
+    8
+  ],
+  "0007/Shiny/Pose/Anim": [
+    12,
+    2,
+    8
+  ],
+  "0007/Shiny/Pose/Shadow": [
+    12,
+    2,
+    8
+  ],
+  "0007/Normal/Eat/Anim": [
+    6,
+    8,
+    6,
+    8
+  ],
+  "0007/Normal/Eat/Shadow": [
+    6,
+    8,
+    6,
+    8
+  ],
+  "0007/Shiny/Eat/Anim": [
+    6,
+    8,
+    6,
+    8
+  ],
+  "0007/Shiny/Eat/Shadow": [
+    6,
+    8,
+    6,
+    8
   ]
 }

@@ -52,11 +52,21 @@ const POKEMON_LIBRARY = {
     reactAction: "Hop",
     topAction: "Idle"
   },
-  PIKACHU: {
+  PIKACHU_LIBRE: {
     id: "0025",
     assetId: "0025-f06",
-    label: "Pikachu",
-    role: "top",
+    label: "Pikachu Libre",
+    role: "roster",
+    idleAction: "Idle",
+    moveAction: "Walk",
+    reactAction: "Attack",
+    topAction: "Idle"
+  },
+  PIKACHU_SURFER: {
+    id: "0025",
+    assetId: "0025-surfer",
+    label: "Pikachu Surf",
+    role: "roster",
     idleAction: "Idle",
     moveAction: "Walk",
     reactAction: "Charge",
@@ -81,6 +91,16 @@ const POKEMON_LIBRARY = {
     moveAction: "Walk",
     reactAction: "DeepBreath",
     topAction: "Pose"
+  },
+  SQUIRTLE: {
+    id: "0007",
+    assetId: "0007",
+    label: "Squirtle",
+    role: "bottom",
+    idleAction: "Idle",
+    moveAction: "Walk",
+    reactAction: "Shoot",
+    topAction: "Idle"
   },
   MR_MIME: {
     id: "0122",
@@ -137,7 +157,7 @@ const POKEMON_LIBRARY = {
 const DEFAULT_OPTIONS = {
   root: document.body,
   cursorPokemon: "HONEDGE",
-  topCompanions: ["PIKACHU", "EEVEE"],
+  topCompanions: ["EEVEE"],
   centerCompanions: [],
   headerWalkers: [],
   bottomWalkers: ["KECLEON", "CHARMANDER", "MACHOP", "MR_MIME", "MEOWTH_GALAR"],
@@ -146,8 +166,10 @@ const DEFAULT_OPTIONS = {
     "GENGAR",
     "MACHOP",
     "KECLEON",
-    "PIKACHU",
+    "PIKACHU_LIBRE",
+    "PIKACHU_SURFER",
     "EEVEE",
+    "SQUIRTLE",
     "CHARMANDER",
     "MR_MIME",
     "MEOWTH_GALAR",
@@ -186,7 +208,9 @@ const DEFAULT_OPTIONS = {
     targetFps: 30,
     lazyLoadActors: true,
     pauseWhenHidden: true,
-    staggerActorMs: 120
+    staggerActorMs: 120,
+    walkerLoadDelayMs: 0,
+    pauseWalkersWhenArchVisible: false
   }
 }
 
@@ -590,19 +614,14 @@ class PixelCanvasSprite {
     if (!currentFrame) return
 
     const rect = currentFrame.frame
-    const sourceSize = currentFrame.sourceSize
-    const spriteSource = currentFrame.spriteSourceSize
-    const availableWidth = this.size - 8
-    const availableHeight = this.size - 8
-    const scale = Math.min(
-      availableWidth / sourceSize.w,
-      availableHeight / sourceSize.h
-    )
-
-    const fullWidth = sourceSize.w * scale
-    const fullHeight = sourceSize.h * scale
-    const offsetX = (this.size - fullWidth) / 2
-    const offsetY = (this.size - fullHeight) / 2
+    const padding = 6
+    const availableWidth = this.size - padding * 2
+    const availableHeight = this.size - padding * 2
+    const scale = Math.min(availableWidth / rect.w, availableHeight / rect.h)
+    const drawWidth = rect.w * scale
+    const drawHeight = rect.h * scale
+    const offsetX = (this.size - drawWidth) / 2
+    const offsetY = (this.size - drawHeight) / 2
 
     ctx.drawImage(
       this.asset.image,
@@ -610,10 +629,10 @@ class PixelCanvasSprite {
       rect.y,
       rect.w,
       rect.h,
-      offsetX + spriteSource.x * scale,
-      offsetY + spriteSource.y * scale,
-      rect.w * scale,
-      rect.h * scale
+      offsetX,
+      offsetY,
+      drawWidth,
+      drawHeight
     )
   }
 }
@@ -780,10 +799,6 @@ class OverlayActor {
     }
 
     return this.direction >= 0 ? ORIENTATION.RIGHT : ORIENTATION.LEFT
-  }
-
-  currentScale() {
-    return this.hovered ? 1.06 : 1
   }
 
   onPointerEnter() {
@@ -1051,7 +1066,7 @@ class OverlayActor {
       this.playBaseAnimation()
     }
 
-    this.element.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(${this.currentScale()})`
+    this.element.style.transform = `translate3d(${this.x}px, ${this.y}px, 0)`
     return this.sprite.tick(deltaSeconds * 1000)
   }
 
@@ -1162,6 +1177,10 @@ class PokemonOverlay {
     this.perf = getPerformanceOptions(this.options)
     this.frameInterval = 1000 / Math.max(this.perf.targetFps, 15)
     this.nextFrameAt = 0
+    this.archSection =
+      this.perf.pauseWalkersWhenArchVisible && typeof document !== "undefined"
+        ? document.querySelector("#arch-graph-wrap")
+        : null
     this.pointerX = window.innerWidth / 2
     this.pointerY = window.innerHeight / 2
     this.pointerMove = this.pointerMove.bind(this)
@@ -1210,19 +1229,31 @@ class PokemonOverlay {
   }
 
   scheduleActorLoads() {
+    const walkerDelay = Math.max(0, this.perf.walkerLoadDelayMs || 0)
+
     if (!this.perf.lazyLoadActors) {
       return Promise.all(this.actors.map((actor) => actor.ensureAssetLoaded()))
     }
 
     let delay = 0
     this.actors.forEach((actor) => {
+      const extra =
+        actor.options.role === "bottom" || actor.options.role === "header"
+          ? walkerDelay
+          : 0
       window.setTimeout(() => {
         actor.ensureAssetLoaded()
-      }, delay)
+      }, delay + extra)
       delay += this.perf.staggerActorMs
     })
 
     return Promise.resolve()
+  }
+
+  isArchSectionVisible() {
+    if (!this.archSection) return false
+    const rect = this.archSection.getBoundingClientRect()
+    return rect.bottom > 0 && rect.top < window.innerHeight
   }
 
   onVisibilityChange() {
@@ -1356,9 +1387,14 @@ class PokemonOverlay {
     subtitle.textContent = this.options.toolbarSubtitle
     titleWrap.appendChild(title)
     titleWrap.appendChild(subtitle)
-    const toggleToolbar = () => {
-      const collapsed = this.toolbar.classList.toggle("is-collapsed")
+    const syncRosterOpenState = () => {
+      const collapsed = this.toolbar.classList.contains("is-collapsed")
+      document.body.classList.toggle("pk-overlay-roster-open", !collapsed)
       header.setAttribute("aria-expanded", collapsed ? "false" : "true")
+    }
+    const toggleToolbar = () => {
+      this.toolbar.classList.toggle("is-collapsed")
+      syncRosterOpenState()
     }
     header.addEventListener("click", toggleToolbar)
     header.addEventListener("keydown", (event) => {
@@ -1374,6 +1410,7 @@ class PokemonOverlay {
     if (this.options.toolbarCollapsed) {
       this.toolbar.classList.add("is-collapsed")
     }
+    syncRosterOpenState()
 
     const grid = document.createElement("div")
     grid.className = "pk-overlay-toolbar-grid"
@@ -1394,6 +1431,7 @@ class PokemonOverlay {
       )
 
       const labelWrap = document.createElement("span")
+      labelWrap.className = "pk-overlay-toolbar-copy"
       const name = document.createElement("span")
       name.className = "pk-overlay-toolbar-name"
       name.textContent = POKEMON_LIBRARY[key].label
@@ -1506,7 +1544,16 @@ class PokemonOverlay {
     const deltaSeconds = Math.min((now - this.lastTick) / 1000, 0.05)
     this.lastTick = now
 
-    this.actors.forEach((actor) => actor.update(now, deltaSeconds))
+    const archVisible = this.isArchSectionVisible()
+    this.actors.forEach((actor) => {
+      if (
+        archVisible &&
+        (actor.options.role === "bottom" || actor.options.role === "header")
+      ) {
+        return
+      }
+      actor.update(now, deltaSeconds)
+    })
     this.cursor.update(deltaSeconds)
 
     requestAnimationFrame(this.tick)
@@ -1561,6 +1608,7 @@ class PokemonOverlay {
     this.root.remove()
     document.body.classList.remove("pk-overlay-cursor-enabled")
     document.body.classList.remove("pk-overlay-dragging")
+    document.body.classList.remove("pk-overlay-roster-open")
   }
 }
 

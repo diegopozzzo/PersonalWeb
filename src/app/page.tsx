@@ -12,7 +12,7 @@ html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 300; overflow-x: hidden; cursor: auto; -webkit-text-size-adjust: 100%; }
 html.cursor-on body { cursor: none; }
 body::before { content:''; position:fixed; inset:0; background-image: linear-gradient(rgba(255,107,43,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.03) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
-#bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; display:block; }
+#bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; display:block; pointer-events:none; }
 #cursor { position:fixed; width:10px; height:10px; background:var(--lavender); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition: width .2s, height .2s; mix-blend-mode:screen; }
 #cursor-ring { position:fixed; width:36px; height:36px; border:1px solid rgba(255,107,43,0.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:left .1s ease, top .1s ease, width .3s, height .3s; }
 nav { position:fixed; top:0; left:0; right:0; z-index:500; display:flex; justify-content:space-between; align-items:center; padding:1.4rem 3.5rem; background:linear-gradient(to bottom, rgba(10,12,16,0.95), transparent); transition:background .3s, backdrop-filter .3s; }
@@ -73,11 +73,25 @@ section { position:relative; z-index:10; }
 .sec-title { font-family:'Syne', sans-serif; font-size:clamp(2rem,4vw,3.4rem); font-weight:800; letter-spacing:-.03em; line-height:1.05; margin-bottom:1.5rem; }
 .sec-title .grad { background:linear-gradient(135deg,var(--lavender),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .sec-body { font-size:.95rem; line-height:1.85; color:var(--dim); max-width:600px; }
-#architecture,#nonhuman,#gia,#magnus,#news,#preseed,#projects,#contact { border-top:1px solid var(--border); }
+#architecture,#nonhuman,#gia,#magnus,#news,#projects,#contact { border-top:1px solid var(--border); }
 #arch-graph-wrap { position:relative; width:100%; height:560px; margin:3.5rem 0 1.25rem; background:transparent; overflow:visible; cursor:grab; isolation:isolate; }
 #arch-graph-wrap::before { content:''; position:absolute; inset:-7% -5%; background:radial-gradient(circle at 50% 56%, rgba(255,107,43,0.15), transparent 24%), radial-gradient(circle at 26% 42%, rgba(56,217,180,0.12), transparent 20%), radial-gradient(circle at 72% 34%, rgba(255,154,112,0.11), transparent 18%); filter:blur(28px); opacity:.95; pointer-events:none; z-index:0; }
 #arch-graph-wrap::after { content:''; position:absolute; inset:12% 15%; border-radius:50%; border:1px solid rgba(255,255,255,0.03); box-shadow:0 0 80px rgba(255,107,43,0.08); pointer-events:none; z-index:0; }
-#arch-canvas { display:block; width:100%; height:100%; position:relative; z-index:1; }
+#arch-canvas { display:block; width:100%; height:100%; position:relative; z-index:1; touch-action:pan-y; }
+#arch-graph-wrap.is-dragging { cursor:grabbing; touch-action:none; }
+#arch-graph-wrap.is-dragging #arch-canvas { touch-action:none; }
+.arch-graph-fallback { display:none; position:relative; z-index:2; height:100%; padding:1.25rem 1rem 1.5rem; overflow-y:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y; }
+.arch-graph-fallback.is-active { display:flex; flex-direction:column; gap:1rem; }
+.arch-fb-core { text-align:center; padding:1.1rem 1rem; border:1px solid rgba(255,79,94,0.35); border-radius:18px; background:linear-gradient(180deg, rgba(255,79,94,0.12), rgba(255,255,255,0.02)); box-shadow:0 0 32px rgba(255,107,43,0.12); }
+.arch-fb-core strong { display:block; font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; color:var(--white); margin-bottom:.35rem; }
+.arch-fb-core span { display:block; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dimmer); }
+.arch-fb-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:.65rem; list-style:none; margin:0; padding:0; }
+.arch-fb-grid li { padding:.75rem .8rem; border:1px solid var(--border); border-radius:14px; background:rgba(255,255,255,0.03); min-height:44px; }
+.arch-fb-grid li strong { display:block; font-family:'Syne',sans-serif; font-size:.72rem; font-weight:700; color:var(--white); margin-bottom:.2rem; }
+.arch-fb-grid li span { display:block; font-size:.5rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dimmer); line-height:1.4; }
+.arch-fb-grid li.teal strong { color:var(--teal); }
+.arch-fb-grid li.lav strong { color:var(--lavender); }
+.arch-fb-grid li.warm strong { color:var(--lav2); }
 .graph-badge { position:absolute; bottom:1.2rem; left:1.5rem; font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--dimmer); pointer-events:none; z-index:3; text-shadow:0 0 22px rgba(255,107,43,0.22); }
 .arch-grid,.magnus-cards,.projects-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:1px; }
 .magnus-cards,.projects-grid { gap:1.5rem; background:none; margin-top:4rem; }
@@ -140,7 +154,10 @@ footer { position:relative; z-index:10; padding:2.5rem 3.5rem; border-top:1px so
   .nav-right{gap:.45rem; margin-left:auto;}
   .lang-btn{min-width:40px; min-height:40px; padding:.35rem .55rem;}
   .nav-cta{padding:.65rem 1rem; font-size:.62rem;}
-  #arch-graph-wrap{height:min(52vh, 440px); margin:2rem 0 1rem;}
+  #arch-graph-wrap{height:auto; min-height:0; margin:2rem 0 1rem; cursor:default; overflow:hidden;}
+  #arch-graph-wrap::before,#arch-graph-wrap::after{display:none;}
+  #arch-canvas{display:none !important;}
+  .arch-graph-fallback.is-active{max-height:none;}
   .hero-layout{gap:2rem;}
   .hero-btns{flex-wrap:wrap; gap:.85rem;}
   .btn-grad,.btn-ghost{min-height:44px; display:inline-flex; align-items:center;}
@@ -165,15 +182,14 @@ footer { position:relative; z-index:10; padding:2.5rem 3.5rem; border-top:1px so
 }
 </style>
 <canvas id="bg-canvas"></canvas><div id="cursor"></div><div id="cursor-ring"></div>
-<nav id="nav"><a href="#hero" class="nav-logo">DBP<span>A</span></a><button type="button" class="nav-menu-toggle" id="nav-mobile-toggle" aria-expanded="false" aria-controls="nav-mobile-panel" aria-label="Open navigation menu"><span class="sr-only">Menu</span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span></button><ul class="nav-links"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#preseed">Pre-seed</a></li><li><a href="#projects">Projects</a></li></ul><div class="nav-right"><div class="lang-switch" aria-label="Language switcher"><button class="lang-btn active" data-lang="en" type="button">EN</button><button class="lang-btn" data-lang="es" type="button">ES</button></div><a href="#contact" class="nav-cta">Contact</a></div></nav>
-<div id="nav-mobile-panel" class="nav-mobile-panel" hidden role="dialog" aria-modal="true" aria-label="Site navigation" aria-hidden="true"><ul class="nav-mobile-list"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#preseed">Pre-seed</a></li><li><a href="#projects">Projects</a></li><li><a href="#contact">Contact</a></li></ul></div>
+<nav id="nav"><a href="#hero" class="nav-logo">DBP<span>A</span></a><button type="button" class="nav-menu-toggle" id="nav-mobile-toggle" aria-expanded="false" aria-controls="nav-mobile-panel" aria-label="Open navigation menu"><span class="sr-only">Menu</span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-bar" aria-hidden="true"></span></button><ul class="nav-links"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#projects">Projects</a></li></ul><div class="nav-right"><div class="lang-switch" aria-label="Language switcher"><button class="lang-btn active" data-lang="en" type="button">EN</button><button class="lang-btn" data-lang="es" type="button">ES</button></div><a href="#contact" class="nav-cta">Contact</a></div></nav>
+<div id="nav-mobile-panel" class="nav-mobile-panel" hidden role="dialog" aria-modal="true" aria-label="Site navigation" aria-hidden="true"><ul class="nav-mobile-list"><li><a href="#architecture">Architecture</a></li><li><a href="#nonhuman">NONHUMAN</a></li><li><a href="#gia">GIA PUCP</a></li><li><a href="#magnus">Magnus</a></li><li><a href="#news">News</a></li><li><a href="#projects">Projects</a></li><li><a href="#contact">Contact</a></li></ul></div>
 <section id="hero"><div class="hero-layout"><div class="hero-copy"><p class="hero-tag">Smart Solutions · Lima, Peru</p><h1 class="hero-name">Diego Bruno<br>Pozo Abregu</h1><p class="hero-subtitle">Know How</p><p class="hero-desc">I design and connect intelligent systems across AI, robotics, and industrial technology to build robust real-world solutions alongside strategic allies committed to automation and the large-scale expansion of intelligent solutions.</p><div class="hero-btns"><a href="#contact" class="btn-grad">Let's talk</a><a href="#architecture" class="btn-ghost">Explore architecture ↓</a></div></div><div class="hero-roles"><a class="hero-role-link" href="https://humans-machines.nonhuman.site/" target="_blank" rel="noreferrer"><span class="hero-role-code">CEO</span><span class="hero-role-company">BEYONDHUMAN</span><span class="hero-role-title">Chief Executive Officer</span></a><a class="hero-role-link" href="https://nonhuman.site/" target="_blank" rel="noreferrer"><span class="hero-role-code">CBO</span><span class="hero-role-company">NONHUMAN</span><span class="hero-role-title">Chief Business Officer</span></a><a class="hero-role-link" href="https://www.giaperu.space/" target="_blank" rel="noreferrer"><span class="hero-role-code">CBO</span><span class="hero-role-company">GIA PUCP</span><span class="hero-role-title">Chief Business Officer</span></a><a class="hero-role-link" href="https://www.magnusgc.consulting/" target="_blank" rel="noreferrer"><span class="hero-role-code">BDA</span><span class="hero-role-company">MAGNUS G.C. CONSULTING</span><span class="hero-role-title">Business Development Associate</span></a></div></div><div class="scroll-hint"><div class="scroll-line"></div><span>Scroll</span></div></section>
-<section id="architecture"><div class="section-inner"><p class="eyebrow lav reveal">Systems Thinking</p><h2 class="sec-title reveal">I build the <span class="grad">connective tissue</span><br>between intelligence and deployment.</h2><p class="sec-body reveal">AI models, hardware systems, human interfaces, and industrial constraints rarely speak the same language. I translate between them — designing coherent architectures that work end-to-end, from model selection to physical deployment.</p><div id="arch-graph-wrap" class="reveal"><canvas id="arch-canvas"></canvas></div></div></section>
+<section id="architecture"><div class="section-inner"><p class="eyebrow lav reveal">Systems Thinking</p><h2 class="sec-title reveal">I build the <span class="grad">connective tissue</span><br>between intelligence and deployment.</h2><p class="sec-body reveal">AI models, hardware systems, human interfaces, and industrial constraints rarely speak the same language. I translate between them — designing coherent architectures that work end-to-end, from model selection to physical deployment.</p><div id="arch-graph-wrap" class="reveal"><canvas id="arch-canvas"></canvas><div id="arch-graph-fallback" class="arch-graph-fallback" aria-label="System architecture map"><div class="arch-fb-core"><strong data-en="About Me" data-es="Sobre Mi">About Me</strong><span data-en="DANCE-TRAVEL-CREATE-FOOTBALL" data-es="BAILE-VIAJES-CREAR-FUTBOL">DANCE-TRAVEL-CREATE-FOOTBALL</span></div><ul class="arch-fb-grid"><li class="teal"><strong data-en="Robotics" data-es="Robotics">Robotics</strong><span data-en="NAO-UNITREE-COBOTS" data-es="NAO-UNITREE-COBOTS">NAO-UNITREE-COBOTS</span></li><li class="warm"><strong data-en="XR Experience" data-es="Experiencia XR">XR Experience</strong><span data-en="QUEST-PICO-MAGICLEAP-HOLOLENS" data-es="QUEST-PICO-MAGICLEAP-HOLOLENS">QUEST-PICO-MAGICLEAP-HOLOLENS</span></li><li class="teal"><strong data-en="IoT Network" data-es="Red IoT">IoT Network</strong><span data-en="BLE-LORAWAN-UWB" data-es="BLE-LORAWAN-UWB">BLE-LORAWAN-UWB</span></li><li class="lav"><strong data-en="Industrial" data-es="Industrial">Industrial</strong><span data-en="SIEMENS-ROCKWELL-ABB" data-es="SIEMENS-ROCKWELL-ABB">SIEMENS-ROCKWELL-ABB</span></li><li><strong data-en="Web Design" data-es="Diseno Web">Web Design</strong><span data-en="UI-UX-FRONTEND" data-es="UI-UX-FRONTEND">UI-UX-FRONTEND</span></li><li><strong data-en="Interfaces" data-es="Interfaces">Interfaces</strong><span data-en="CRM-ERP-DASHBOARDS" data-es="CRM-ERP-DASHBOARDS">CRM-ERP-DASHBOARDS</span></li><li><strong data-en="AI Models" data-es="Modelos IA">AI Models</strong><span data-en="LLM-VLM-ML-DL" data-es="LLM-VLM-ML-DL">LLM-VLM-ML-DL</span></li><li class="teal"><strong data-en="Deployment" data-es="Deployment">Deployment</strong><span data-en="CLOUD-ON-PREM-HYBRID" data-es="CLOUD-ON-PREM-HYBRID">CLOUD-ON-PREM-HYBRID</span></li></ul></div><span class="graph-badge" id="arch-graph-badge" data-en="Interactive map · desktop" data-es="Mapa del sistema · vista movil">Interactive map · desktop</span></div></div></section>
 <section id="nonhuman"><div class="section-inner"><p class="eyebrow reveal">Understanding New Types of Intelligence</p><h2 class="sec-title reveal"><span class="grad">NONHUMAN</span></h2><div class="nh-layout"><div><p class="sec-body reveal" style="margin-bottom:2.5rem;">NONHUMAN is an embodied AI and robotics research group based in Lima, Peru, building a bridge from frontier research to real deployments.</p><ul class="nh-list"><li class="nh-item reveal reveal-d1"><div class="nh-dot"></div><div><div class="nh-item-title">Research Lab (Core)</div><div class="nh-item-desc">Study and development of machine learning, LLMs, physical AI and autonomous control for humanoid and bimanual systems focused on LATAM realities.</div></div></li><li class="nh-item reveal reveal-d2"><div class="nh-dot"></div><div><div class="nh-item-title">Open Technical Ecosystem</div><div class="nh-item-desc">Active publication and experimentation culture on GitHub and Hugging Face to make advanced AI and robotics research more accessible to builders.</div></div></li><li class="nh-item reveal reveal-d3"><div class="nh-dot"></div><div><div class="nh-item-title">Physical AI + Industrial Integration</div><div class="nh-item-desc">Software and hardware integration through robotic arms, 3D perception, edge AI and industrial stacks, including Siemens-oriented architectures (Jetson edge, OPC UA/PROFINET workflows).</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">Flagship R&D Directions</div><div class="nh-item-desc">Low-cost robotics training systems (SO-ARM100), LLM architecture exploration (MIND), diffusion modeling work (DDPM), and data-centric learning methods such as reinforcement and imitation learning.</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">Human & Machines (Commercial Arm)</div><div class="nh-item-desc">Robots as a Service (RaaS) for retail, events, museums and hospitality: deploy robots to capture attention, generate interaction, and convert visits into memorable brand experiences.</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">RaaS Capabilities and Model</div><div class="nh-item-desc">Remote Presence (teleoperation), Learned Tasks (beta), Coordinated Movement (beta), flexible event/monthly managed services, safety-first deployments, and current early-partner waitlist execution.</div></div></li></ul></div><div class="nh-visual reveal"><div class="nh-logo">NONHUMAN</div><div class="nh-tagline">Embodied AI Research + RaaS Execution</div><div class="nh-stat"><div class="nh-stat-label">Role</div><div class="nh-stat-val">CBO</div></div><div class="nh-stat"><div class="nh-stat-label">Human & Machines Role</div><div class="nh-stat-val" style="font-size:1rem;color:var(--white)">CEO</div></div><div class="nh-stat"><div class="nh-stat-label">Focus</div><div class="nh-stat-val" style="font-size:1rem;color:var(--white)">Research + Physical AI Products</div></div><div class="nh-stat"><div class="nh-stat-label">Trusted By</div><div class="nh-stat-val" style="font-size:1rem;color:var(--white)">PUCP · DINAUT · Ciclos Café · Siemens</div></div></div></div></div></section>
 <section id="gia"><div class="section-inner"><div class="magnus-header"><div><p class="eyebrow lav reveal">Aerospace Engineering Group</p><h2 class="sec-title reveal"><span class="grad">GIA PUCP</span></h2><p class="sec-body reveal" style="max-width:620px">GIA PUCP is the Aerospace Engineering Group at PUCP, focused on training engineers and scientists through experimental rocketry and space science research, executing real projects that integrate applied technical formation, academic knowledge production, and technology validation for the Peruvian aerospace ecosystem.</p></div><span class="fellow-badge reveal">CBO — GIA PUCP</span></div><div class="magnus-cards"><div class="magnus-card reveal reveal-d1"><div class="mc-label">GIA · Mission</div><div class="mc-title">Experimental Rocketry & Space Science</div><div class="mc-desc">Mission-driven formation, research, and execution through real aerospace projects that connect university learning with validation in the field.</div><span class="mc-tag">PUCP · Aerospace</span></div><div class="magnus-card reveal reveal-d2"><div class="mc-label">GIA · Milestones</div><div class="mc-title">Flight-Validated Milestones</div><div class="mc-desc">At the Latin America Space Challenge, MiSat reached 6th place in satellites and Kuntur 1 reached 7th place in the 500-meter rocketry category.</div><span class="mc-tag">MiSat · Kuntur 1</span></div></div></div></section>
 <section id="magnus"><div class="section-inner"><div class="magnus-header"><div><p class="eyebrow lav reveal">Strategic Ecosystem</p><h2 class="sec-title reveal"><span class="grad">Magnus</span></h2><p class="sec-body reveal" style="max-width:480px">A strategic technology consulting ecosystem focused on productivity, consulting, executive training, and AI solutions for companies in Peru. As a Business Development Associate, I support ecosystem growth, partnerships, and commercial expansion.</p></div><span class="fellow-badge reveal">BDA — Magnus G.C. Consulting</span></div><div class="magnus-cards"><div class="magnus-card reveal reveal-d1"><div class="mc-label">Magnus · Venture</div><div class="mc-title">Forecast</div><div class="mc-desc">An AI forecasting platform built for decision systems. Forecast surfaces predictive intelligence across operational, financial, and strategic domains — turning data signals into actionable foresight.</div><span class="mc-tag">AI · Decision Systems</span></div><div class="magnus-card reveal reveal-d2"><div class="mc-label">Magnus · Venture</div><div class="mc-title">Trueke</div><div class="mc-desc">A B2B waste exchange platform enabling circular economy at scale. Trueke connects industrial waste generators with processors and recyclers, creating closed-loop material flows.</div><span class="mc-tag">Circular Economy · B2B</span></div></div></div></section>
 <section id="news"><div class="section-inner"><p class="eyebrow lav reveal">News</p><h2 class="sec-title reveal">Recent <span class="grad">updates</span></h2><div class="news-grid"><article class="news-card reveal reveal-d1"><div class="news-meta">Recent Update · GIA PUCP</div><h3 class="news-title">Rocket launch campaign in Chincha</h3><p class="mc-desc">GIA PUCP recently completed a rocket launch in Chincha, adding a new flight-validation milestone to its experimental rocketry roadmap in Peru.</p><p class="mc-desc" style="margin-top:1rem">This update aligns with GIA's mission of training engineers and scientists through real aerospace projects, experimental rocketry, and technology validation from the university.</p><div class="hero-btns reveal" style="margin-top:1.5rem;opacity:1;animation:none;"><a href="https://www.facebook.com/share/p/1CBbTatLGe/" class="btn-grad" target="_blank" rel="noreferrer">Launch post</a><a href="https://www.giaperu.space/" class="btn-ghost" target="_blank" rel="noreferrer">GIA website</a></div></article><article class="news-card reveal reveal-d2"><div class="news-meta">Why it matters</div><ul class="news-list"><li>Validates operations, logistics, and real-world execution beyond lab tests.</li><li>Strengthens the team's mission of applied aerospace training and technology validation.</li><li>Connects university research with field deployment and systems discipline.</li></ul></article></div></div></section>
-<section id="preseed"><div class="section-inner"><p class="eyebrow reveal">Early Stage</p><h2 class="sec-title reveal">Pre-seed <span class="grad">architecture</span></h2><div class="preseed-layout"><div class="preseed-steps"><div class="preseed-step reveal reveal-d1"><div class="step-num">01</div><div><div class="step-title">System Design</div><div class="step-desc">Define the architecture before writing a line of code. Which components? Which constraints? What can be deferred?</div></div></div><div class="preseed-step reveal reveal-d2"><div class="step-num">02</div><div><div class="step-title">Stack Selection</div><div class="step-desc">Choose technology that fits the team, the timeline, and the growth trajectory — not just what's fashionable.</div></div></div><div class="preseed-step reveal reveal-d3"><div class="step-num">03</div><div><div class="step-title">MVP Execution</div><div class="step-desc">Ship something real, fast. An MVP that validates assumptions without creating technical debt that kills the next phase.</div></div></div><div class="preseed-step reveal reveal-d4"><div class="step-num">04</div><div><div class="step-title">Scale Readiness</div><div class="step-desc">Build with growth in mind from day one — so that when traction comes, the architecture doesn't become the ceiling.</div></div></div></div><div class="preseed-quote reveal"><p>I help early-stage startups design system architecture and ship <span>robust MVPs</span> — without sacrificing the foundation they'll need to scale.</p><p class="sec-body" style="font-size:.85rem">If you're at the pre-seed stage and need someone who can think at the systems level while also being hands-on with the build — let's talk.</p></div></div></div></section>
 <section id="projects"><div class="section-inner"><p class="eyebrow lav reveal">Technical Skills</p><h2 class="sec-title reveal">Selected <span class="grad">skills</span></h2><ul class="nh-list" style="margin-top:4rem;"><li class="nh-item reveal reveal-d1"><div class="nh-dot"></div><div><div class="nh-item-title">Intelligent CRM / ERP Systems</div><div class="nh-item-desc">Custom operational platforms with embedded AI for decision support, automation, and insight generation.</div></div></li><li class="nh-item reveal reveal-d2"><div class="nh-dot"></div><div><div class="nh-item-title">AI Chat Experiences</div><div class="nh-item-desc">Context-aware conversational agents tuned for specific domains, workflows, and organizational knowledge.</div></div></li><li class="nh-item reveal reveal-d3"><div class="nh-dot"></div><div><div class="nh-item-title">Process Automation</div><div class="nh-item-desc">End-to-end workflow automation connecting disparate systems through intelligent orchestration layers.</div></div></li><li class="nh-item reveal reveal-d4"><div class="nh-dot"></div><div><div class="nh-item-title">Asset Tracking — LoRaWAN, BLE, GPS</div><div class="nh-item-desc">Real-time tracking systems for industrial and logistics environments using low-power wireless protocols.</div></div></li></ul></div></section>
 <section id="contact" style="position:relative;overflow:hidden;"><div class="contact-glow"></div><div class="contact-inner"><p class="eyebrow reveal" style="justify-content:center">Let's build</p><h2 class="contact-title reveal">Ready to connect<br><span style="background:linear-gradient(135deg,var(--lavender),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">deep systems?</span></h2><p class="contact-body reveal">I'm open to collaboration on deep-tech systems, applied AI, and industrial intelligence — whether you're a startup, a research team, or a company trying to make sense of complex technology.<br><br>Let's talk architecture.</p><a href="mailto:diegopozo@beyondhuman.services" class="contact-email reveal">diegopozo@beyondhuman.services</a><br><br><div class="hero-btns reveal" style="justify-content:center;margin-top:1rem"><a href="mailto:diegopozo@beyondhuman.services" class="btn-grad">Send a message</a></div></div></section>
 <div class="glow-divider"></div><footer><div class="footer-left">© 2026 Diego Bruno Pozo Abregu</div><div class="footer-right"><a href="#architecture">Architecture</a><a href="#nonhuman">NONHUMAN</a><a href="#gia">GIA PUCP</a><a href="#magnus">Magnus</a><a href="#news">News</a><a href="#projects">Projects</a></div></footer>
@@ -183,6 +199,43 @@ const LANDING_JS = `
 'use strict';
 if (window.__dbpaLandingInit) return;
 window.__dbpaLandingInit = true;
+
+function isMobileLite() {
+  return window.matchMedia('(max-width: 980px), (pointer: coarse)').matches;
+}
+
+function isReducedGraphics() {
+  return isMobileLite() || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function isPageHidden() {
+  return document.hidden || document.visibilityState === 'hidden';
+}
+
+function syncArchGraphFallbackLanguage(lang) {
+  document.querySelectorAll('#arch-graph-fallback [data-en]').forEach(function(el) {
+    var en = el.getAttribute('data-en');
+    var es = el.getAttribute('data-es');
+    if (en) el.textContent = lang === 'es' && es ? es : en;
+  });
+  var badge = document.getElementById('arch-graph-badge');
+  if (badge) {
+    var ben = badge.getAttribute('data-en');
+    var bes = badge.getAttribute('data-es');
+    if (ben) badge.textContent = lang === 'es' && bes ? bes : ben;
+  }
+}
+
+function enableArchGraphFallback() {
+  var wrap = document.getElementById('arch-graph-wrap');
+  var c = document.getElementById('arch-canvas');
+  var fb = document.getElementById('arch-graph-fallback');
+  if (!wrap || !fb) return;
+  if (c) c.style.display = 'none';
+  wrap.style.cursor = 'default';
+  fb.classList.add('is-active');
+  syncArchGraphFallbackLanguage(window.__dbpaLang === 'es' ? 'es' : 'en');
+}
 
 (function enableCustomCursorDesktop() {
   var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -461,6 +514,7 @@ window.addEventListener('scroll', function() {
       if (navPanel) {
         navPanel.setAttribute('aria-label', lang === 'es' && ES['Site navigation'] ? ES['Site navigation'] : 'Site navigation');
       }
+      syncArchGraphFallbackLanguage(lang);
       window.dispatchEvent(new CustomEvent('dbpa:langchange', { detail: { lang: lang } }));
       try { localStorage.setItem('dbpa_lang', lang); } catch (_) {}
     }
@@ -485,8 +539,9 @@ window.addEventListener('scroll', function() {
   if (!THREE) return;
   var canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  var lite = isMobileLite();
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !lite, alpha: true, powerPreference: lite ? 'low-power' : 'high-performance' });
+  renderer.setPixelRatio(lite ? 1 : Math.min(window.devicePixelRatio, 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x0A0C10, 1);
 
@@ -524,13 +579,13 @@ window.addEventListener('scroll', function() {
     return new THREE.Points(geo, mat);
   }
 
-  var cloud1 = makeCloud(7000, 24, 2,   0xFF6B2B, 0.050, 0.70);
-  var cloud2 = makeCloud(4000, 18, 1.5, 0x38d9b4, 0.040, 0.60);
-  var cloud3 = makeCloud(2500, 12, 1.0, 0xFF9A70, 0.035, 0.50);
-  var cloud4 = makeCloud(1500,  8, 0.5, 0xffffff, 0.025, 0.40);
+  var cloud1 = makeCloud(lite ? 1400 : 7000, 24, 2,   0xFF6B2B, lite ? 0.060 : 0.050, 0.70);
+  var cloud2 = makeCloud(lite ? 900  : 4000, 18, 1.5, 0x38d9b4, lite ? 0.050 : 0.040, 0.60);
+  var cloud3 = makeCloud(lite ? 600  : 2500, 12, 1.0, 0xFF9A70, lite ? 0.045 : 0.035, 0.50);
+  var cloud4 = makeCloud(lite ? 350  : 1500,  8, 0.5, 0xffffff, lite ? 0.040 : 0.025, 0.40);
   scene.add(cloud1, cloud2, cloud3, cloud4);
 
-  var octGeo = new THREE.OctahedronGeometry(3.2, 2);
+  var octGeo = new THREE.OctahedronGeometry(3.2, lite ? 0 : 2);
   var octMat = new THREE.MeshStandardMaterial({
     color: 0x0d1020, emissive: 0xFF6B2B, emissiveIntensity: 0.06,
     roughness: 0.2, metalness: 0.95, transparent: true, opacity: 0.55
@@ -546,7 +601,7 @@ window.addEventListener('scroll', function() {
 
   function makeRing(inner, outer, col, rx, ry) {
     var m = new THREE.Mesh(
-      new THREE.RingGeometry(inner, outer, 128),
+      new THREE.RingGeometry(inner, outer, lite ? 48 : 128),
       new THREE.MeshBasicMaterial({ color: col, side: THREE.DoubleSide, transparent: true, opacity: 0.14, depthWrite: false })
     );
     m.rotation.x = rx; m.rotation.y = ry; return m;
@@ -576,15 +631,20 @@ window.addEventListener('scroll', function() {
   tealLight.position.set(12, 6, 4);
   scene.add(tealLight);
 
-  var heroDragging = false, heroPrev = { x:0, y:0 }, heroVX = 0, heroVY = 0;
-  canvas.addEventListener('mousedown', function(e) { heroDragging = true; heroPrev = { x:e.clientX, y:e.clientY }; });
-  window.addEventListener('mouseup', function() { heroDragging = false; });
-  window.addEventListener('mousemove', function(e) {
-    if (!heroDragging) return;
-    heroVX += (e.clientY - heroPrev.y) * 0.004;
-    heroVY += (e.clientX - heroPrev.x) * 0.004;
-    heroPrev = { x:e.clientX, y:e.clientY };
-  });
+  var heroDragging = false;
+  var heroPrev = { x: 0, y: 0 };
+  var heroVX = 0;
+  var heroVY = 0;
+  if (!lite) {
+    canvas.addEventListener('mousedown', function(e) { heroDragging = true; heroPrev = { x:e.clientX, y:e.clientY }; });
+    window.addEventListener('mouseup', function() { heroDragging = false; });
+    window.addEventListener('mousemove', function(e) {
+      if (!heroDragging) return;
+      heroVX += (e.clientY - heroPrev.y) * 0.004;
+      heroVY += (e.clientX - heroPrev.x) * 0.004;
+      heroPrev = { x:e.clientX, y:e.clientY };
+    });
+  }
 
   window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -593,11 +653,30 @@ window.addEventListener('scroll', function() {
   });
 
   var heroT = 0;
-  function heroAnimate() {
-    requestAnimationFrame(heroAnimate);
-    heroT += 0.007;
-    camX += (tgX - camX) * 0.03;
-    camY += (tgY - camY) * 0.03;
+  var heroNextFrame = 0;
+  var heroFrameMs = lite ? 33 : 16;
+  var heroPaused = false;
+  function setHeroPaused(next) {
+    heroPaused = next;
+    if (!heroPaused && !heroFrameId) heroAnimate(performance.now());
+  }
+  function onHeroVisibility() {
+    setHeroPaused(isPageHidden());
+  }
+  document.addEventListener('visibilitychange', onHeroVisibility);
+  onHeroVisibility();
+  var heroFrameId = 0;
+  function heroAnimate(now) {
+    heroFrameId = requestAnimationFrame(heroAnimate);
+    if (heroPaused) {
+      heroFrameId = 0;
+      return;
+    }
+    if (now < heroNextFrame) return;
+    heroNextFrame = now + heroFrameMs;
+    heroT += lite ? 0.005 : 0.007;
+    camX += (tgX - camX) * (lite ? 0.02 : 0.03);
+    camY += (tgY - camY) * (lite ? 0.02 : 0.03);
     camera.position.x = camX * 2.5;
     camera.position.y = -camY * 1.8;
     var sf = window.scrollY / ((document.body.scrollHeight - window.innerHeight) || 1);
@@ -627,7 +706,7 @@ window.addEventListener('scroll', function() {
     lavLight.intensity = 2 + Math.sin(heroT * 0.8) * 0.7;
     renderer.render(scene, camera);
   }
-  heroAnimate();
+  heroAnimate(performance.now());
 })();
 
 (function() {
@@ -636,9 +715,13 @@ window.addEventListener('scroll', function() {
   var wrap = document.getElementById('arch-graph-wrap');
   var c = document.getElementById('arch-canvas');
   if (!wrap || !c) return;
+  if (isMobileLite()) {
+    enableArchGraphFallback();
+    return;
+  }
 
-  var gr = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: true });
-  gr.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  var gr = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  gr.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   gr.setClearColor(0x080a0e, 0);
 
   var gScene = new THREE.Scene();
@@ -713,29 +796,32 @@ window.addEventListener('scroll', function() {
   var pivot = new THREE.Group();
   var nodeMeshes = [];
   var basePos = [];
-  var graphDust = makeGraphDust(1800, 13.5);
+  var graphDust = makeGraphDust(620, 13.5);
   gScene.add(graphDust);
 
-  ND.forEach(function(nd) {
+  ND.forEach(function(nd, ni) {
+    var isHub = ni === 0 || nd.ring;
     var mat = new THREE.MeshStandardMaterial({
       color: nd.col, emissive: nd.col, emissiveIntensity: nd.ring ? 1.05 : 0.72,
       roughness: 0.18, metalness: 0.86, transparent: true, opacity: 0.98
     });
-    var mesh = new THREE.Mesh(new THREE.SphereGeometry(nd.sz, 24, 24), mat);
+    var mesh = new THREE.Mesh(new THREE.SphereGeometry(nd.sz, isHub ? 16 : 12, isHub ? 16 : 12), mat);
     mesh.position.set(nd.x, nd.y, nd.z);
     mesh.userData.nd = nd;
     var glowMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(nd.sz * 1.85, 18, 18),
+      new THREE.SphereGeometry(nd.sz * 1.85, isHub ? 18 : 14, isHub ? 18 : 14),
       new THREE.MeshBasicMaterial({ color: nd.col, transparent: true, opacity: nd.ring ? 0.22 : 0.16, blending: THREE.AdditiveBlending, depthWrite: false })
     );
     mesh.userData.glow = glowMesh;
     mesh.add(glowMesh);
-    var auraMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(nd.sz * 2.65, 18, 18),
-      new THREE.MeshBasicMaterial({ color: nd.col, transparent: true, opacity: nd.ring ? 0.08 : 0.05, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.BackSide })
-    );
-    mesh.userData.aura = auraMesh;
-    mesh.add(auraMesh);
+    if (isHub) {
+      var auraMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(nd.sz * 2.65, 18, 18),
+        new THREE.MeshBasicMaterial({ color: nd.col, transparent: true, opacity: nd.ring ? 0.08 : 0.05, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.BackSide })
+      );
+      mesh.userData.aura = auraMesh;
+      mesh.add(auraMesh);
+    }
     if (nd.ring) {
       var rMesh = new THREE.Mesh(
         new THREE.RingGeometry(nd.sz + 0.15, nd.sz + 0.28, 64),
@@ -745,20 +831,22 @@ window.addEventListener('scroll', function() {
       mesh.userData.ringMesh = rMesh;
       mesh.add(rMesh);
     }
-    var orbitMesh = new THREE.Mesh(
-      new THREE.TorusGeometry(nd.sz * 1.56, Math.max(nd.sz * 0.042, 0.018), 12, 64),
-      new THREE.MeshBasicMaterial({ color: nd.col, transparent: true, opacity: nd.ring ? 0.3 : 0.16, blending: THREE.AdditiveBlending, depthWrite: false })
-    );
-    orbitMesh.rotation.x = Math.PI / 2.35;
-    orbitMesh.rotation.y = Math.PI / 4;
-    mesh.userData.orbitMesh = orbitMesh;
-    mesh.add(orbitMesh);
-    var wMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(nd.sz * 1.35, 8, 8),
-      new THREE.MeshBasicMaterial({ color: nd.col, wireframe: true, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false })
-    );
-    mesh.userData.wire = wMesh;
-    mesh.add(wMesh);
+    if (isHub) {
+      var orbitMesh = new THREE.Mesh(
+        new THREE.TorusGeometry(nd.sz * 1.56, Math.max(nd.sz * 0.042, 0.018), 12, 64),
+        new THREE.MeshBasicMaterial({ color: nd.col, transparent: true, opacity: nd.ring ? 0.3 : 0.16, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      orbitMesh.rotation.x = Math.PI / 2.35;
+      orbitMesh.rotation.y = Math.PI / 4;
+      mesh.userData.orbitMesh = orbitMesh;
+      mesh.add(orbitMesh);
+      var wMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(nd.sz * 1.35, 8, 8),
+        new THREE.MeshBasicMaterial({ color: nd.col, wireframe: true, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      mesh.userData.wire = wMesh;
+      mesh.add(wMesh);
+    }
     pivot.add(mesh);
     nodeMeshes.push(mesh);
     basePos.push(new THREE.Vector3(nd.x, nd.y, nd.z));
@@ -796,11 +884,11 @@ window.addEventListener('scroll', function() {
 
   var pulseObjs = EDGES.map(function(pair) {
     var mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.10, 8, 8),
-      new THREE.MeshStandardMaterial({ color: ND[pair[0]].col, emissive: ND[pair[0]].col, emissiveIntensity: 2.8, transparent: true, opacity: 0.95 })
+      new THREE.SphereGeometry(0.10, 6, 6),
+      new THREE.MeshBasicMaterial({ color: ND[pair[0]].col, transparent: true, opacity: 0.92, blending: THREE.AdditiveBlending, depthWrite: false })
     );
     mesh.add(new THREE.Mesh(
-      new THREE.SphereGeometry(0.18, 8, 8),
+      new THREE.SphereGeometry(0.18, 6, 6),
       new THREE.MeshBasicMaterial({ color: ND[pair[0]].col, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })
     ));
     pivot.add(mesh);
@@ -866,14 +954,39 @@ window.addEventListener('scroll', function() {
   var GRAPH_DRAG_SENSITIVITY = 0.0022;
   var GRAPH_DRAG_DAMPING = 0.84;
   var gDrag = false, gPrev = { x:0, y:0 }, gRX = 0, gRY = 0, gVX2 = 0, gVY2 = 0;
-  wrap.addEventListener('mousedown', function(e) { gDrag = true; gPrev = { x:e.clientX, y:e.clientY }; });
-  window.addEventListener('mouseup', function() { gDrag = false; });
-  window.addEventListener('mousemove', function(e) {
+  function graphPointerDown(clientX, clientY) {
+    gDrag = true;
+    gPrev = { x: clientX, y: clientY };
+    wrap.classList.add('is-dragging');
+  }
+  function graphPointerUp() {
+    gDrag = false;
+    wrap.classList.remove('is-dragging');
+  }
+  function graphPointerMove(clientX, clientY) {
     if (!gDrag) return;
-    gVX2 += (e.clientY - gPrev.y) * GRAPH_DRAG_SENSITIVITY;
-    gVY2 += (e.clientX - gPrev.x) * GRAPH_DRAG_SENSITIVITY;
-    gPrev = { x:e.clientX, y:e.clientY };
+    gVX2 += (clientY - gPrev.y) * GRAPH_DRAG_SENSITIVITY;
+    gVY2 += (clientX - gPrev.x) * GRAPH_DRAG_SENSITIVITY;
+    gPrev = { x: clientX, y: clientY };
+  }
+  wrap.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    graphPointerDown(e.clientX, e.clientY);
   });
+  window.addEventListener('mouseup', graphPointerUp);
+  window.addEventListener('mousemove', function(e) {
+    graphPointerMove(e.clientX, e.clientY);
+  });
+  wrap.addEventListener('touchstart', function(e) {
+    if (!e.touches || !e.touches.length) return;
+    graphPointerDown(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  wrap.addEventListener('touchmove', function(e) {
+    if (!gDrag || !e.touches || !e.touches.length) return;
+    graphPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  wrap.addEventListener('touchend', graphPointerUp, { passive: true });
+  wrap.addEventListener('touchcancel', graphPointerUp, { passive: true });
 
   var ray = new THREE.Raycaster();
   var mouse2 = new THREE.Vector2();
@@ -907,8 +1020,43 @@ window.addEventListener('scroll', function() {
 
   var gT = 0;
   var proj = new THREE.Vector3();
-  function graphAnimate() {
-    requestAnimationFrame(graphAnimate);
+  var graphVisible = true;
+  var graphFrameId = 0;
+  var graphNextFrame = 0;
+  var graphFrameMs = 33;
+  var graphTick = 0;
+  var edgeMid = new THREE.Vector3();
+  var edgeCurve = new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(),
+    new THREE.Vector3(),
+    new THREE.Vector3()
+  );
+  function setGraphRunning(active) {
+    graphVisible = active;
+    if (graphVisible && !graphFrameId && !isPageHidden()) graphAnimate(performance.now());
+  }
+  if ('IntersectionObserver' in window) {
+    var graphObserver = new IntersectionObserver(function(entries) {
+      setGraphRunning(entries.some(function(entry) { return entry.isIntersecting; }));
+    }, { threshold: 0.08 });
+    graphObserver.observe(wrap);
+  }
+  document.addEventListener('visibilitychange', function() {
+    if (isPageHidden()) {
+      graphFrameId = 0;
+      return;
+    }
+    if (graphVisible) graphAnimate(performance.now());
+  });
+  function graphAnimate(now) {
+    graphFrameId = requestAnimationFrame(graphAnimate);
+    if (!graphVisible || isPageHidden()) {
+      graphFrameId = 0;
+      return;
+    }
+    if (now < graphNextFrame) return;
+    graphNextFrame = now + graphFrameMs;
+    graphTick += 1;
     gT += 0.008;
     gVX2 *= GRAPH_DRAG_DAMPING; gVY2 *= GRAPH_DRAG_DAMPING;
     gRX += gVX2; gRY += gVY2;
@@ -946,41 +1094,51 @@ window.addEventListener('scroll', function() {
         mesh.userData.ringMesh.rotation.z = -gT * 0.8;
       }
     });
-    edgeLines.forEach(function(line, ei) {
-      var a = line.userData.a, b = line.userData.b;
-      var pa = nodeMeshes[a].position.clone();
-      var pb = nodeMeshes[b].position.clone();
-      var mid = pa.clone().lerp(pb, 0.5);
-      mid.z += Math.sin(gT * 0.3 + ei) * 0.35;
-      var pts = new THREE.QuadraticBezierCurve3(pa, mid, pb).getPoints(32);
-      line.geometry.setFromPoints(pts);
-      line.geometry.attributes.position.needsUpdate = true;
-      if (hovIdx === -1) {
-        line.userData.mat.opacity = line.userData.baseOpacity + Math.sin(gT * 1.6 + ei * 0.75) * 0.035;
-      }
-    });
+    if (graphTick % 4 === 0) {
+      edgeLines.forEach(function(line, ei) {
+        var a = line.userData.a, b = line.userData.b;
+        var pa = nodeMeshes[a].position;
+        var pb = nodeMeshes[b].position;
+        edgeMid.copy(pa).lerp(pb, 0.5);
+        edgeMid.z += Math.sin(gT * 0.3 + ei) * 0.35;
+        edgeCurve.v0.copy(pa);
+        edgeCurve.v1.copy(edgeMid);
+        edgeCurve.v2.copy(pb);
+        var pts = edgeCurve.getPoints(24);
+        line.geometry.setFromPoints(pts);
+        line.geometry.attributes.position.needsUpdate = true;
+        if (hovIdx === -1) {
+          line.userData.mat.opacity = line.userData.baseOpacity + Math.sin(gT * 1.6 + ei * 0.75) * 0.035;
+        }
+      });
+    }
     pulseObjs.forEach(function(p) {
       p.t += p.speed; if (p.t > 1) p.t = 0;
-      var pa = nodeMeshes[p.a].position.clone();
-      var pb = nodeMeshes[p.b].position.clone();
-      var mid = pa.clone().lerp(pb, 0.5);
-      p.mesh.position.copy(new THREE.QuadraticBezierCurve3(pa, mid, pb).getPoint(p.t));
-      p.mesh.material.emissiveIntensity = 2.6 + Math.sin(gT * 3 + p.t * 10) * 0.8;
+      var pa = nodeMeshes[p.a].position;
+      var pb = nodeMeshes[p.b].position;
+      edgeMid.copy(pa).lerp(pb, 0.5);
+      edgeCurve.v0.copy(pa);
+      edgeCurve.v1.copy(edgeMid);
+      edgeCurve.v2.copy(pb);
+      p.mesh.position.copy(edgeCurve.getPoint(p.t));
+      p.mesh.material.opacity = 0.78 + Math.sin(gT * 3 + p.t * 10) * 0.18;
     });
-    nodeMeshes.forEach(function(mesh, i) {
-      proj.copy(mesh.position);
-      pivot.localToWorld(proj);
-      proj.project(gCam);
+    if (graphTick % 2 === 0) {
       var rect = wrap.getBoundingClientRect();
-      labelEls[i].style.left = ((proj.x * 0.5 + 0.5) * rect.width) + 'px';
-      labelEls[i].style.top = ((proj.y * -0.5 + 0.5) * rect.height - ND[i].sz * 60 - 14) + 'px';
-      labelEls[i].style.opacity = (proj.z < 1) ? '1' : '0';
-    });
+      nodeMeshes.forEach(function(mesh, i) {
+        proj.copy(mesh.position);
+        pivot.localToWorld(proj);
+        proj.project(gCam);
+        labelEls[i].style.left = ((proj.x * 0.5 + 0.5) * rect.width) + 'px';
+        labelEls[i].style.top = ((proj.y * -0.5 + 0.5) * rect.height - ND[i].sz * 60 - 14) + 'px';
+        labelEls[i].style.opacity = (proj.z < 1) ? '1' : '0';
+      });
+    }
     gLav.intensity = 4 + Math.sin(gT * 0.9) * 0.85;
     gTeal.intensity = 3.1 + Math.cos(gT * 1.1) * 0.45;
     gr.render(gScene, gCam);
   }
-  graphAnimate();
+  if (graphVisible && !isPageHidden()) graphAnimate(performance.now());
 })();
 
 if ('IntersectionObserver' in window) {
@@ -999,27 +1157,28 @@ export default function Page() {
     (window as any).__dbpaLandingInit = false;
     const init = () => {
       if (cancelled) return;
-      const w = window as any;
-      if (!w.THREE) return;
       // eslint-disable-next-line no-new-func
       new Function(LANDING_JS)();
     };
-    const t = setInterval(() => {
+    let waitTimer = window.setInterval(() => {
       if ((window as any).THREE) {
         init();
-        clearInterval(t);
+        window.clearInterval(waitTimer);
       }
     }, 100);
     return () => {
       cancelled = true;
-      clearInterval(t);
+      if (waitTimer) window.clearInterval(waitTimer);
       (window as any).__dbpaLandingInit = false;
     };
   }, []);
 
   return (
     <>
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" strategy="beforeInteractive" />
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+        strategy="beforeInteractive"
+      />
       <div dangerouslySetInnerHTML={{ __html: LANDING_HTML }} />
       <PokemonOverlayBridge />
     </>

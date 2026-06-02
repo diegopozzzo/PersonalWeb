@@ -172,7 +172,13 @@ async function syncFromSpriteCollab(entry) {
     throw new Error(`No durations produced for ${spriteCollabIndex}`)
   }
 
-  copyPortrait(entry.portraitPath, assetId)
+  if (entry.portraitPath) {
+    try {
+      copyPortrait(entry.portraitPath, assetId)
+    } catch (error) {
+      console.warn(`Portrait copy failed for ${assetId}: ${error.message}`)
+    }
+  }
   return { durationChunk, ...detectActions(durationChunk, assetId) }
 }
 
@@ -190,7 +196,11 @@ function syncFromPac(entry) {
   }
 
   if (entry.portraitPath) {
-    copyPortrait(entry.portraitPath, assetId)
+    try {
+      copyPortrait(entry.portraitPath, assetId)
+    } catch (error) {
+      console.warn(`Portrait copy failed for ${assetId}: ${error.message}`)
+    }
   } else {
     const flatPortrait = path.join(pacPortraits, `${pacId}.png`)
     if (fs.existsSync(flatPortrait)) {
@@ -267,7 +277,7 @@ async function main() {
         pacPokemons,
         `${entry.spriteCollabIndex}.json`
       )
-      if (fs.existsSync(pacAtlas) && !entry.forceSpriteCollab) {
+      if (fs.existsSync(pacAtlas) && entry.forceSpriteCollab !== true) {
         result = syncFromPac({
           ...entry,
           pacId: entry.spriteCollabIndex

@@ -1,6 +1,8 @@
 ﻿node_modules/
 .tmp-pac/
 .tmp-spritecollab/
+public/sprite.zip
+public/sprite-extract/
 .next/
 .next-dev/
 out/

@@ -17,8 +17,14 @@
     "moveAction": "Walk",
     "reactAction": "Kick"
   },
-  "PIKACHU": {
+  "PIKACHU_LIBRE": {
     "assetId": "0025-f06",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Attack"
+  },
+  "PIKACHU_SURFER": {
+    "assetId": "0025-surfer",
     "idleAction": "Idle",
     "moveAction": "Walk",
     "reactAction": "Charge"
@@ -33,7 +39,13 @@
     "assetId": "0004",
     "idleAction": "Idle",
     "moveAction": "Walk",
-    "reactAction": "Kick"
+    "reactAction": "DeepBreath"
+  },
+  "SQUIRTLE": {
+    "assetId": "0007",
+    "idleAction": "Idle",
+    "moveAction": "Walk",
+    "reactAction": "Shoot"
   },
   "LUCARIO": {
     "assetId": "0448",

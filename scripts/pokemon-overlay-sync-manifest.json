@@ -22,8 +22,31 @@
     { "key": "MACHOP", "pacId": "0066", "assetId": "0066", "refresh": true },
     {
       "key": "PIKACHU",
-      "pacId": "0025-9999",
+      "pacId": "0025",
+      "assetId": "0025",
+      "refresh": true
+    },
+    {
+      "key": "SQUIRTLE",
+      "pacId": "0007",
+      "assetId": "0007",
+      "refresh": true
+    },
+    {
+      "key": "PIKACHU_LIBRE",
+      "label": "Pikachu Libre",
+      "spriteCollabIndex": "0025-0006",
       "assetId": "0025-f06",
+      "idleAction": "Idle",
+      "moveAction": "Walk",
+      "reactAction": "Attack",
+      "forceSpriteCollab": true
+    },
+    {
+      "key": "PIKACHU_SURFER",
+      "label": "Pikachu Surf",
+      "pacId": "0025-9999",
+      "assetId": "0025-surfer",
       "portraitPath": "0025/9999/0000/0001/Happy.png",
       "idleAction": "Idle",
       "moveAction": "Walk",
@@ -62,5 +85,5 @@
       "portraitPath": "0052/0002/Happy.png"
     }
   ],
-  "removeAssetIds": ["0001", "0007", "0610", "0151", "0025"]
+  "removeAssetIds": ["0001", "0610", "0151"]
 }

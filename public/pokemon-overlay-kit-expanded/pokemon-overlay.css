@@ -49,7 +49,6 @@
   opacity: 0;
   transform-origin: center center;
   transition:
-    transform 180ms ease,
     filter 180ms ease,
     opacity 180ms ease;
   filter:
@@ -82,12 +81,10 @@
     radial-gradient(circle at 30% 30%, var(--pk-glow-2) 0%, transparent 54%);
   filter: blur(18px);
   opacity: 0.78;
-  transform: scale(0.88);
+  transform: none;
   z-index: -1;
   pointer-events: none;
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
+  transition: opacity 180ms ease;
 }
 
 .pk-overlay-actor.ready {
@@ -111,7 +108,6 @@
 .pk-overlay-actor:hover::before,
 .pk-overlay-actor.is-hovered::before {
   opacity: 1;
-  transform: scale(1);
 }
 
 .pk-overlay-actor.is-selected::after {
@@ -161,11 +157,18 @@
   image-rendering: pixelated;
 }
 
+body.pk-overlay-roster-open .pk-overlay-cursor,
+body.pk-overlay-roster-open .pk-overlay-actor {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .pk-overlay-toolbar {
   position: fixed;
   left: 22px;
   bottom: 22px;
-  width: min(342px, calc(100vw - 36px));
+  z-index: 10050;
+  width: min(408px, calc(100vw - 32px));
   pointer-events: auto;
   overflow: hidden;
   border: 1px solid var(--pk-border);
@@ -224,8 +227,8 @@
 .pk-overlay-toolbar-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  padding: 0 14px 14px;
+  gap: 8px;
+  padding: 0 12px 12px;
 }
 
 .pk-overlay-toolbar.is-collapsed {
@@ -241,24 +244,24 @@
 .pk-overlay-toolbar-button {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  min-height: 56px;
-  padding: 10px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.035);
   color: inherit;
   text-align: left;
+  overflow: hidden;
   transition:
-    transform 140ms ease,
     border-color 140ms ease,
     background 140ms ease,
     box-shadow 140ms ease;
 }
 
 .pk-overlay-toolbar-button:hover {
-  transform: translateY(-1px);
   border-color: var(--pk-border);
   background: rgba(255, 255, 255, 0.07);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
@@ -273,18 +276,35 @@
 }
 
 .pk-overlay-toolbar-button img {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
+  padding: 3px;
+  box-sizing: border-box;
+  object-fit: contain;
+  object-position: center center;
   image-rendering: pixelated;
-  flex: 0 0 auto;
+  flex: 0 0 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
   filter: drop-shadow(0 0 12px rgba(255, 107, 43, 0.16));
+}
+
+.pk-overlay-toolbar-copy {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .pk-overlay-toolbar-name {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
+  line-height: 1.25;
   color: var(--pk-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pk-overlay-toolbar-role {
