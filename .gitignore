@@ -1,4 +1,6 @@
 ﻿node_modules/
+.tmp-pac/
+.tmp-spritecollab/
 .next/
 .next-dev/
 out/
