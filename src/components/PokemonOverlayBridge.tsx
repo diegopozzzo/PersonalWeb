@@ -8,7 +8,7 @@ type OverlayInstance = {
 
 const STYLESHEET_ID = "dbpa-pokemon-overlay-styles";
 const OVERLAY_ASSET_BASE = "/pokemon-overlay-kit-expanded";
-const OVERLAY_CACHE_VERSION = "20260602";
+const OVERLAY_CACHE_VERSION = "20260602b";
 const OVERLAY_DISABLED_KEY = "dbpa_overlay_disabled";
 const OVERLAY_LAUNCHER_ID = "dbpa-overlay-launcher";
 
@@ -113,103 +113,44 @@ function getOverlayOptions(lang: "en" | "es") {
 
   return {
     cursorPokemon: "HONEDGE",
-    topCompanions: [
-      {
-        pokemon: "GENGAR",
-        anchorX: "4%",
-        anchorY: "108px",
-        size: 92,
-        floatX: 18,
-        floatY: 12,
-        facing: "right",
-      },
-      {
-        pokemon: "LUCARIO",
-        anchorX: "89%",
-        anchorY: "154px",
-        size: 98,
-        floatX: 16,
-        floatY: 11,
-        facing: "left",
-      },
-    ],
+    topCompanions: [],
     centerCompanions: [],
-    headerWalkers: [
-      {
-        pokemon: "SNORLAX",
-        startX: "6%",
-        minX: "1%",
-        maxX: "93%",
-        startY: "6px",
-        headerTop: "4px",
-        headerHeight: "88px",
-        size: 82,
-        speed: 11,
-        floatY: 0.8,
-        direction: 1,
-        interactive: false,
-        mountToBody: true,
-      },
-    ],
+    headerWalkers: [],
     bottomWalkers: [
       {
         pokemon: "KECLEON",
-        startX: "5vw",
-        minX: "2%",
-        maxX: "18%",
-        size: 90,
-        speed: 22,
-        floatX: 10,
-        floatY: 5,
+        startX: "8%",
+        minX: "3%",
+        maxX: "28%",
+        size: 88,
+        speed: 20,
+        floatX: 8,
+        floatY: 4,
         laneOffsetY: 8,
         direction: 1,
       },
       {
         pokemon: "CHARMANDER",
-        startX: "28%",
-        minX: "21%",
-        maxX: "44%",
-        size: 94,
-        speed: 24,
-        floatX: 10,
-        floatY: 5,
-        laneOffsetY: 10,
-        direction: 1,
-      },
-      {
-        pokemon: "MACHOP",
-        startX: "54%",
-        minX: "49%",
-        maxX: "70%",
-        size: 96,
-        speed: 26,
-        floatX: 10,
+        startX: "38%",
+        minX: "30%",
+        maxX: "55%",
+        size: 90,
+        speed: 22,
+        floatX: 8,
         floatY: 4,
         laneOffsetY: 10,
         direction: 1,
       },
       {
-        pokemon: "MR_MIME",
-        startX: "72%",
-        minX: "67%",
-        maxX: "81%",
-        size: 94,
-        speed: 23,
-        floatX: 9,
-        floatY: 5,
-        laneOffsetY: 9,
-        direction: 1,
-      },
-      {
-        pokemon: "MEOWTH_GALAR",
-        startX: "84%",
-        minX: "80%",
-        maxX: "92%",
+        pokemon: "MACHOP",
+        startX: "68%",
+        minX: "58%",
+        maxX: "88%",
         size: 92,
-        speed: 25,
-        floatX: 9,
-        floatY: 5,
-        laneOffsetY: 8,
+        speed: 24,
+        floatX: 8,
+        floatY: 4,
+        laneOffsetY: 10,
         direction: 1,
       },
     ],
@@ -259,6 +200,13 @@ function getOverlayOptions(lang: "en" | "es") {
     cursorOffsetX: -26,
     cursorOffsetY: -24,
     cursorSmoothing: 18,
+    performance: {
+      maxDpr: 1.25,
+      targetFps: 30,
+      lazyLoadActors: true,
+      pauseWhenHidden: true,
+      staggerActorMs: 150,
+    },
   };
 }
 
@@ -389,6 +337,22 @@ export default function PokemonOverlayBridge() {
     const handleResize = () => {
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
+        if (!isDesktopOverlayAllowed()) {
+          destroyOverlay();
+          ensureLauncher();
+          return;
+        }
+
+        if (isOverlayDisabled()) {
+          destroyOverlay();
+          ensureLauncher();
+          return;
+        }
+
+        if (overlayRef.current) {
+          return;
+        }
+
         mountOverlay();
       }, 180);
     };
@@ -402,7 +366,21 @@ export default function PokemonOverlayBridge() {
       queueOverlayMount();
     };
 
-    mountOverlay();
+    const scheduleMount = () => {
+      const run = () => {
+        if (!cancelled) {
+          void mountOverlay();
+        }
+      };
+
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(run, { timeout: 2200 });
+      } else {
+        setTimeout(run, 600);
+      }
+    };
+
+    scheduleMount();
 
     const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
     langButtons.forEach((button) => {

@@ -180,7 +180,21 @@ const DEFAULT_OPTIONS = {
   cursorSmoothing: 14,
   onDisable: null,
   themeClass: "",
-  theme: {}
+  theme: {},
+  performance: {
+    maxDpr: 1.25,
+    targetFps: 30,
+    lazyLoadActors: true,
+    pauseWhenHidden: true,
+    staggerActorMs: 120
+  }
+}
+
+function getPerformanceOptions(options) {
+  return {
+    ...DEFAULT_OPTIONS.performance,
+    ...(options?.performance || {})
+  }
 }
 
 const assetCache = new Map()
@@ -311,6 +325,17 @@ function getAssetId(meta) {
   return meta.assetId ?? meta.id
 }
 
+function filterDurationsForAsset(durations, assetId) {
+  const prefix = `${assetId}/`
+  const filtered = {}
+  for (const [key, value] of Object.entries(durations)) {
+    if (key.startsWith(prefix)) {
+      filtered[key] = value
+    }
+  }
+  return filtered
+}
+
 async function loadPokemonAsset(key) {
   if (assetCache.has(key)) {
     return assetCache.get(key)
@@ -334,7 +359,8 @@ async function loadPokemonAsset(key) {
     loadImage(resolveAsset(`./assets/sprites/${assetId}.png`)),
     resolveAsset(`./assets/portraits/${assetId}.png`)
   ]).then(([durations, atlas, image, portraitUrl]) => {
-    return new PokemonAtlasAsset(meta, atlas, image, durations, portraitUrl)
+    const assetDurations = filterDurationsForAsset(durations, assetId)
+    return new PokemonAtlasAsset(meta, atlas, image, assetDurations, portraitUrl)
   })
 
   assetCache.set(key, assetPromise)
@@ -427,12 +453,12 @@ class PokemonAtlasAsset {
 }
 
 class PixelCanvasSprite {
-  constructor(size) {
+  constructor(size, maxDpr = 1.25) {
     this.size = size
     this.asset = null
     this.current = null
     this.temporary = false
-    this.dpr = Math.max(window.devicePixelRatio || 1, 1)
+    this.dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), maxDpr)
     this.canvas = document.createElement("canvas")
     this.context = this.canvas.getContext("2d")
     this.context.imageSmoothingEnabled = false
@@ -513,7 +539,7 @@ class PixelCanvasSprite {
   }
 
   tick(deltaMs) {
-    if (!this.current || !this.current.frames.length) return
+    if (!this.current || !this.current.frames.length) return false
 
     this.current.elapsed += deltaMs
     let needsRedraw = false
@@ -550,6 +576,8 @@ class PixelCanvasSprite {
     if (needsRedraw) {
       this.draw()
     }
+
+    return needsRedraw
   }
 
   draw() {
@@ -635,8 +663,11 @@ class OverlayActor {
       this.element.classList.add(options.side)
     }
 
-    this.sprite = new PixelCanvasSprite(this.scale)
+    const perf = getPerformanceOptions(overlay.options)
+    this.sprite = new PixelCanvasSprite(this.scale, perf.maxDpr)
     this.element.appendChild(this.sprite.canvas)
+    this._lastPlayKey = ""
+    this._loading = false
 
     this.onPointerEnter = this.onPointerEnter.bind(this)
     this.onPointerLeave = this.onPointerLeave.bind(this)
@@ -678,15 +709,55 @@ class OverlayActor {
       overlay.root.appendChild(this.element)
     }
 
-    this.ready = loadPokemonAsset(key).then((asset) => {
+    const eagerLoad =
+      options.eagerLoad === true ||
+      (options.eagerLoad !== false && !perf.lazyLoadActors)
+
+    this.ready = eagerLoad ? this.ensureAssetLoaded() : Promise.resolve()
+  }
+
+  ensureAssetLoaded() {
+    if (this.asset) {
+      return Promise.resolve(this.asset)
+    }
+
+    if (this._loading) {
+      return this.ready
+    }
+
+    this._loading = true
+    this.ready = loadPokemonAsset(this.key).then((asset) => {
       this.asset = asset
       this.sprite.setAsset(asset)
-      this.sprite.play(this.currentBaseAction(), this.currentOrientation(), {
-        force: true
-      })
+      this.playBaseAnimation(true)
       this.element.classList.add("ready")
       this.overlay.refreshSelectionState()
+      return asset
     })
+
+    return this.ready
+  }
+
+  playBaseAnimation(force = false) {
+    if (!this.asset) return
+
+    const action = this.dragging
+      ? this.meta.idleAction
+      : this.options.role === "top" || this.options.role === "center"
+        ? this.meta.topAction || this.meta.idleAction
+        : (this.options.role === "bottom" || this.options.role === "header") &&
+            !this.dragging
+          ? this.meta.moveAction
+          : this.meta.idleAction
+    const orientation = this.currentOrientation()
+    const playKey = `${action}:${orientation}`
+
+    if (!force && this._lastPlayKey === playKey && !this.sprite.temporary) {
+      return
+    }
+
+    this._lastPlayKey = playKey
+    this.sprite.play(action, orientation, { force })
   }
 
   currentBaseAction() {
@@ -822,7 +893,7 @@ class OverlayActor {
   }
 
   update(time, deltaSeconds) {
-    if (!this.asset) return
+    if (!this.asset) return false
 
     if (this.options.role === "top") {
       if (!this.dragging) {
@@ -852,10 +923,7 @@ class OverlayActor {
       }
 
       if (!this.sprite.temporary) {
-        this.sprite.play(
-          this.dragging ? this.meta.idleAction : (this.meta.topAction || this.meta.idleAction),
-          this.currentOrientation()
-        )
+        this.playBaseAnimation()
       }
     } else if (this.options.role === "center") {
       const anchorX =
@@ -874,7 +942,7 @@ class OverlayActor {
       )
 
       if (!this.sprite.temporary) {
-        this.sprite.play(this.meta.topAction || this.meta.idleAction, this.currentOrientation())
+        this.playBaseAnimation()
       }
     } else if (this.options.role === "header") {
       const minX = clamp(
@@ -911,7 +979,7 @@ class OverlayActor {
       this.y = this.baseY + Math.sin(time / 460 + this.seed) * this.floatY
 
       if (!this.sprite.temporary) {
-        this.sprite.play(this.meta.moveAction, this.currentOrientation())
+        this.playBaseAnimation()
       }
     } else if (this.options.role === "bottom" && this.placed && !this.dragging) {
       const anchorX = toPixels(
@@ -937,7 +1005,7 @@ class OverlayActor {
       )
 
       if (!this.sprite.temporary) {
-        this.sprite.play(this.meta.idleAction, this.currentOrientation())
+        this.playBaseAnimation()
       }
     } else if (!this.dragging) {
       const minX = clamp(
@@ -977,14 +1045,14 @@ class OverlayActor {
       this.y = this.baseY + Math.sin(time / 260 + this.seed) * this.floatY
 
       if (!this.sprite.temporary) {
-        this.sprite.play(this.meta.moveAction, this.currentOrientation())
+        this.playBaseAnimation()
       }
     } else if (!this.sprite.temporary) {
-      this.sprite.play(this.meta.idleAction, this.currentOrientation())
+      this.playBaseAnimation()
     }
 
     this.element.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(${this.currentScale()})`
-    this.sprite.tick(deltaSeconds * 1000)
+    return this.sprite.tick(deltaSeconds * 1000)
   }
 
   destroy() {
@@ -1013,9 +1081,11 @@ class OverlayCursor {
     this.offsetY = overlay.options.cursorOffsetY ?? -18
     this.smoothing = overlay.options.cursorSmoothing || 14
     applyThemeToElement(this.element, overlay.options)
-    this.sprite = new PixelCanvasSprite(this.size)
+    const perf = getPerformanceOptions(overlay.options)
+    this.sprite = new PixelCanvasSprite(this.size, perf.maxDpr)
     this.element.appendChild(this.sprite.canvas)
     document.body.appendChild(this.element)
+    this._lastPlayKey = ""
 
     this.ready = this.setPokemon(key)
   }
@@ -1060,11 +1130,15 @@ class OverlayCursor {
     if (this.asset && !this.sprite.temporary) {
       const moving = Math.hypot(dx, dy) > 10
       const action = moving ? this.asset.meta.moveAction : this.asset.meta.idleAction
-      this.sprite.play(action, this.orientation)
+      const playKey = `${action}:${this.orientation}`
+      if (this._lastPlayKey !== playKey) {
+        this._lastPlayKey = playKey
+        this.sprite.play(action, this.orientation)
+      }
     }
 
     this.element.style.transform = `translate3d(${this.x + this.offsetX}px, ${this.y + this.offsetY}px, 0)`
-    this.sprite.tick(deltaSeconds * 1000)
+    return this.sprite.tick(deltaSeconds * 1000)
   }
 
   destroy() {
@@ -1083,12 +1157,17 @@ class PokemonOverlay {
     this.actors = []
     this.toolbarButtons = new Map()
     this.running = true
+    this.isPaused = false
     this.lastTick = performance.now()
+    this.perf = getPerformanceOptions(this.options)
+    this.frameInterval = 1000 / Math.max(this.perf.targetFps, 15)
+    this.nextFrameAt = 0
     this.pointerX = window.innerWidth / 2
     this.pointerY = window.innerHeight / 2
     this.pointerMove = this.pointerMove.bind(this)
     this.pointerDown = this.pointerDown.bind(this)
     this.onResize = this.onResize.bind(this)
+    this.onVisibilityChange = this.onVisibilityChange.bind(this)
     this.tick = this.tick.bind(this)
 
     this.badge = document.createElement("div")
@@ -1115,14 +1194,47 @@ class PokemonOverlay {
     window.addEventListener("pointerdown", this.pointerDown, { passive: true })
     window.addEventListener("resize", this.onResize)
 
-    this.ready = Promise.all([
-      this.cursor.ready,
-      ...this.actors.map((actor) => actor.ready)
-    ]).then(() => {
+    if (this.perf.pauseWhenHidden) {
+      document.addEventListener("visibilitychange", this.onVisibilityChange)
+      this.isPaused = document.hidden
+    }
+
+    this.ready = this.cursor.ready.then(() => {
       this.refreshSelectionState()
+      this.scheduleActorLoads()
     })
 
-    requestAnimationFrame(this.tick)
+    if (!this.isPaused) {
+      requestAnimationFrame(this.tick)
+    }
+  }
+
+  scheduleActorLoads() {
+    if (!this.perf.lazyLoadActors) {
+      return Promise.all(this.actors.map((actor) => actor.ensureAssetLoaded()))
+    }
+
+    let delay = 0
+    this.actors.forEach((actor) => {
+      window.setTimeout(() => {
+        actor.ensureAssetLoaded()
+      }, delay)
+      delay += this.perf.staggerActorMs
+    })
+
+    return Promise.resolve()
+  }
+
+  onVisibilityChange() {
+    const shouldPause = document.hidden
+    if (shouldPause === this.isPaused) return
+
+    this.isPaused = shouldPause
+    if (!this.isPaused && this.running) {
+      this.lastTick = performance.now()
+      this.nextFrameAt = 0
+      requestAnimationFrame(this.tick)
+    }
   }
 
   resolveInitialCursor() {
@@ -1295,6 +1407,9 @@ class PokemonOverlay {
 
       button.appendChild(image)
       button.appendChild(labelWrap)
+      button.addEventListener("pointerenter", () => {
+        loadPokemonAsset(key)
+      })
       button.addEventListener("click", () => this.setCursorPokemon(key, true))
 
       this.toolbarButtons.set(key, button)
@@ -1380,8 +1495,14 @@ class PokemonOverlay {
   }
 
   tick(now) {
-    if (!this.running) return
+    if (!this.running || this.isPaused) return
 
+    if (now < this.nextFrameAt) {
+      requestAnimationFrame(this.tick)
+      return
+    }
+
+    this.nextFrameAt = now + this.frameInterval
     const deltaSeconds = Math.min((now - this.lastTick) / 1000, 0.05)
     this.lastTick = now
 
@@ -1434,6 +1555,7 @@ class PokemonOverlay {
     window.removeEventListener("pointermove", this.pointerMove)
     window.removeEventListener("pointerdown", this.pointerDown)
     window.removeEventListener("resize", this.onResize)
+    document.removeEventListener("visibilitychange", this.onVisibilityChange)
     this.actors.forEach((actor) => actor.destroy())
     this.cursor.destroy()
     this.root.remove()

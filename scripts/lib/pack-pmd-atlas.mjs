@@ -28,6 +28,7 @@ export async function packSplitFolder(splitRoot, assetId, outDir) {
       }
       if (!entry.name.endsWith(".png")) continue
       const rel = prefix ? `${prefix}/${entry.name}` : entry.name
+      if (!rel.startsWith("Normal/")) continue
       const framePath = rel.replace(/\.png$/i, "")
       files.push({
         path: framePath,
