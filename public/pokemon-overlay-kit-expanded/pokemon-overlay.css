@@ -157,10 +157,23 @@
   image-rendering: pixelated;
 }
 
-body.pk-overlay-roster-open .pk-overlay-cursor,
+body.pk-overlay-roster-open.pk-overlay-cursor-enabled,
+body.pk-overlay-roster-open.pk-overlay-cursor-enabled *:not(.pk-overlay-toolbar):not(.pk-overlay-toolbar *) {
+  cursor: auto !important;
+}
+
 body.pk-overlay-roster-open .pk-overlay-actor {
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+body.pk-overlay-roster-open .pk-overlay-cursor {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body:not(.pk-overlay-roster-open) .pk-overlay-cursor.ready {
+  opacity: 1;
 }
 
 .pk-overlay-toolbar {

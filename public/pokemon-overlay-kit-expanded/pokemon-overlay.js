@@ -1368,6 +1368,27 @@ class PokemonOverlay {
     })
   }
 
+  syncRosterOpenState() {
+    if (!this.toolbar) return
+
+    const collapsed = this.toolbar.classList.contains("is-collapsed")
+    document.body.classList.toggle("pk-overlay-roster-open", !collapsed)
+
+    const header = this.toolbar.querySelector(".pk-overlay-toolbar-header")
+    if (header) {
+      header.setAttribute("aria-expanded", collapsed ? "false" : "true")
+    }
+  }
+
+  collapseRoster() {
+    if (!this.toolbar || this.toolbar.classList.contains("is-collapsed")) {
+      return
+    }
+
+    this.toolbar.classList.add("is-collapsed")
+    this.syncRosterOpenState()
+  }
+
   createToolbar() {
     this.toolbar = document.createElement("section")
     this.toolbar.className = "pk-overlay-toolbar"
@@ -1387,14 +1408,9 @@ class PokemonOverlay {
     subtitle.textContent = this.options.toolbarSubtitle
     titleWrap.appendChild(title)
     titleWrap.appendChild(subtitle)
-    const syncRosterOpenState = () => {
-      const collapsed = this.toolbar.classList.contains("is-collapsed")
-      document.body.classList.toggle("pk-overlay-roster-open", !collapsed)
-      header.setAttribute("aria-expanded", collapsed ? "false" : "true")
-    }
     const toggleToolbar = () => {
       this.toolbar.classList.toggle("is-collapsed")
-      syncRosterOpenState()
+      this.syncRosterOpenState()
     }
     header.addEventListener("click", toggleToolbar)
     header.addEventListener("keydown", (event) => {
@@ -1410,7 +1426,7 @@ class PokemonOverlay {
     if (this.options.toolbarCollapsed) {
       this.toolbar.classList.add("is-collapsed")
     }
-    syncRosterOpenState()
+    this.syncRosterOpenState()
 
     const grid = document.createElement("div")
     grid.className = "pk-overlay-toolbar-grid"
@@ -1448,7 +1464,10 @@ class PokemonOverlay {
       button.addEventListener("pointerenter", () => {
         loadPokemonAsset(key)
       })
-      button.addEventListener("click", () => this.setCursorPokemon(key, true))
+      button.addEventListener("click", (event) => {
+        event.stopPropagation()
+        void this.setCursorPokemon(key, true)
+      })
 
       this.toolbarButtons.set(key, button)
       grid.appendChild(button)
@@ -1507,20 +1526,23 @@ class PokemonOverlay {
   }
 
   pointerDown(event) {
+    const target = event?.target
+    const insideToolbar =
+      this.toolbar &&
+      target instanceof Node &&
+      this.toolbar.contains(target)
+
+    if (insideToolbar) {
+      return
+    }
+
     this.cursor.react()
 
     if (!this.toolbar || this.toolbar.classList.contains("is-collapsed")) {
       return
     }
 
-    const target = event?.target
-    if (target instanceof Node && !this.toolbar.contains(target)) {
-      this.toolbar.classList.add("is-collapsed")
-      const header = this.toolbar.querySelector(".pk-overlay-toolbar-header")
-      if (header) {
-        header.setAttribute("aria-expanded", "false")
-      }
-    }
+    this.collapseRoster()
   }
 
   setDraggingState(isDragging) {
@@ -1575,6 +1597,8 @@ class PokemonOverlay {
     if (showBadge) {
       this.showBadge(`${this.options.badgePrefix}: ${POKEMON_LIBRARY[key].label}`)
     }
+
+    this.collapseRoster()
   }
 
   refreshSelectionState() {
