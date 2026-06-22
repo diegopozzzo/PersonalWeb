@@ -31,6 +31,8 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
+  response.headers.delete("Access-Control-Allow-Origin");
+
   if (origin && ALLOWED_ORIGINS.has(origin)) {
     response.headers.set("Access-Control-Allow-Origin", origin);
     response.headers.append("Vary", "Origin");

@@ -15,6 +15,8 @@ const CONTENT_SECURITY_POLICY = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+const ALLOWED_ORIGIN = "https://www.diegopozo.website";
+
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
@@ -37,7 +39,16 @@ const nextConfig = {
     return [
       {
         source: "/:path*",
-        headers: SECURITY_HEADERS,
+        headers: [
+          ...SECURITY_HEADERS,
+          { key: "Access-Control-Allow-Origin", value: ALLOWED_ORIGIN },
+        ],
+      },
+      {
+        source: "/_next/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: ALLOWED_ORIGIN },
+        ],
       },
     ];
   },
